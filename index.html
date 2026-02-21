@@ -474,6 +474,78 @@
             border-top: 1px solid rgba(0,0,0,0.05); mask-image: linear-gradient(to bottom, black, transparent);
         }
 
+        /* --- PAPER TEAR & VINTAGE EFFECTS --- */
+        .torn-paper {
+            position: relative;
+            background: #fff;
+            box-shadow: 2px 3px 10px rgba(0,0,0,0.2);
+        }
+        .torn-paper::before, .torn-paper::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background-size: 20px 20px;
+            background-repeat: repeat-x;
+        }
+        .torn-top::before {
+            top: -8px;
+            background-image: linear-gradient(135deg, transparent 75%, #fff 75%), linear-gradient(-135deg, transparent 75%, #fff 75%);
+        }
+        .torn-bottom::after {
+            bottom: -8px;
+            background-image: linear-gradient(45deg, transparent 75%, #fff 75%), linear-gradient(-45deg, transparent 75%, #fff 75%);
+        }
+        
+        .tape-strip {
+            position: absolute;
+            width: 80px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transform: rotate(-5deg);
+            z-index: 20;
+            backdrop-filter: blur(1px);
+            border-left: 1px solid rgba(255,255,255,0.3);
+            border-right: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .scrap-text {
+            font-family: 'Special Elite', cursive;
+            background: #eee;
+            padding: 2px 6px;
+            transform: rotate(2deg);
+            display: inline-block;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            font-size: 9px;
+            color: #333;
+            border: 1px dashed #999;
+        }
+
+        .newspaper-fragment {
+            position: absolute;
+            background: #e3dac9;
+            padding: 8px;
+            font-family: 'Playfair Display', serif;
+            font-size: 6px;
+            line-height: 1.2;
+            color: #222;
+            width: 100px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.15);
+            overflow: hidden;
+            text-align: justify;
+            opacity: 0.9;
+            z-index: 5;
+        }
+        .newspaper-fragment h4 {
+            font-weight: 900;
+            text-transform: uppercase;
+            border-bottom: 1px solid #000;
+            margin-bottom: 4px;
+            font-size: 8px;
+        }
+
         /* --- FLASH EFFECT --- */
         #flash-overlay { position: fixed; inset: 0; background: #fff; opacity: 0; z-index: 200; pointer-events: none; }
         .flash-active { animation: flashAnim 0.8s ease-out forwards; }
@@ -532,91 +604,218 @@
             
             <!-- Halaman 0: Editorial -->
             <section class="page-module victorian-bg active" id="mod-0">
-                <div class="text-center mb-2">
-                    <p class="text-[9px] uppercase tracking-[0.4em] opacity-50">Special Issue: March 30, 2026</p>
-                </div>
-                <h1 class="text-6xl text-center border-y-2 border-black py-3 my-4 font-black italic tracking-tighter" style="font-family: 'Playfair Display', serif;">The Ledger</h1>
-                
-                <div class="space-y-4 text-justify leading-relaxed" style="font-family: 'EB Garamond', serif;">
-                    <p class="nyt-lead">
-                        Tepat pada koordinat waktu yang telah ditentukan, <b>sayangku</b> secara resmi memasuki fase kedewasaan ke-17 tahun, menandai berakhirnya sebuah era dan dimulainya babak baru yang lebih krusial.
-                    </p>
-                    <p class="text-[1.1rem]">Laporan intelijen ini bukan sekadar arsip rutin, melainkan bukti otentik dari perjalanan panjang yang penuh makna. <b>Tujuh belas tahun</b> bukanlah sekadar angka dalam kalender, melainkan akumulasi dari setiap tawa, mimpi, dan keberanian yang telah kamu bentuk dengan indah, <b>sayangku</b>.</p>
-                    <div class="quote-block">
-                        "Beberapa jiwa bersinar terlalu terang untuk sekadar dilewatkan oleh waktu; mereka adalah naskah yang ditulis oleh takdir."
+                <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                    <div class="newspaper-fragment" style="top: 5%; right: -10px; transform: rotate(12deg); width: 80px; opacity: 0.4;">
+                        <h4>BREAKING</h4>
+                        <p>Sinyal misterius terdeteksi dari sektor 17.</p>
                     </div>
-                    <p class="text-[1.1rem]">Statusmu kini telah ditingkatkan menjadi <b>aset paling berharga</b> dalam sejarah operasional hidupku. Ketahuilah bahwa di setiap detak waktu yang berlalu, <b>sayangku</b> akan selalu menjadi pusat dari segala koordinat kebahagiaanku. Selamat datang di gerbang baru kehidupan.</p>
+                    <div class="tape-strip" style="bottom: 10%; left: -10px; transform: rotate(45deg); width: 100px;"></div>
+                </div>
+
+                <div class="torn-paper torn-bottom p-6 shadow-xl relative bg-[#f9f7f1] mt-4 mx-2 rotate-[-1deg]">
+                    <div class="tape-strip" style="top: -12px; left: 50%; transform: translateX(-50%) rotate(-2deg);"></div>
+                    <div class="text-center mb-2 border-b-2 border-double border-black/20 pb-2">
+                        <p class="text-[9px] uppercase tracking-[0.4em] opacity-50 font-serif">Special Issue: March 30, 2026</p>
+                    </div>
+                    <h1 class="text-5xl text-center my-4 font-black italic tracking-tighter leading-none" style="font-family: 'Playfair Display', serif;">The Ledger</h1>
+                    
+                    <div class="space-y-4 text-justify leading-relaxed relative z-10" style="font-family: 'EB Garamond', serif;">
+                        <p class="nyt-lead text-[1.2rem]">
+                            Tepat pada koordinat waktu yang telah ditentukan, <b>sayangku</b> secara resmi memasuki fase kedewasaan ke-17 tahun, menandai berakhirnya sebuah era dan dimulainya babak baru yang lebih krusial.
+                        </p>
+                        <p class="text-[1rem]">Laporan intelijen ini bukan sekadar arsip rutin, melainkan bukti otentik dari perjalanan panjang yang penuh makna. <b>Tujuh belas tahun</b> bukanlah sekadar angka dalam kalender, melainkan akumulasi dari setiap tawa, mimpi, dan keberanian yang telah kamu bentuk dengan indah, <b>sayangku</b>.</p>
+                    </div>
+                </div>
+
+                <div class="relative mt-6 mx-4">
+                    <div class="newspaper-fragment" style="top: -10px; left: -10px; transform: rotate(-3deg); width: 100%; background: #e8e4d9; z-index: 0;">
+                        <div class="quote-block !m-0 !bg-transparent !border-none">
+                            "Beberapa jiwa bersinar terlalu terang untuk sekadar dilewatkan oleh waktu; mereka adalah naskah yang ditulis oleh takdir."
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="mt-8 border-l-4 border-red-900 pl-4 italic text-sm opacity-60">"Operasi Sweet Seventeen: Status Aktif."</div>
+                <div class="mt-auto mb-8 p-4 relative">
+                    <div class="torn-paper torn-top p-4 bg-white rotate-1 shadow-md">
+                        <p class="text-[1rem] font-serif text-justify">Statusmu kini telah ditingkatkan menjadi <b>aset paling berharga</b> dalam sejarah operasional hidupku. Ketahuilah bahwa di setiap detak waktu yang berlalu, <b>sayangku</b> akan selalu menjadi pusat dari segala koordinat kebahagiaanku. Selamat datang di gerbang baru kehidupan.</p>
+                        <div class="mt-4 border-t border-dashed border-black/30 pt-2 text-right">
+                            <span class="scrap-text text-[8px]">REF: OPR-17-SWEET</span>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- Halaman 1: Evidence -->
             <section class="page-module victorian-bg" id="mod-1">
-                <div class="evidence-form">
-                    <div class="photo-clip-container">
+                <div class="evidence-form torn-paper torn-bottom !border-none !bg-[#f4f1ea] shadow-2xl rotate-[1deg] !h-auto mb-4">
+                    <div class="tape-strip" style="top: -10px; right: 20px; transform: rotate(15deg);"></div>
+                    <div class="tape-strip" style="bottom: -10px; left: 20px; transform: rotate(-15deg);"></div>
+                    
+                    <div class="photo-clip-container" style="top: 10px; right: 10px;">
                         <div class="clip-on"></div>
-                        <div class="photo-3x4">
-                            <img src="https://muhatawchjjisjalopab.supabase.co/storage/v1/object/public/foto/foto.jpg" alt="Sayangku">
+                        <div class="photo-3x4 shadow-lg">
+                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/Desain%20tanpa%20judul_20250821_003903_0000.jpg" alt="Sayangku" class="sepia-[0.2]">
                         </div>
                     </div>
-                    <div class="form-header">
-                        <div class="text-[12px] font-bold uppercase tracking-[0.2em] text-gray-700">File: 017/AF-MAR</div>
+                    
+                    <div class="form-header border-b-2 border-black mb-4 pb-1">
+                        <div class="text-[14px] font-black uppercase tracking-[0.1em] text-black font-serif">CONFIDENTIAL FILE</div>
+                        <div class="text-[8px] font-mono">CASE ID: 017/AF-MAR</div>
                     </div>
-                    <div class="mt-2 space-y-1 pr-[95px]">
-                        <div class="form-row"><span class="label">Name:</span><span class="value">ARISTIA FIRLIN</span></div>
-                        <div class="form-row"><span class="label">Priority:</span><span class="value">S-CLASS ASSET</span></div>
-                        <div class="form-row"><span class="label">Age:</span><span class="value">17 YEARS OLD</span></div>
-                        <div class="form-row"><span class="label">Origin:</span><span class="value">30 MARCH 2009</span></div>
-                    </div>
-                    <div class="mt-4">
-                        <div class="bg-black/[0.04] p-3 border border-black/10 rounded-sm">
-                            <p class="text-[8px] font-bold uppercase mb-2 opacity-50">Transmission Record:</p>
-                            <a href="https://www.instagram.com/reel/DQEbbnuEj95/?igsh=MXJ0ejJ5amxsZW1y" target="_blank" class="reel-btn uppercase">Decrypt Reel Record</a>
+
+                    <div class="mt-2 space-y-2 pr-[95px] font-mono text-[10px]">
+                        <div class="bg-white/50 p-1 border-b border-dotted border-black/30 flex justify-between">
+                            <span class="font-bold text-gray-500">SUBJECT:</span>
+                            <span class="font-bold">ARISTIA FIRLIN</span>
+                        </div>
+                        <div class="bg-white/50 p-1 border-b border-dotted border-black/30 flex justify-between">
+                            <span class="font-bold text-gray-500">CLASS:</span>
+                            <span class="font-bold text-red-800">S-TIER ASSET</span>
+                        </div>
+                        <div class="bg-white/50 p-1 border-b border-dotted border-black/30 flex justify-between">
+                            <span class="font-bold text-gray-500">AGE:</span>
+                            <span class="font-bold">17 YEARS</span>
+                        </div>
+                        <div class="bg-white/50 p-1 border-b border-dotted border-black/30 flex justify-between">
+                            <span class="font-bold text-gray-500">ORIGIN:</span>
+                            <span class="font-bold">30/03/2009</span>
                         </div>
                     </div>
-                    <div class="mt-4 flex-1">
-                        <p class="text-[9.5px] leading-relaxed text-gray-600 italic border-l-2 border-red-900/30 pl-3">
-                            "Subjek menunjukkan perkembangan emosional yang signifikan dan tetap menjadi prioritas pengawasan tingkat tinggi."
+                    
+                    <div class="mt-6 relative">
+                        <div class="newspaper-fragment" style="top: -15px; left: -15px; transform: rotate(-5deg); z-index: 10;">
+                            <h4>EVIDENCE #1</h4>
+                            <p>Rekaman visual terenkripsi.</p>
+                        </div>
+                        <div class="bg-black/[0.04] p-3 border-2 border-dashed border-black/20 rounded-sm relative group bg-white">
+                            <div class="flex justify-between items-center mb-2">
+                                <p class="text-[8px] font-bold uppercase opacity-50">Encrypted Signal:</p>
+                                <span class="text-[7px] font-mono text-red-800 bg-red-100 px-1 border border-red-200">LOCKED</span>
+                            </div>
+                            
+                            <div id="video-container" class="hidden transition-all duration-500 ease-in-out">
+                                <video controls class="w-full border border-black/10 shadow-sm" style="max-height: 120px; object-fit: cover;">
+                                    <source src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/VID_20250808204246202.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+
+                            <button id="decrypt-btn" onclick="document.getElementById('video-container').classList.remove('hidden'); this.style.display='none';" class="w-full py-3 border border-dashed border-black/30 bg-[#f0f0f0] hover:bg-white transition-colors flex flex-col items-center justify-center gap-1 cursor-pointer">
+                                <span class="text-[9px] font-bold uppercase tracking-widest text-gray-700">Tap to Decrypt</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 p-2 bg-yellow-50 border border-yellow-100 text-justify relative">
+                        <div class="tape-strip" style="top: -5px; left: 40%; width: 40px; height: 15px;"></div>
+                        <p class="text-[9px] leading-relaxed text-gray-800 font-serif italic">
+                            "Subjek menunjukkan perkembangan emosional yang signifikan. Prioritas pengawasan: MUTLAK."
                         </p>
                     </div>
-                    <div class="stamp-container-v2">
-                        <div class="round-stamp">
-                            AUTHENTICATED<br>BY N. STATION<br>SECURED
+                    
+                    <div class="stamp-container-v2 mt-4">
+                        <div class="round-stamp opacity-80 rotate-[-10deg]">
+                            VERIFIED<br>BY N.<br>SECURE
                         </div>
-                        <img src="https://img.icons8.com/ios/100/000000/fingerprint.png" class="fingerprint-zone" alt="Fingerprint">
-                        <div class="barcode-strip"></div>
+                        <img src="https://img.icons8.com/ios/100/000000/fingerprint.png" class="fingerprint-zone opacity-40" alt="Fingerprint">
+                        <div class="barcode-strip opacity-30"></div>
                     </div>
-                </div>
-                <div class="status-strip-visual">
-                    <div class="binary-rain">01110011 01100001 01111001 01100001 01101110 01100111 01101011 01110101 00100000 00110001 00110111 00100000 01110100 01100001 01101000 01110101 01101110</div>
-                    <div class="passed-stamp">ELIGIBLE FOR LVL-17</div>
                 </div>
             </section>
 
-            <!-- Halaman 2: Calendar -->
+            <!-- Halaman 2: Clipping (New) -->
             <section class="page-module victorian-bg" id="mod-2">
-                <h2 class="text-center font-bold text-[10px] uppercase mb-10 border-b pb-2 tracking-[0.2em]">Logbook Operasional: Maret 2026</h2>
-                <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-[11px] text-center p-4 bg-white/50 border border-black/10">
+                <h2 class="text-center font-bold text-[10px] uppercase mb-6 border-b pb-2 tracking-[0.2em]">Digital Clipping: Ext. Source</h2>
+                
+                <div class="relative bg-white p-2 shadow-lg rotate-1 border border-gray-300">
+                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-yellow-100/80 border border-yellow-200/50 rotate-[-2deg] shadow-sm z-10"></div>
+                    <div class="border border-black/10 p-4 bg-gray-50">
+                        <p class="text-[8px] font-bold uppercase mb-3 text-center opacity-60 tracking-widest">Intercepted Signal: Instagram</p>
+                        <a href="https://www.instagram.com/reel/DQEbbnuEj95/?igsh=MXJ0ejJ5amxsZW1y" target="_blank" class="block group relative overflow-hidden border border-black/20">
+                            <div class="aspect-video bg-black/5 flex items-center justify-center group-hover:bg-black/10 transition-colors">
+                                <div class="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-pink-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                    </svg>
+                                </div>
+                                <span class="absolute bottom-2 text-[8px] font-bold bg-white/90 px-2 py-0.5 rounded-sm shadow-sm">TAP TO VIEW REEL</span>
+                            </div>
+                        </a>
+                        <div class="mt-3 text-justify">
+                            <p class="text-[9px] font-serif italic leading-relaxed text-gray-600">
+                                "Visual evidence intercepted from public channels. Subject appears in high spirits. Archiving for sentimental analysis."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-dashed border-black/20"></div>
+                    </div>
+                    <div class="relative flex justify-center">
+                        <span class="bg-[#f2ecd9] px-2 text-[8px] text-gray-500 uppercase tracking-widest">End of Clipping</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Halaman 3: Calendar (Shifted) -->
+            <section class="page-module victorian-bg" id="mod-3">
+                <h2 class="text-center font-bold text-[10px] uppercase mb-4 border-b pb-2 tracking-[0.2em] relative z-10">Logbook Operasional: Maret 2026</h2>
+                
+                <!-- Scrapbook Collage Area -->
+                <div class="relative h-48 mb-4">
+                    <!-- Background Scraps -->
+                    <div class="newspaper-fragment" style="top: 10px; left: -10px; transform: rotate(-8deg);">
+                        <h4>DAILY CHRONICLE</h4>
+                        <p>Laporan cuaca menunjukkan kondisi cerah pada tanggal 30. Persiapan perayaan telah mencapai tahap akhir.</p>
+                    </div>
+                    <div class="newspaper-fragment" style="bottom: 20px; right: -5px; transform: rotate(5deg); width: 120px; background: #dcd0c0;">
+                        <h4>ARCHIVE 017</h4>
+                        <p>Dokumen rahasia ini diklasifikasikan sebagai prioritas utama. Jangan disebarluaskan tanpa izin otoritas tertinggi.</p>
+                    </div>
+
+                    <!-- Main Photo Clipping -->
+                    <div class="absolute top-4 left-1/2 transform -translate-x-1/2 rotate-2 z-10">
+                        <div class="tape-strip" style="top: -10px; left: 30%;"></div>
+                        <div class="torn-paper torn-top torn-bottom p-2 bg-white w-40">
+                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20250502-WA0070.jpg" 
+                                 class="w-full h-auto filter sepia-[0.3] contrast-110" 
+                                 alt="Featured Memory">
+                            <div class="mt-2 text-center">
+                                <span class="scrap-text">Fig 2.1: Target Acquired</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Decorative Stickers/Stamps -->
+                    <div class="absolute top-0 right-4 w-12 h-12 border-2 border-red-800 rounded-full flex items-center justify-center transform rotate-12 opacity-70 z-20">
+                        <span class="text-[6px] font-bold text-red-800 text-center leading-tight">MARCH<br>30<br>2026</span>
+                    </div>
+                </div>
+
+                <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-[11px] text-center p-4 bg-white/50 border border-black/10 relative z-10 shadow-sm">
                     <!-- Calendar injected by JS -->
                 </div>
-                <div class="radar-box">
+                
+                <div class="radar-box relative z-10 bg-[#f2ecd9]/80 backdrop-blur-sm p-2 mt-4 border border-black/5">
                     <div class="monitor-line">
                         <div class="wave-pulse"></div>
                     </div>
-                    <div class="data-readout uppercase">
+                    <div class="data-readout uppercase mt-2">
                         <div>Target: Aristia F.</div>
                         <div>Coord: 30.0326.N</div>
                         <div>Status: Critical Path</div>
                         <div>Signal: Strong 100%</div>
                     </div>
-                    <p class="text-[7px] opacity-40 mt-2 text-justify">Pemantauan transmisi otomatis diaktifkan untuk periode peralihan umur. Seluruh sistem sinkron dengan detak waktu target.</p>
+                    <p class="text-[7px] opacity-60 mt-2 text-justify font-serif italic">
+                        "Pemantauan transmisi otomatis diaktifkan. Seluruh sistem sinkron dengan detak waktu target."
+                    </p>
                 </div>
-                <div class="mt-auto pt-6 text-red-900 text-center text-xl italic" style="font-family: 'Special Elite';">Momen krusial di tanggal 30.</div>
             </section>
 
-            <!-- Halaman 3: Surprise -->
-            <section class="page-module" id="mod-3">
+            <!-- Halaman 4: Surprise (Shifted) -->
+            <section class="page-module" id="mod-4">
                 <div id="candle-stage">
                     <div class="candle">
                         <div class="candle-glow"></div>
@@ -624,44 +823,77 @@
                     </div>
                     <p class="candle-hint">Tap flame to initiate</p>
                 </div>
-                <div class="flex justify-between items-end mb-8 opacity-40">
-                    <h2 class="text-[9px] font-bold uppercase tracking-widest">Internal Memo: Confidential</h2>
-                    <span class="text-[8px]">LOG-ID: 300326</span>
-                </div>
-                <div id="typewriter-output"></div>
-                <div id="wax-seal-area" class="wax-seal-decoration">
-                    <div class="red-ribbon"></div>
-                    <div class="wax-seal"></div>
-                    <div class="verification-grid">
-                        <div class="bio-info">
-                            <div class="bio-row">AUTH: <span class="bio-val">OPR_N</span></div>
-                            <div class="bio-row">SESS: <span class="bio-val">AF-17</span></div>
-                            <div class="bio-row">SIG: <span class="bio-val">ENCR</span></div>
-                        </div>
-                        <div class="retro-qr-graphic"></div>
+                
+                <div class="torn-paper p-6 bg-[#fdfbf7] shadow-lg h-full relative">
+                    <div class="tape-strip" style="top: -15px; left: 50%; transform: translateX(-50%) rotate(2deg);"></div>
+                    <div class="tape-strip" style="bottom: -15px; right: 20px; transform: rotate(-5deg);"></div>
+                    
+                    <div class="flex justify-between items-end mb-8 opacity-60 border-b border-black/10 pb-2">
+                        <h2 class="text-[9px] font-bold uppercase tracking-widest font-serif text-red-900">Internal Memo: Confidential</h2>
+                        <span class="text-[8px] font-mono bg-black/5 px-1">LOG-ID: 300326</span>
                     </div>
-                    <div class="footer-shred"></div>
-                    <p class="text-[7px] opacity-30 uppercase tracking-[0.4em] -mt-2">Official Archive Termination</p>
+                    
+                    <div id="typewriter-output" class="relative z-10"></div>
+                    
+                    <div id="wax-seal-area" class="wax-seal-decoration mt-auto">
+                        <div class="newspaper-fragment" style="bottom: 10px; left: -10px; transform: rotate(5deg); width: 80px; z-index: 0;">
+                            <h4>VERIFIED</h4>
+                            <p>Otentikasi biometrik selesai.</p>
+                        </div>
+                        
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="red-ribbon shadow-sm"></div>
+                            <div class="wax-seal shadow-md"></div>
+                            <div class="verification-grid mt-4 bg-white/50 p-2 border border-black/5">
+                                <div class="bio-info">
+                                    <div class="bio-row">AUTH: <span class="bio-val">OPR_N</span></div>
+                                    <div class="bio-row">SESS: <span class="bio-val">AF-17</span></div>
+                                    <div class="bio-row">SIG: <span class="bio-val">ENCR</span></div>
+                                </div>
+                                <div class="retro-qr-graphic opacity-60"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="footer-shred mt-4"></div>
+                        <p class="text-[7px] opacity-30 uppercase tracking-[0.4em] -mt-2 text-center">Official Archive Termination</p>
+                    </div>
                 </div>
             </section>
 
-            <!-- Halaman 4: Chat Terminal -->
-            <section class="page-module" id="mod-4">
-                <div class="flex justify-between items-center mb-4 border-b pb-2 border-black/10 relative z-50">
-                    <h2 class="text-[10px] font-bold uppercase opacity-40 tracking-widest">Terminal Comms</h2>
-                    <button onclick="DossierSystem.openModal()" class="text-[9px] text-red-700 font-bold uppercase underline">Purge</button>
-                </div>
-                
-                <div id="msg-display" class="relative z-50"></div>
-                
-                <div class="mt-4 pt-4 border-t border-black/10 relative z-50">
-                    <div class="identity-toggle">
-                        <div id="btn-n" onclick="DossierSystem.setSender('N')" class="toggle-btn active">Operator N</div>
-                        <div id="btn-aristia" onclick="DossierSystem.setSender('Aristia')" class="toggle-btn">Aristia</div>
+            <!-- Halaman 5: Chat Terminal (Shifted) -->
+            <section class="page-module" id="mod-5">
+                <div class="torn-paper p-1 bg-[#f0f0f0] shadow-2xl h-full flex flex-col rotate-[0.5deg]">
+                    <div class="tape-strip" style="top: -10px; left: 10px; transform: rotate(-10deg);"></div>
+                    <div class="tape-strip" style="top: -10px; right: 10px; transform: rotate(10deg);"></div>
+                    
+                    <div class="bg-[#1a1a1a] text-green-500 p-4 flex-1 flex flex-col font-mono text-[10px] relative overflow-hidden border-4 border-gray-300 shadow-inner">
+                        <!-- CRT Scanline Overlay -->
+                        <div class="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] z-20"></div>
+                        
+                        <div class="flex justify-between items-center mb-4 border-b border-green-900/50 pb-2 relative z-30">
+                            <h2 class="font-bold uppercase tracking-widest animate-pulse">Terminal Comms</h2>
+                            <button onclick="DossierSystem.openModal()" class="text-red-500 hover:text-red-400 font-bold uppercase underline decoration-dotted">Purge Logs</button>
+                        </div>
+                        
+                        <div id="msg-display" class="relative z-30 flex-1 overflow-y-auto space-y-2 pr-2 scrollbar-thin scrollbar-thumb-green-900 scrollbar-track-transparent"></div>
+                        
+                        <div class="mt-4 pt-4 border-t border-green-900/50 relative z-30">
+                            <div class="identity-toggle mb-2 border border-green-900/30 inline-flex">
+                                <div id="btn-n" onclick="DossierSystem.setSender('N')" class="toggle-btn text-green-500 hover:bg-green-900/20 active">OPR_N</div>
+                                <div id="btn-aristia" onclick="DossierSystem.setSender('Aristia')" class="toggle-btn text-green-500 hover:bg-green-900/20">SUB_A</div>
+                            </div>
+                            <div class="flex gap-2">
+                                <input type="text" id="msg-field" placeholder="Input transmission..." class="flex-1 bg-black border-b border-green-700 text-green-400 outline-none py-2 px-1 placeholder-green-900" autocomplete="off">
+                                <button onclick="DossierSystem.send()" class="bg-green-900/30 text-green-400 border border-green-700 px-4 py-2 uppercase font-bold hover:bg-green-900/50 transition-colors">Send</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex gap-2">
-                        <input type="text" id="msg-field" placeholder="Input transmission..." class="flex-1 bg-transparent border-b border-black/20 outline-none text-[12px] py-2" autocomplete="off">
-                        <button onclick="DossierSystem.send()" class="bg-black text-white text-[9px] px-5 py-2 uppercase font-bold">Send</button>
+                    
+                    <div class="absolute -bottom-8 left-0 w-full flex justify-center">
+                        <div class="newspaper-fragment transform rotate-[-2deg] shadow-lg">
+                            <h4>SYSTEM STATUS</h4>
+                            <p>Koneksi aman. Enkripsi end-to-end aktif.</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -746,12 +978,12 @@
 
             render() {
                 document.querySelectorAll('.page-module').forEach((m, i) => m.classList.toggle('active', i === this.index));
-                document.getElementById('page-num').innerText = `${this.index + 1} / 5`;
+                document.getElementById('page-num').innerText = `${this.index + 1} / 6`;
                 
                 const backBtn = document.getElementById('back-nav-btn');
                 const centerStamp = document.getElementById('center-stamp');
 
-                if (this.index === 4) {
+                if (this.index === 5) {
                     backBtn.style.display = 'inline-block';
                     centerStamp.style.display = 'none';
                     this.loadMsgs();
@@ -760,7 +992,7 @@
                     centerStamp.style.display = 'inline-block';
                 }
 
-                if(this.index === 3 && !this.candleBlown) {
+                if(this.index === 4 && !this.candleBlown) {
                     document.getElementById('candle-stage').style.display = 'flex';
                     document.getElementById('candle-stage').style.opacity = '1';
                 }
@@ -781,7 +1013,7 @@
                 }, 400); 
             },
 
-            next() { if(this.index < 4) { this.index++; this.render(); } },
+            next() { if(this.index < 5) { this.index++; this.render(); } },
             prev() { if(this.index > 0) { this.index--; this.render(); } },
 
             type() {
@@ -789,7 +1021,7 @@
                 this.isTyping = true;
                 const out = document.getElementById('typewriter-output');
                 const seal = document.getElementById('wax-seal-area');
-                const page3 = document.getElementById('mod-3');
+                const page3 = document.getElementById('mod-4');
                 const txt = "Di hari yang luar biasa spesial ini, aku ingin kamu tahu betapa berartinya setiap detik kehadiranmu bagi duniaku. Selamat ulang tahun yang ke-17, sayangku.\n\nTujuh belas adalah awal dari petualangan yang lebih dewasa, lebih menantang. Aku akan tetap di sini, di sisimu, memastikan setiap memori kita tersimpan dengan aman dalam arsip rahasia ini.\n\nStay wonderful, sayangku. Happy 17th!";
                 out.innerText = ""; 
                 let i = 0;
