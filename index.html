@@ -457,17 +457,33 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/supabase.js"></script>
-    <script type="module">
-        console.log("DossierSystem module loading...");
-        import { GoogleGenAI } from "@google/genai";
-        const DossierSystem = {
+    <script>
+        // Inline Supabase Config for portability
+        const SUPABASE_URL = 'https://urcxbufxcebfgrsfvmsj.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyY3hidWZ4Y2ViZmdyc2Z2bXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NzExMTYsImV4cCI6MjA4NzI0NzExNn0.CoWpvdB4v27SAWEni48Wu0JQcSMebRoZCPppnJNlLmQ';
+        const TABLE_NAME = 'messages';
+        
+        let supabaseClient = null;
+        try {
+            if (typeof supabase !== 'undefined') {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                console.log("Supabase initialized");
+            } else {
+                console.warn("Supabase library not loaded (offline mode)");
+            }
+        } catch (e) {
+            console.error("Supabase init failed:", e);
+        }
+
+        console.log("DossierSystem script loading...");
+        
+        // Define DossierSystem in global scope
+        window.DossierSystem = {
             index: 0,
             currentSender: 'N',
             isTyping: false,
             candleBlown: false,
             lyricsInterval: null,
-            ai: null,
 
             fadeIn(audioId, duration = 2000) {
                 const audio = document.getElementById(audioId);
@@ -553,56 +569,19 @@
             },
 
             async generateTarotCards() {
-                try {
-                    if (!this.ai) {
-                        const apiKey = process.env.GEMINI_API_KEY;
-                        if (!apiKey) {
-                            console.warn("GEMINI_API_KEY missing, skipping tarot generation");
-                            return;
-                        }
-                        this.ai = new GoogleGenAI({ apiKey: apiKey });
+                // Using static tarot images for reliability and pure HTML/JS experience
+                const cards = [
+                    { id: 'tarot-lovers', seed: 'lovers' },
+                    { id: 'tarot-star', seed: 'star' },
+                    { id: 'tarot-moon', seed: 'moon' }
+                ];
+
+                for (const card of cards) {
+                    const el = document.getElementById(card.id);
+                    if (el) {
+                        // Using Picsum with specific seeds to simulate tarot card imagery
+                        el.src = `https://picsum.photos/seed/${card.seed}/300/400`;
                     }
-
-                    const cards = [
-                        { id: 'tarot-lovers', prompt: 'The Lovers tarot card, vintage aesthetic, mystical, gold accents, high detail, esoteric symbols' },
-                        { id: 'tarot-star', prompt: 'The Star tarot card, vintage aesthetic, mystical, gold accents, high detail, esoteric symbols' },
-                        { id: 'tarot-moon', prompt: 'The Moon tarot card, vintage aesthetic, mystical, gold accents, high detail, esoteric symbols' }
-                    ];
-
-                    for (const card of cards) {
-                        try {
-                            // Add a small delay between requests to be safe
-                            await new Promise(resolve => setTimeout(resolve, 500));
-
-                            const response = await this.ai.models.generateContent({
-                                model: 'gemini-2.5-flash-image',
-                                contents: { parts: [{ text: card.prompt }] },
-                                config: { imageConfig: { aspectRatio: "3:4" } }
-                            });
-
-                            if (response.candidates && response.candidates[0].content.parts) {
-                                for (const part of response.candidates[0].content.parts) {
-                                    if (part.inlineData) {
-                                        const imageUrl = `data:image/png;base64,${part.inlineData.data}`;
-                                        const el = document.getElementById(card.id);
-                                        if (el) el.src = imageUrl;
-                                    }
-                                }
-                            }
-                        } catch (err) {
-                            console.warn(`Failed to generate ${card.id}, using fallback:`, err);
-                            // Fallback to picsum if generation fails
-                            const fallbackSeeds = {
-                                'tarot-lovers': 'lovers',
-                                'tarot-star': 'star',
-                                'tarot-moon': 'moon'
-                            };
-                            const el = document.getElementById(card.id);
-                            if (el) el.src = `https://picsum.photos/seed/${fallbackSeeds[card.id] || 'tarot'}/60/100`;
-                        }
-                    }
-                } catch (err) {
-                    console.error("Tarot generation failed:", err);
                 }
             },
 
@@ -640,13 +619,16 @@
                     cal.appendChild(div);
                 }
 
-                document.getElementById('pin-field').oninput = (e) => {
-                    if(e.target.value === "300326") this.runConstellationTransition();
-                };
+                // PIN listener moved to DOMContentLoaded for robustness
+                // document.getElementById('pin-field').oninput = ...
                 
-                supabaseClient.channel('messages_channel')
-                    .on('postgres_changes', { event: '*', schema: 'public', table: TABLE_NAME }, () => this.loadMsgs())
-                    .subscribe();
+                if (supabaseClient) {
+                    supabaseClient.channel('messages_channel')
+                        .on('postgres_changes', { event: '*', schema: 'public', table: TABLE_NAME }, () => this.loadMsgs())
+                        .subscribe();
+                } else {
+                    console.warn("Supabase client not available, skipping real-time subscription");
+                }
                 
                 this.render();
                 document.getElementById('msg-field').addEventListener('keypress', (e) => { if(e.key==='Enter') this.send(); });
@@ -784,6 +766,7 @@
             },
 
             async loadMsgs() {
+                if (!supabaseClient) return;
                 try {
                     const { data, error } = await supabaseClient.from(TABLE_NAME).select('*').order('created_at', { ascending: true });
                     if (error) throw error;
@@ -810,6 +793,12 @@
                 if(!f || !f.value.trim()) return;
                 const content = f.value.trim();
                 f.value = '';
+                
+                if (!supabaseClient) {
+                    alert("Offline mode: Cannot send messages.");
+                    return;
+                }
+
                 try {
                     await supabaseClient.from(TABLE_NAME).insert([{ content: content, sender: this.currentSender }]);
                     this.loadMsgs();
@@ -823,6 +812,7 @@
 
             async confirmPurge() {
                 if (confirm("WARNING: Permanent deletion of all transmission logs. Proceed?")) {
+                    if (!supabaseClient) return;
                     try {
                         await supabaseClient.from(TABLE_NAME).delete().neq('id', -1);
                         this.loadMsgs(); 
@@ -834,8 +824,24 @@
             }
         };
 
-        window.DossierSystem = DossierSystem;
-        DossierSystem.init();
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM ready, initializing DossierSystem...");
+            
+            // Setup PIN listener immediately
+            const pinField = document.getElementById('pin-field');
+            if (pinField) {
+                pinField.oninput = (e) => {
+                    if(e.target.value === "300326") window.DossierSystem.runConstellationTransition();
+                };
+                console.log("PIN listener attached");
+            } else {
+                console.error("PIN field not found!");
+            }
+
+            // Initialize system
+            window.DossierSystem.init();
+        });
     </script>
   </body>
 </html>
