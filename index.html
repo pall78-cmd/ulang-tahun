@@ -218,7 +218,7 @@
 
             <!-- Halaman 3: Calendar (Shifted) -->
             <section class="page-module victorian-bg" id="mod-3">
-                <audio id="applause-sfx" src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/Applause%20Sound%20Effect(MP3_320K).mp3" preload="auto"></audio>
+                <audio id="applause-sfx" src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/Applause%20Sound%20Effect%28MP3_320K%29.mp3" preload="auto"></audio>
                 <h2 class="text-center font-bold text-[10px] uppercase mb-4 border-b pb-2 tracking-[0.2em] relative z-10">Logbook Operasional: Maret 2026</h2>
                 
                 <!-- Scrapbook Collage Area -->
@@ -303,6 +303,20 @@
                     </div>
                     
                     <div id="typewriter-output" class="relative z-10"></div>
+
+                    <!-- Tarot Card Decorations -->
+                    <div class="tarot-card" style="top: 20px; left: -40px; transform: rotate(-15deg);">
+                        <img id="tarot-lovers" src="https://picsum.photos/seed/lovers/60/100" alt="The Lovers">
+                        <div class="tarot-label">The Lovers</div>
+                    </div>
+                    <div class="tarot-card" style="top: 140px; left: -35px; transform: rotate(-5deg);">
+                        <img id="tarot-star" src="https://picsum.photos/seed/star/60/100" alt="The Star">
+                        <div class="tarot-label">The Star</div>
+                    </div>
+                    <div class="tarot-card" style="top: 80px; right: -40px; transform: rotate(12deg);">
+                        <img id="tarot-moon" src="https://picsum.photos/seed/moon/60/100" alt="The Moon">
+                        <div class="tarot-label">The Moon</div>
+                    </div>
                     
                     <div id="wax-seal-area" class="wax-seal-decoration mt-auto">
                         <div class="newspaper-fragment" style="bottom: 10px; left: -10px; transform: rotate(5deg); width: 80px; z-index: 0;">
@@ -333,7 +347,8 @@
 
             <!-- Halaman 7: Postcard Scrapbook (New) -->
             <section class="page-module victorian-bg" id="mod-7">
-                <audio id="hidden-greeting" src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/Suara%20004.m4a" preload="auto"></audio>
+                <div id="lyrics-overlay" class="lyrics-overlay"></div>
+                <video id="hidden-greeting" src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/Hindia%20-%20everything%20u%20are%20edit(720P_HD).mp4" class="hidden absolute inset-0 w-full h-full object-cover z-[100]" preload="auto" onclick="this.pause(); this.classList.add('hidden'); DossierSystem.stopSparkles();"></video>
                 <div class="relative h-full w-full">
                     
                     <!-- Postcard Background -->
@@ -347,21 +362,26 @@
                         <!-- Postcard Content Area -->
                         <div class="flex gap-2">
                             <!-- Left: Photo -->
-                            <div class="w-1/2 relative">
+                            <div class="w-1/2 relative cursor-pointer group z-[50]" onclick="event.stopPropagation(); DossierSystem.playPostcardExperience()" title="Tap to play memory">
                                 <div class="tape-strip" style="top: -5px; left: -5px; transform: rotate(-15deg); width: 30px;"></div>
                                 <div class="tape-strip" style="bottom: -5px; right: -5px; transform: rotate(15deg); width: 30px;"></div>
-                                <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20250504-WA0073.jpg" class="w-full h-auto border-4 border-white shadow-sm filter sepia-[0.1]" alt="Sweet Memory">
+                                <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20250504-WA0073.jpg" class="w-full h-auto border-4 border-white shadow-sm filter sepia-[0.1] group-hover:sepia-0 transition-all duration-500" alt="Sweet Memory">
+                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <div class="bg-white/80 rounded-full p-2 shadow-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-800" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </div>
+                                </div>
                             </div>
                             
                             <!-- Right: Message & Audio -->
                             <div class="w-1/2 flex flex-col justify-between">
-                                <div class="space-y-3 mt-2">
-                                    <div class="border-b border-[#d3c5a3]"></div>
-                                    <div class="border-b border-[#d3c5a3]"></div>
-                                    <div class="border-b border-[#d3c5a3]"></div>
-                                    <div class="border-b border-[#d3c5a3]"></div>
+                                <div class="space-y-2 mt-2">
+                                    <div class="border-b border-[#d3c5a3] text-[6px] font-serif italic text-[#8b0000] pt-1">Dearest,</div>
+                                    <div class="border-b border-[#d3c5a3] text-[6px] font-serif italic text-[#5a4a42] pt-1">Selamat ulang tahun yang ke-17.</div>
+                                    <div class="border-b border-[#d3c5a3] text-[6px] font-serif italic text-[#5a4a42] pt-1">Semoga harimu seindah</div>
+                                    <div class="border-b border-[#d3c5a3] text-[6px] font-serif italic text-[#5a4a42] pt-1">senyumanmu.</div>
+                                    <div class="border-b border-[#d3c5a3] text-[6px] font-serif italic text-[#8b0000] text-right pt-1">Love, N</div>
                                 </div>
-                                
                             </div>
                         </div>
                     </div>
@@ -372,8 +392,8 @@
                         <p>Tersimpan rapi dalam arsip waktu.</p>
                     </div>
                     
-                    <div onclick="document.getElementById('hidden-greeting').play()" class="absolute bottom-5 right-5 transform rotate-12 z-10 cursor-pointer group" title="Play a secret message">
-                        <div class="w-10 h-10 rounded-full border-2 border-red-800 flex items-center justify-center bg-transparent group-hover:bg-red-800/10 transition-colors">
+                    <div class="absolute bottom-5 right-5 transform rotate-12 z-10">
+                        <div class="w-10 h-10 rounded-full border-2 border-red-800 flex items-center justify-center bg-transparent">
                             <span class="text-[8px] font-bold text-red-800 uppercase transform -rotate-12">Love</span>
                         </div>
                     </div>
@@ -441,14 +461,126 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/supabase.js"></script>
-    <script>
+    <script type="module">
+        import { GoogleGenAI } from "@google/genai";
         const DossierSystem = {
             index: 0,
             currentSender: 'N',
             isTyping: false,
             candleBlown: false,
+            lyricsInterval: null,
+            ai: null,
+
+            fadeIn(audioId, duration = 2000) {
+                const audio = document.getElementById(audioId);
+                if (!audio) return;
+                if (audio.fadeInterval) clearInterval(audio.fadeInterval);
+                
+                audio.volume = 0;
+                audio.play().catch(e => console.warn("Playback blocked or failed:", e));
+                
+                const step = 0.05;
+                const interval = duration * step;
+                
+                audio.fadeInterval = setInterval(() => {
+                    if (audio.volume < 1 - step) {
+                        audio.volume += step;
+                    } else {
+                        audio.volume = 1;
+                        clearInterval(audio.fadeInterval);
+                        audio.fadeInterval = null;
+                    }
+                }, interval);
+            },
+
+            fadeOut(audioId, duration = 2000) {
+                const audio = document.getElementById(audioId);
+                if (!audio || audio.paused) return;
+                if (audio.fadeInterval) clearInterval(audio.fadeInterval);
+                
+                const step = 0.05;
+                const interval = duration * step;
+                
+                audio.fadeInterval = setInterval(() => {
+                    if (audio.volume > step) {
+                        audio.volume -= step;
+                    } else {
+                        audio.volume = 0;
+                        audio.pause();
+                        audio.currentTime = 0;
+                        clearInterval(audio.fadeInterval);
+                        audio.fadeInterval = null;
+                    }
+                }, interval);
+            },
+
+            playPostcardExperience() {
+                const video = document.getElementById('hidden-greeting');
+                const overlay = document.getElementById('lyrics-overlay');
+                if (!video) {
+                    console.error("Video element 'hidden-greeting' not found!");
+                    return;
+                }
+                if (overlay) overlay.classList.add('active');
+                video.classList.remove('hidden');
+                video.play().catch(e => console.warn("Playback blocked or failed:", e));
+                this.startSparkles();
+            },
+
+            stopSparkles() {
+                const existing = document.querySelectorAll('.sparkle');
+                existing.forEach(s => s.remove());
+                const overlay = document.getElementById('lyrics-overlay');
+                if (overlay) overlay.classList.remove('active');
+            },
+
+            startSparkles() {
+                this.stopSparkles(); // Clear any existing ones
+                const container = document.getElementById('lyrics-overlay');
+                for (let i = 0; i < 15; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    sparkle.style.left = `${Math.random() * 100}%`;
+                    sparkle.style.top = `${Math.random() * 80 + 20}%`; // Start lower down
+                    sparkle.style.animationDelay = `${Math.random() * 3}s`;
+                    sparkle.style.animationDuration = `${Math.random() * 2 + 3}s`; // Vary duration
+                    container.appendChild(sparkle);
+                }
+            },
+
+            async generateTarotCards() {
+                if (!this.ai) {
+                    this.ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+                }
+
+                const cards = [
+                    { id: 'tarot-lovers', prompt: 'The Lovers tarot card, vintage aesthetic, mystical, gold accents, high detail, esoteric symbols' },
+                    { id: 'tarot-star', prompt: 'The Star tarot card, vintage aesthetic, mystical, gold accents, high detail, esoteric symbols' },
+                    { id: 'tarot-moon', prompt: 'The Moon tarot card, vintage aesthetic, mystical, gold accents, high detail, esoteric symbols' }
+                ];
+
+                for (const card of cards) {
+                    try {
+                        const response = await this.ai.models.generateContent({
+                            model: 'gemini-2.5-flash-image',
+                            contents: { parts: [{ text: card.prompt }] },
+                            config: { imageConfig: { aspectRatio: "3:4" } }
+                        });
+
+                        for (const part of response.candidates[0].content.parts) {
+                            if (part.inlineData) {
+                                const imageUrl = `data:image/png;base64,${part.inlineData.data}`;
+                                document.getElementById(card.id).src = imageUrl;
+                            }
+                        }
+                    } catch (err) {
+                        console.error(`Failed to generate ${card.id}:`, err);
+                    }
+                }
+            },
 
             init() {
+                this.generateTarotCards();
                 // Calendar Injection
                 const cal = document.getElementById('calendar-grid');
                 const days = ['S','S','R','K','J','S','M'];
@@ -472,7 +604,7 @@
                             <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 text-[6px] text-red-800 font-bold animate-bounce whitespace-nowrap">TAP ME</div>
                         `;
                         div.onclick = () => {
-                            document.getElementById('applause-sfx').play();
+                            DossierSystem.fadeIn('applause-sfx', 500);
                             alert("Sistem mendeteksi anomali kebahagiaan yang ekstrim pada tanggal ini. Selamat ulang tahun sayangku! 🎉");
                         };
                     } else {
@@ -541,8 +673,18 @@
             },
 
             render() {
-                const song = document.getElementById('birthday-song');
-                if (this.index !== 4 && song) { song.pause(); song.currentTime = 0; }
+                // Audio Fade Out Logic
+                if (this.index !== 4) this.fadeOut('birthday-song', 1500);
+                if (this.index !== 5) {
+                    const video = document.getElementById('hidden-greeting');
+                    if (video) {
+                        video.pause();
+                        video.currentTime = 0;
+                        video.classList.add('hidden');
+                    }
+                    this.stopSparkles();
+                }
+                if (this.index !== 3) this.fadeOut('applause-sfx', 500);
 
                 document.querySelectorAll('.page-module').forEach((m, i) => m.classList.toggle('active', i === this.index));
                 document.getElementById('page-num').innerText = `${this.index + 1} / 7`;
@@ -571,7 +713,7 @@
             extinguish() {
                 const flash = document.getElementById('flash-overlay');
                 flash.classList.add('flash-active');
-                document.getElementById('birthday-song').play();
+                this.fadeIn('birthday-song');
                 
                 setTimeout(() => {
                     document.getElementById('candle-stage').style.opacity = '0';
@@ -593,10 +735,10 @@
                 const out = document.getElementById('typewriter-output');
                 const seal = document.getElementById('wax-seal-area');
                 const page3 = document.getElementById('mod-4');
-                const txt = "Di hari yang luar biasa spesial ini, aku ingin kamu tahu betapa berartinya setiap detik kehadiranmu bagi duniaku. Selamat ulang tahun yang ke-17, sayangku.\n\nTujuh belas adalah awal dari petualangan yang lebih dewasa, lebih menantang. Aku akan tetap di sini, di sisimu, memastikan setiap memori kita tersimpan dengan aman dalam arsip rahasia ini.\n\nStay wonderful, sayangku. Happy 17th!";
+                const txt = "Kepada Aset Berharga,\n\nDi hari yang luar biasa spesial ini, aku ingin kamu tahu betapa berartinya setiap detik kehadiranmu bagi duniaku. Selamat ulang tahun yang ke-17, sayangku.\n\nTujuh belas adalah awal dari petualangan yang lebih dewasa, lebih menantang. Aku akan tetap di sini, di sisimu, memastikan setiap memori kita tersimpan dengan aman dalam arsip rahasia ini.\n\nTetaplah bersinar, tetaplah menjadi dirimu yang luar biasa. Happy 17th Birthday, Aristia Firlin.\n\nSelamanya milikmu,\nN.";
                 out.innerText = ""; 
                 let i = 0;
-                seal.style.opacity = "0";
+                seal.classList.remove('seal-active');
 
                 const intrvl = setInterval(() => {
                     out.innerText += txt[i]; 
@@ -606,10 +748,10 @@
                         this.isTyping = false;
                         setTimeout(() => { 
                             page3.classList.add('victorian-bg'); 
-                            seal.style.opacity = "1"; 
+                            seal.classList.add('seal-active'); 
                         }, 500);
                     }
-                }, 45); 
+                }, 50); 
             },
 
             async loadMsgs() {
