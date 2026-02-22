@@ -27,6 +27,7 @@ body {
     color: #fff;
     opacity: 0;
     transition: opacity 0.5s ease;
+    pointer-events: none;
 }
 
 .star { fill: #fff; filter: drop-shadow(0 0 3px #fff); }
@@ -70,9 +71,18 @@ body {
     transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.terminal-container { width: 90%; max-width: 400px; text-align: center; }
+.terminal-container { 
+    position: relative;
+    z-index: 200;
+    width: 90%; 
+    max-width: 400px; 
+    text-align: center; 
+}
 
 .init-btn {
+    position: relative;
+    z-index: 300;
+    pointer-events: auto;
     border: 1px solid #444; color: #888; padding: 15px 30px;
     text-transform: uppercase; letter-spacing: 5px; font-size: 10px;
     cursor: pointer; transition: all 0.5s; background: transparent;

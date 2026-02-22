@@ -459,6 +459,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/supabase.js"></script>
     <script type="module">
+        console.log("DossierSystem module loading...");
         import { GoogleGenAI } from "@google/genai";
         const DossierSystem = {
             index: 0,
@@ -552,45 +553,56 @@
             },
 
             async generateTarotCards() {
-                if (!this.ai) {
-                    this.ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-                }
+                try {
+                    if (!this.ai) {
+                        const apiKey = process.env.GEMINI_API_KEY;
+                        if (!apiKey) {
+                            console.warn("GEMINI_API_KEY missing, skipping tarot generation");
+                            return;
+                        }
+                        this.ai = new GoogleGenAI({ apiKey: apiKey });
+                    }
 
-                const cards = [
-                    { id: 'tarot-lovers', prompt: 'The Lovers tarot card, vintage aesthetic, mystical, gold accents, high detail, esoteric symbols' },
-                    { id: 'tarot-star', prompt: 'The Star tarot card, vintage aesthetic, mystical, gold accents, high detail, esoteric symbols' },
-                    { id: 'tarot-moon', prompt: 'The Moon tarot card, vintage aesthetic, mystical, gold accents, high detail, esoteric symbols' }
-                ];
+                    const cards = [
+                        { id: 'tarot-lovers', prompt: 'The Lovers tarot card, vintage aesthetic, mystical, gold accents, high detail, esoteric symbols' },
+                        { id: 'tarot-star', prompt: 'The Star tarot card, vintage aesthetic, mystical, gold accents, high detail, esoteric symbols' },
+                        { id: 'tarot-moon', prompt: 'The Moon tarot card, vintage aesthetic, mystical, gold accents, high detail, esoteric symbols' }
+                    ];
 
-                for (const card of cards) {
-                    try {
-                        // Add a small delay between requests to be safe
-                        await new Promise(resolve => setTimeout(resolve, 500));
+                    for (const card of cards) {
+                        try {
+                            // Add a small delay between requests to be safe
+                            await new Promise(resolve => setTimeout(resolve, 500));
 
-                        const response = await this.ai.models.generateContent({
-                            model: 'gemini-2.5-flash-image',
-                            contents: { parts: [{ text: card.prompt }] },
-                            config: { imageConfig: { aspectRatio: "3:4" } }
-                        });
+                            const response = await this.ai.models.generateContent({
+                                model: 'gemini-2.5-flash-image',
+                                contents: { parts: [{ text: card.prompt }] },
+                                config: { imageConfig: { aspectRatio: "3:4" } }
+                            });
 
-                        if (response.candidates && response.candidates[0].content.parts) {
-                            for (const part of response.candidates[0].content.parts) {
-                                if (part.inlineData) {
-                                    const imageUrl = `data:image/png;base64,${part.inlineData.data}`;
-                                    document.getElementById(card.id).src = imageUrl;
+                            if (response.candidates && response.candidates[0].content.parts) {
+                                for (const part of response.candidates[0].content.parts) {
+                                    if (part.inlineData) {
+                                        const imageUrl = `data:image/png;base64,${part.inlineData.data}`;
+                                        const el = document.getElementById(card.id);
+                                        if (el) el.src = imageUrl;
+                                    }
                                 }
                             }
+                        } catch (err) {
+                            console.warn(`Failed to generate ${card.id}, using fallback:`, err);
+                            // Fallback to picsum if generation fails
+                            const fallbackSeeds = {
+                                'tarot-lovers': 'lovers',
+                                'tarot-star': 'star',
+                                'tarot-moon': 'moon'
+                            };
+                            const el = document.getElementById(card.id);
+                            if (el) el.src = `https://picsum.photos/seed/${fallbackSeeds[card.id] || 'tarot'}/60/100`;
                         }
-                    } catch (err) {
-                        console.warn(`Failed to generate ${card.id}, using fallback:`, err);
-                        // Fallback to picsum if generation fails
-                        const fallbackSeeds = {
-                            'tarot-lovers': 'lovers',
-                            'tarot-star': 'star',
-                            'tarot-moon': 'moon'
-                        };
-                        document.getElementById(card.id).src = `https://picsum.photos/seed/${fallbackSeeds[card.id] || 'tarot'}/60/100`;
                     }
+                } catch (err) {
+                    console.error("Tarot generation failed:", err);
                 }
             },
 
@@ -656,9 +668,11 @@
                         setTimeout(() => note.remove(), 2000);
                     });
                 });
+                console.log("DossierSystem initialized");
             },
 
             showPin() {
+                console.log("Access Archive button clicked");
                 document.getElementById('init-screen').style.display = 'none';
                 document.getElementById('pin-screen').style.display = 'block';
                 document.getElementById('pin-field').focus();
