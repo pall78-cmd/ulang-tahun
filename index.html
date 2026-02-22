@@ -347,7 +347,7 @@
 
             <!-- Halaman 7: Postcard Scrapbook (New) -->
             <section class="page-module victorian-bg" id="mod-7">
-                <div id="lyrics-overlay" class="lyrics-overlay"></div>
+                <div id="lyrics-overlay" class="lyrics-overlay hidden"></div>
                 <video id="hidden-greeting" src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/Hindia%20-%20everything%20u%20are%20edit(720P_HD).mp4" class="hidden absolute inset-0 w-full h-full object-cover z-[100]" preload="auto" onclick="this.pause(); this.classList.add('hidden'); DossierSystem.stopSparkles();"></video>
                 <div class="relative h-full w-full">
                     
@@ -443,9 +443,6 @@
                 </div>
             </section>
 
-
-
-
         </div>
 
 
@@ -521,7 +518,10 @@
                     console.error("Video element 'hidden-greeting' not found!");
                     return;
                 }
-                if (overlay) overlay.classList.add('active');
+                if (overlay) {
+                    overlay.classList.remove('hidden');
+                    overlay.classList.add('active');
+                }
                 video.classList.remove('hidden');
                 video.play().catch(e => console.warn("Playback blocked or failed:", e));
                 this.startSparkles();
@@ -531,7 +531,10 @@
                 const existing = document.querySelectorAll('.sparkle');
                 existing.forEach(s => s.remove());
                 const overlay = document.getElementById('lyrics-overlay');
-                if (overlay) overlay.classList.remove('active');
+                if (overlay) {
+                    overlay.classList.remove('active');
+                    overlay.classList.add('hidden');
+                }
             },
 
             startSparkles() {
@@ -561,20 +564,32 @@
 
                 for (const card of cards) {
                     try {
+                        // Add a small delay between requests to be safe
+                        await new Promise(resolve => setTimeout(resolve, 500));
+
                         const response = await this.ai.models.generateContent({
                             model: 'gemini-2.5-flash-image',
                             contents: { parts: [{ text: card.prompt }] },
                             config: { imageConfig: { aspectRatio: "3:4" } }
                         });
 
-                        for (const part of response.candidates[0].content.parts) {
-                            if (part.inlineData) {
-                                const imageUrl = `data:image/png;base64,${part.inlineData.data}`;
-                                document.getElementById(card.id).src = imageUrl;
+                        if (response.candidates && response.candidates[0].content.parts) {
+                            for (const part of response.candidates[0].content.parts) {
+                                if (part.inlineData) {
+                                    const imageUrl = `data:image/png;base64,${part.inlineData.data}`;
+                                    document.getElementById(card.id).src = imageUrl;
+                                }
                             }
                         }
                     } catch (err) {
-                        console.error(`Failed to generate ${card.id}:`, err);
+                        console.warn(`Failed to generate ${card.id}, using fallback:`, err);
+                        // Fallback to picsum if generation fails
+                        const fallbackSeeds = {
+                            'tarot-lovers': 'lovers',
+                            'tarot-star': 'star',
+                            'tarot-moon': 'moon'
+                        };
+                        document.getElementById(card.id).src = `https://picsum.photos/seed/${fallbackSeeds[card.id] || 'tarot'}/60/100`;
                     }
                 }
             },
