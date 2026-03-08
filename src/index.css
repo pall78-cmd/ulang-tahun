@@ -1,4 +1,14 @@
+@import "tailwindcss";
+
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,900;1,900&family=Special+Elite&family=EB+Garamond:ital,wght@0,400;0,700;1,400;1,700&family=Dancing+Script:wght@400;700&display=swap');
+
+@theme {
+  --font-courier: "Courier Prime", monospace;
+  --font-playfair: "Playfair Display", serif;
+  --font-elite: "Special Elite", cursive;
+  --font-garamond: "EB Garamond", serif;
+  --font-dancing: "Dancing Script", cursive;
+}
 
 :root {
     --paper: #f2ecd9;
@@ -8,7 +18,7 @@
 
 body {
     background-color: #050505;
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-courier);
     color: var(--ink);
     overflow: hidden;
     overscroll-behavior: none;
@@ -101,12 +111,22 @@ body {
     border-radius: 4px;
 }
 
+#module-viewport {
+    perspective: 2000px;
+    transform-style: preserve-3d;
+}
+
 .page-module {
-    display: none; opacity: 0; height: 100%;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    opacity: 0; height: 100%;
     flex-direction: column; padding: 1.5rem;
     overflow-y: auto;
-    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
+    transform-origin: left center;
+    visibility: hidden;
+    pointer-events: none;
+    display: flex;
+    backface-visibility: hidden;
 }
 
 /* Scrapbook Page Background */
@@ -128,13 +148,10 @@ body {
     padding: 8px 8px 30px 8px;
     box-shadow: 2px 4px 12px rgba(0,0,0,0.3);
     position: relative;
-    transition: transform 0.3s ease, z-index 0.3s ease, box-shadow 0.3s ease;
-}
-.polaroid:hover {
-    box-shadow: 5px 10px 20px rgba(0,0,0,0.25);
+    transform: rotate(-2deg);
 }
 .polaroid img { width: 100%; height: auto; filter: sepia(0.2) contrast(1.1); }
-.polaroid-caption { font-family: 'Special Elite', cursive; font-size: 10px; text-align: center; position: absolute; bottom: 8px; width: 100%; left: 0; color: #333; }
+.polaroid-caption { font-family: var(--font-elite); font-size: 10px; text-align: center; position: absolute; bottom: 8px; width: 100%; left: 0; color: #333; }
 
 .washi-tape {
     position: absolute;
@@ -145,7 +162,6 @@ body {
     z-index: 20;
     border-left: 2px dashed rgba(0,0,0,0.1);
     border-right: 2px dashed rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
 }
 .washi-blue { background: rgba(173, 216, 230, 0.6); }
 .washi-yellow { background: rgba(255, 255, 153, 0.6); }
@@ -204,7 +220,12 @@ body {
     border-image: repeating-linear-gradient(45deg, #d32f2f, #d32f2f 10px, transparent 10px, transparent 20px, #1976d2 20px, #1976d2 30px, transparent 30px, transparent 40px) 10;
 }
 
-.page-module.active { display: flex; opacity: 1; }
+.page-module.active { 
+    opacity: 1; 
+    visibility: visible;
+    pointer-events: auto;
+    z-index: 10;
+}
 
 /* NAV ZONE */
 .nav-zone { position: absolute; top: 0; bottom: 0; width: 20%; z-index: 40; cursor: pointer; }
@@ -329,7 +350,7 @@ body {
 
 /* --- NYT STYLE HEADLINE --- */
 .nyt-lead {
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-garamond);
     font-size: 1.45rem;
     line-height: 1.2;
     font-weight: 700;
@@ -344,7 +365,7 @@ body {
     line-height: 0.8;
     margin-top: 0.1em;
     margin-right: 0.1em;
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-playfair);
     font-weight: 900;
 }
 
@@ -354,7 +375,7 @@ body {
     border-left: 2px solid var(--accent);
     background: rgba(139, 0, 0, 0.03);
     font-style: italic;
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-garamond);
     font-size: 1.1rem;
     color: #555;
 }
@@ -368,31 +389,14 @@ body {
 
 #typewriter-output { 
     white-space: pre-wrap; 
-    font-family: 'Special Elite', 'Courier New', Courier, monospace; 
-    line-height: 20px; 
-    color: #222; 
-    font-size: 12px; 
+    font-family: var(--font-elite); 
+    line-height: 1.6; 
+    color: #333; 
+    font-size: 14px; 
     text-align: left;
-    min-height: 150px;
-    padding: 0 10px;
+    min-height: 250px;
+    padding: 10px;
     letter-spacing: 0.5px;
-    text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1);
-}
-
-#typewriter-output::after {
-    content: '|';
-    animation: blink 1s step-end infinite;
-    margin-left: 2px;
-    opacity: 0.7;
-}
-
-#typewriter-output.typing-done::after {
-    display: none;
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
 }
 
 /* --- CHAT SYSTEM --- */
@@ -434,7 +438,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 5px;
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-courier);
 }
 .monitor-line {
     height: 30px;
@@ -541,6 +545,11 @@ body {
     z-index: 5;
 }
 
+.tarot-card:hover {
+    transform: translateY(-10px) rotate(0deg) scale(1.1) !important;
+    z-index: 50;
+}
+
 .tarot-card img {
     width: 100%;
     height: 100%;
@@ -579,23 +588,12 @@ body {
     position: relative;
     margin-top: -5px;
 }
-
-@keyframes stamp-effect {
-    0% { transform: scale(3) translateY(-20px); opacity: 0; box-shadow: 0 0 0 rgba(0,0,0,0); }
-    50% { transform: scale(0.9) translateY(2px); opacity: 1; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-    70% { transform: scale(1.1) translateY(-1px); }
-    100% { transform: scale(1) translateY(0); opacity: 1; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
-}
-
-.stamp-active {
-    animation: stamp-effect 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
 .wax-seal::after {
     content: "17";
     color: #630101;
     font-weight: bold;
     font-size: 14px;
-    font-family: 'Playfair Display';
+    font-family: var(--font-playfair);
 }
 
 .verification-grid {
@@ -664,7 +662,7 @@ body {
 }
 
 .scrap-text {
-    font-family: 'Special Elite', cursive;
+    font-family: var(--font-elite);
     background: #eee;
     padding: 2px 6px;
     transform: rotate(2deg);
@@ -679,7 +677,7 @@ body {
     position: absolute;
     background: #e3dac9;
     padding: 8px;
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-playfair);
     font-size: 6px;
     line-height: 1.2;
     color: #222;
@@ -689,7 +687,6 @@ body {
     text-align: justify;
     opacity: 0.9;
     z-index: 5;
-    transition: all 0.3s ease;
 }
 .newspaper-fragment h4 {
     font-weight: 900;
@@ -730,16 +727,18 @@ body {
     50% { transform: rotate(4deg) translateY(-1px); }
 }
 
-.tape-strip { animation: flutter 4s infinite ease-in-out; cursor: pointer; transition: all 0.2s; }
+.tape-strip { animation: flutter 4s infinite ease-in-out; cursor: pointer; transition: transform 0.2s; }
+.tape-strip:hover { transform: scale(1.1) rotate(0deg) !important; z-index: 50; }
 
-.torn-paper { transition: all 0.3s ease; }
+.torn-paper { transition: transform 0.3s ease; }
+.torn-paper:hover { transform: scale(1.02) rotate(0deg) !important; z-index: 40; box-shadow: 5px 10px 20px rgba(0,0,0,0.15); }
 
 .hidden-note {
     position: absolute;
     background: #ffeb3b;
     padding: 5px;
     font-size: 8px;
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-courier);
     box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
     display: none;
     z-index: 100;
@@ -797,8 +796,75 @@ body {
     width: 100%;
 }
 
+/* --- SCRAPBOOK DECORATIONS --- */
+.coffee-stain {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(101, 67, 33, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(5px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.doodle-heart {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 5;
+    color: var(--accent);
+}
+
+.handwritten-note {
+    font-family: var(--font-dancing);
+    font-size: 1.2rem;
+    color: #2b4b7c;
+    transform: rotate(-3deg);
+    line-height: 1.2;
+}
+
+.vintage-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: url("https://www.transparenttextures.com/patterns/dust.png");
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.page-module::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.1) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.1) 100%);
+    pointer-events: none;
+    z-index: 50;
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+@keyframes confettiFall {
+    0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+.confetti-anim {
+    animation: confettiFall 3s linear forwards;
+}
+
 .lyric-line {
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-garamond);
     font-size: 1.4rem;
     color: rgba(242, 236, 217, 0.3);
     transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
@@ -824,31 +890,4 @@ body {
 
 .lyric-line.past {
     opacity: 0.15;
-    transform: translateY(-30px) scale(0.85);
-    filter: blur(2px);
-}
-
-.lyric-line.future {
-    opacity: 0.2;
-    transform: translateY(30px) scale(0.9);
-    filter: blur(4px);
-}
-
-/* --- SPARKLE DECORATION --- */
-.sparkle {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    background-color: #f2ecd9;
-    border-radius: 50%;
-    opacity: 0;
-    animation: sparkle-anim 3s linear infinite;
-    box-shadow: 0 0 10px #f2ecd9, 0 0 20px #fff;
-}
-
-@keyframes sparkle-anim {
-    0% { transform: scale(0) translateY(0); opacity: 0; }
-    20% { opacity: 1; }
-    80% { opacity: 1; }
-    100% { transform: scale(1) translateY(-100px); opacity: 0; }
 }
