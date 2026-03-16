@@ -21,6 +21,7 @@ interface DossierSystemType {
     currentSender: string;
     isTyping: boolean;
     candleBlown: boolean;
+    direction: string;
     lyricsInterval: number | null;
     fadeIn: (audioId: string, duration?: number) => void;
     fadeOut: (audioId: string, duration?: number) => void;
@@ -43,6 +44,8 @@ interface DossierSystemType {
     send: () => Promise<void>;
     openModal: () => void;
     closeModal: () => void;
+    showAlert: (msg: string) => void;
+    closeAlert: () => void;
     confirmPurge: () => Promise<void>;
 }
 
@@ -63,6 +66,7 @@ window.DossierSystem = {
     currentSender: 'N',
     isTyping: false,
     candleBlown: false,
+    direction: 'next',
     lyricsInterval: null,
 
     fadeIn(audioId: string, duration = 2000) {
@@ -193,7 +197,7 @@ window.DossierSystem = {
                     `;
                     div.onclick = () => {
                         window.DossierSystem.fadeIn('applause-sfx', 500);
-                        alert("Sistem mendeteksi anomali kebahagiaan yang ekstrim pada tanggal ini. Selamat ulang tahun sayangku! 🎉");
+                        this.showAlert("Sistem mendeteksi anomali kebahagiaan yang ekstrim pada tanggal ini. Selamat ulang tahun sayangku! 🎉");
                     };
                 } else {
                     div.innerText = i.toString();
@@ -288,7 +292,13 @@ window.DossierSystem = {
         }
         if (this.index !== 3) this.fadeOut('applause-sfx', 500);
 
-        document.querySelectorAll('.page-module').forEach((m, i) => m.classList.toggle('active', i === this.index));
+        document.querySelectorAll('.page-module').forEach((m, i) => {
+            m.classList.remove('active', 'turn-next', 'turn-prev');
+            if (i === this.index) {
+                m.classList.add('active');
+                m.classList.add(this.direction === 'next' ? 'turn-next' : 'turn-prev');
+            }
+        });
         const pageNum = document.getElementById('page-num');
         if (pageNum) pageNum.innerText = `${this.index + 1} / 7`;
         
@@ -333,8 +343,8 @@ window.DossierSystem = {
         }, 400); 
     },
 
-    next() { if(this.index < 6) { this.index++; this.render(); } },
-    prev() { if(this.index > 0) { this.index--; this.render(); } },
+    next() { if(this.index < 6) { this.direction = 'next'; this.index++; this.render(); } },
+    prev() { if(this.index > 0) { this.direction = 'prev'; this.index--; this.render(); } },
 
     type() {
         if(this.isTyping) return;
@@ -392,7 +402,7 @@ window.DossierSystem = {
         f.value = '';
         
         if (!supabaseClient) {
-            alert("Offline mode: Cannot send messages.");
+            this.showAlert("Offline mode: Cannot send messages.");
             return;
         }
 
@@ -424,16 +434,26 @@ window.DossierSystem = {
         if (modal) modal.style.display = 'none'; 
     },
 
+    showAlert(msg: string) {
+        const modal = document.getElementById('alert-modal');
+        const msgEl = document.getElementById('alert-message');
+        if (msgEl) msgEl.textContent = msg;
+        if (modal) modal.style.display = 'flex';
+    },
+
+    closeAlert() {
+        const modal = document.getElementById('alert-modal');
+        if (modal) modal.style.display = 'none';
+    },
+
     async confirmPurge() {
-        if (confirm("WARNING: Permanent deletion of all transmission logs. Proceed?")) {
-            if (!supabaseClient) return;
-            try {
-                await supabaseClient.from(TABLE_NAME).delete().neq('id', -1);
-                this.loadMsgs(); 
-                this.closeModal();
-            } catch(e) {
-                console.error("Purge error", e);
-            }
+        if (!supabaseClient) return;
+        try {
+            await supabaseClient.from(TABLE_NAME).delete().neq('id', -1);
+            this.loadMsgs(); 
+            this.closeModal();
+        } catch(e) {
+            console.error("Purge error", e);
         }
     }
 };

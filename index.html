@@ -39,6 +39,16 @@
         </div>
     </div>
 
+    <div id="alert-modal" class="custom-modal">
+        <div class="bg-[#f2ecd9] p-6 max-w-xs w-full border-t-8 border-green-900 text-center shadow-2xl relative z-50">
+            <h3 class="font-bold uppercase text-[10px] tracking-widest mb-2">System Notice</h3>
+            <p id="alert-message" class="text-[9px] mb-6 opacity-70"></p>
+            <div class="flex gap-4">
+                <button onclick="DossierSystem.closeAlert()" class="flex-1 py-2 bg-green-900 text-white text-[9px] uppercase">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Login Auth -->
     <div id="auth-module" class="scanning-active">
         <div id="scanning-line"></div>
@@ -452,7 +462,7 @@
                 <span>Dossier Cryptography v1.15</span>
             </div>
             <span id="center-stamp">AUTHORIZED ACCESS ONLY</span>
-            <span id="page-num">1 / 5</span>
+            <span id="page-num">1 / 7</span>
         </footer>
     </main>
 
