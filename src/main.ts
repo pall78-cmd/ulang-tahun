@@ -422,6 +422,7 @@ window.DossierSystem = {
             }
         } catch (err) {
             console.error('send() error:', err);
+            this.showAlert("Gagal mengirim pesan. Periksa koneksi Anda.");
         }
     },
 
@@ -454,6 +455,7 @@ window.DossierSystem = {
             this.closeModal();
         } catch(e) {
             console.error("Purge error", e);
+            this.showAlert("Gagal menghapus log. Periksa koneksi Anda.");
         }
     }
 };
