@@ -47,6 +47,11 @@ interface DossierSystemType {
     showAlert: (msg: string) => void;
     closeAlert: () => void;
     confirmPurge: () => Promise<void>;
+    openDbManager: () => void;
+    closeDbManager: () => void;
+    pingDatabase: () => Promise<void>;
+    deleteRecord: (id: number) => Promise<void>;
+    renderDbRecords: (data: any[]) => void;
 }
 
 declare global {
@@ -453,10 +458,83 @@ window.DossierSystem = {
             await supabaseClient.from(TABLE_NAME).delete().neq('id', -1);
             this.loadMsgs(); 
             this.closeModal();
+            this.openDbManager(); // Refresh DB Manager if open
         } catch(e) {
             console.error("Purge error", e);
             this.showAlert("Gagal menghapus log. Periksa koneksi Anda.");
         }
+    },
+
+    async openDbManager() {
+        const modal = document.getElementById('db-manager-modal');
+        if (modal) modal.style.display = 'flex';
+        if (!supabaseClient) {
+            this.renderDbRecords([]);
+            return;
+        }
+        try {
+            const { data, error } = await supabaseClient.from(TABLE_NAME).select('*').order('created_at', { ascending: false });
+            if (error) throw error;
+            this.renderDbRecords(data || []);
+        } catch (err) {
+            console.error('openDbManager failed:', err);
+            this.showAlert("Gagal memuat data database.");
+        }
+    },
+
+    closeDbManager() {
+        const modal = document.getElementById('db-manager-modal');
+        if (modal) modal.style.display = 'none';
+    },
+
+    async pingDatabase() {
+        if (!supabaseClient) return;
+        try {
+            const statusEl = document.getElementById('db-status');
+            if (statusEl) statusEl.textContent = "Pinging...";
+            
+            // Simple select to keep connection alive
+            await supabaseClient.from(TABLE_NAME).select('id').limit(1);
+            
+            if (statusEl) statusEl.textContent = "Connected (Ping OK)";
+            setTimeout(() => {
+                if (statusEl) statusEl.textContent = "Connected";
+            }, 2000);
+        } catch (err) {
+            console.error('pingDatabase failed:', err);
+            const statusEl = document.getElementById('db-status');
+            if (statusEl) statusEl.textContent = "Error / Disconnected";
+        }
+    },
+
+    async deleteRecord(id: number) {
+        if (!supabaseClient) return;
+        try {
+            await supabaseClient.from(TABLE_NAME).delete().eq('id', id);
+            this.loadMsgs();
+            this.openDbManager(); // Refresh the table
+        } catch (err) {
+            console.error('deleteRecord failed:', err);
+            this.showAlert("Gagal menghapus record.");
+        }
+    },
+
+    renderDbRecords(data: any[]) {
+        const tbody = document.getElementById('db-records-table');
+        const totalEl = document.getElementById('db-total-records');
+        if (totalEl) totalEl.textContent = data.length.toString();
+        
+        if (!tbody) return;
+        tbody.innerHTML = data.length > 0 ? data.map(m => `
+            <tr class="border-b border-green-900/30 hover:bg-green-900/10">
+                <td class="p-1">${m.id}</td>
+                <td class="p-1">${m.sender}</td>
+                <td class="p-1 truncate max-w-[150px]">${m.content}</td>
+                <td class="p-1 text-right">
+                    <button onclick="DossierSystem.deleteRecord(${m.id})" class="text-red-500 hover:text-red-400 uppercase text-[8px] border border-red-900/50 px-1">Del</button>
+                </td>
+            </tr>
+        `).join('') : '<tr><td colspan="4" class="text-center p-4 opacity-50">No records found.</td></tr>';
     }
 };
 
@@ -477,6 +555,11 @@ const initApp = () => {
 
     // Initialize system
     window.DossierSystem.init();
+
+    // Auto-ping to prevent Supabase from pausing the project (runs every 5 minutes)
+    setInterval(() => {
+        window.DossierSystem.pingDatabase();
+    }, 5 * 60 * 1000);
 };
 
 // Initialize when DOM is ready
