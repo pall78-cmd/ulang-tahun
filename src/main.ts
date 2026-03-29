@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import confetti from 'canvas-confetti';
 
 // Inline Supabase Config for portability
 const SUPABASE_URL = 'https://urcxbufxcebfgrsfvmsj.supabase.co';
@@ -52,6 +53,11 @@ interface DossierSystemType {
     pingDatabase: () => Promise<void>;
     deleteRecord: (id: number) => Promise<void>;
     renderDbRecords: (data: any[]) => void;
+    openTimeCapsule: () => void;
+    closeTimeCapsule: () => void;
+    updateTimeCapsuleCountdown: () => void;
+    tutorialTimeout?: any;
+    showTutorial: (autoHide?: boolean) => void;
 }
 
 declare global {
@@ -272,7 +278,16 @@ window.DossierSystem = {
         const authModule = document.getElementById('auth-module');
         if (!authModule) return;
         authModule.style.opacity = '0';
-        setTimeout(() => { authModule.style.display = 'none'; }, 800);
+        setTimeout(() => { 
+            authModule.style.display = 'none'; 
+            
+            // Show tutorial banner
+            const tutBanner = document.getElementById('tutorial-banner');
+            if (tutBanner) {
+                tutBanner.style.display = 'block';
+                setTimeout(() => tutBanner.style.opacity = '1', 50);
+            }
+        }, 800);
     },
 
     setSender(name: string) {
@@ -307,6 +322,27 @@ window.DossierSystem = {
         const pageNum = document.getElementById('page-num');
         if (pageNum) pageNum.innerText = `${this.index + 1} / 7`;
         
+        // Update Tutorial Text & Arrows
+        const tutorialTexts = [
+            "<span class='text-white font-bold'>HALAMAN 1: THE LEDGER (BERANDA)</span><br>Ini adalah halaman utama. Gulir ke bawah untuk membaca pesan.<br><br>👉 <strong>TOMBOL RAHASIA:</strong> Di bagian paling bawah, terdapat tombol merah '[LOCKED] PAYLOAD 30.03' untuk membuka Kapsul Waktu.<br><br>👉 <strong>CARA NAVIGASI:</strong> Ketuk area KOSONG di sisi <span class='text-white font-bold'>KANAN</span> layar untuk membalik ke halaman berikutnya.",
+            "<span class='text-white font-bold'>HALAMAN 2: EVIDENCE (ARSIP FOTO)</span><br>Ini adalah galeri kenangan.<br><br>👉 <strong>INTERAKSI:</strong> Ketuk pada foto polaroid untuk memperbesarnya dan melihat pesan di baliknya.<br><br>👉 Ketuk sisi <span class='text-white font-bold'>KIRI</span> layar untuk kembali, atau <span class='text-white font-bold'>KANAN</span> untuk lanjut.",
+            "<span class='text-white font-bold'>HALAMAN 3: AUDIO LOG (PESAN SUARA)</span><br>Ada pesan suara rahasia untukmu.<br><br>👉 <strong>INTERAKSI:</strong> Ketuk tombol <span class='text-white font-bold'>PLAY (▶)</span> berwarna merah pada pemutar kaset di tengah layar untuk mendengarkannya.",
+            "<span class='text-white font-bold'>HALAMAN 4: LOGBOOK (KALENDER)</span><br>Catatan operasional bulan Maret.<br><br>👉 <strong>INTERAKSI:</strong> Cari dan ketuk angka <span class='text-white font-bold'>30</span> pada kalender untuk mengungkap pesan tersembunyi.",
+            "<span class='text-white font-bold'>HALAMAN 5: BIRTHDAY CANDLE (TIUP LILIN)</span><br>Waktunya make a wish!<br><br>👉 <strong>INTERAKSI:</strong> Ketuk tepat pada <span class='text-white font-bold'>API LILIN</span> yang menyala untuk 'meniupnya' hingga padam dan lihat kejutannya.",
+            "<span class='text-white font-bold'>HALAMAN 6: CARTE POSTALE (KARTU POS)</span><br>Sebuah kenangan manis yang tersimpan.<br><br>👉 <strong>INTERAKSI:</strong> Ketuk <span class='text-white font-bold'>FOTO</span> di sebelah kiri kartu pos untuk memutar video kenangan rahasia.",
+            "<span class='text-white font-bold'>HALAMAN 7: TERMINAL COMMS (PESAN BALASAN)</span><br>Kirim pesan balasanmu ke server.<br><br>👉 <strong>INTERAKSI:</strong> Ketik pesanmu di kotak teks, lalu tekan tombol 'SEND TRANSMISSION' untuk mengirimkannya."
+        ];
+        const tutText = document.getElementById('tutorial-text');
+        if (tutText) tutText.innerHTML = tutorialTexts[this.index] || "";
+
+        // Auto-show tutorial on page change, auto-hide after 5 seconds
+        this.showTutorial(true);
+
+        const arrowL = document.getElementById('arrow-l');
+        const arrowR = document.getElementById('arrow-r');
+        if (arrowL) arrowL.style.display = this.index > 0 ? 'block' : 'none';
+        if (arrowR) arrowR.style.display = this.index < 6 ? 'block' : 'none';
+
         const backBtn = document.getElementById('back-nav-btn');
         const centerStamp = document.getElementById('center-stamp');
 
@@ -339,6 +375,36 @@ window.DossierSystem = {
         setTimeout(() => {
             const candleStage = document.getElementById('candle-stage');
             if (candleStage) candleStage.style.opacity = '0';
+            
+            // Show birthday text
+            const bdayText = document.getElementById('bday-text');
+            if (bdayText) bdayText.style.opacity = '1';
+
+            // Trigger confetti
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ff0000', '#ffffff', '#ffd700']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ff0000', '#ffffff', '#ffd700']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
             setTimeout(() => {
                 if (candleStage) candleStage.style.display = 'none';
                 this.candleBlown = true;
@@ -535,6 +601,87 @@ window.DossierSystem = {
                 </td>
             </tr>
         `).join('') : '<tr><td colspan="4" class="text-center p-4 opacity-50">No records found.</td></tr>';
+    },
+
+    openTimeCapsule() {
+        const modal = document.getElementById('time-capsule-modal');
+        if (modal) modal.style.display = 'flex';
+        this.updateTimeCapsuleCountdown();
+    },
+
+    closeTimeCapsule() {
+        const modal = document.getElementById('time-capsule-modal');
+        if (modal) modal.style.display = 'none';
+    },
+
+    updateTimeCapsuleCountdown() {
+        const targetDate = new Date('2026-03-30T00:00:00+07:00').getTime();
+        const nowObj = new Date();
+        const now = nowObj.getTime();
+        const distance = targetDate - now;
+
+        const lockedDiv = document.getElementById('capsule-locked');
+        const unlockedDiv = document.getElementById('capsule-unlocked');
+        const countdownDisplay = document.getElementById('countdown-display');
+        const currentTimeDisplay = document.getElementById('current-wib-time');
+
+        if (currentTimeDisplay) {
+            const wibTime = nowObj.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour12: false });
+            const wibDate = nowObj.toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' });
+            currentTimeDisplay.innerText = `CURRENT TIME (WIB): ${wibDate} ${wibTime}`;
+        }
+
+        if (distance < 0) {
+            // Unlocked!
+            if (lockedDiv && lockedDiv.style.display !== 'none') {
+                if (lockedDiv) lockedDiv.style.display = 'none';
+                if (unlockedDiv) unlockedDiv.style.display = 'block';
+                
+                // Trigger confetti if just opened
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#ff0000', '#ffffff', '#ffd700']
+                });
+            }
+        } else {
+            // Locked
+            if (lockedDiv) lockedDiv.style.display = 'block';
+            if (unlockedDiv) unlockedDiv.style.display = 'none';
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            if (countdownDisplay) {
+                countdownDisplay.innerHTML = `${days}d ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            // Update every second while modal is open
+            const modal = document.getElementById('time-capsule-modal');
+            if (modal && modal.style.display === 'flex') {
+                setTimeout(() => this.updateTimeCapsuleCountdown(), 1000);
+            }
+        }
+    },
+
+    showTutorial(autoHide = true) {
+        const tutBanner = document.getElementById('tutorial-banner');
+        if (!tutBanner) return;
+        
+        tutBanner.style.display = 'block';
+        setTimeout(() => tutBanner.style.opacity = '1', 50);
+        
+        if (this.tutorialTimeout) clearTimeout(this.tutorialTimeout);
+        
+        if (autoHide) {
+            this.tutorialTimeout = setTimeout(() => {
+                tutBanner.style.opacity = '0';
+                setTimeout(() => { if (tutBanner.style.opacity === '0') tutBanner.style.display = 'none'; }, 300);
+            }, 10000); // Increased to 10 seconds for longer texts
+        }
     }
 };
 
