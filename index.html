@@ -3,11 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Dossier: Aristia Firlin</title>
+    <title>Dossier: My Dearest — Jeva Muafida</title>
+    <meta name="description" content="A confidential digital archive and interactive year-to-year retrospective dossier for Jeva Muafida." />
+    <meta property="og:title" content="Dossier: Jeva Muafida" />
+    <meta property="og:description" content="A confidential digital archive and interactive year-to-year retrospective dossier for Jeva Muafida." />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
   </head>
-  <body class="flex items-center justify-center min-h-screen">
+  <body class="flex items-center justify-center min-h-screen bg-[#050505] text-[#1a1a1a]">
 
     <div id="flash-overlay"></div>
 
@@ -24,63 +27,209 @@
             </g>
             <path d="M100 40 L120 70 L110 110 L70 90 L120 70 M120 70 L150 60 L140 95 L110 110" fill="none" class="const-line" />
         </svg>
-        <p class="text-[9px] uppercase tracking-[0.4em] opacity-60">Aligning Sagittarius...</p>
+        <p class="text-[9px] uppercase tracking-[0.4em] opacity-60">Dekripsi Berkas Jeva Muafida...</p>
     </div>
 
-    <!-- Modal Purge -->
-    <div id="time-capsule-modal" class="custom-modal">
-        <div class="bg-[#1a1a1a] p-8 max-w-md w-full border-t-8 border-red-900 text-center shadow-2xl relative z-50 font-mono text-red-500">
-            <button onclick="DossierSystem.closeTimeCapsule()" class="absolute top-2 right-2 text-red-500 hover:text-red-400 uppercase text-[10px]">[X]</button>
+    <!-- MODAL 1: Kapsul Waktu Refleksi (WIB Real-Time) -->
+    <div id="time-capsule-modal" class="custom-modal" onclick="if(event.target === this) DossierSystem.closeTimeCapsule()">
+        <div class="bg-[#181818] p-6 md:p-8 max-w-md w-[92%] border-t-8 border-red-900 text-center shadow-2xl relative z-50 font-mono text-red-500 rounded" onclick="event.stopPropagation()">
+            <button onclick="DossierSystem.closeTimeCapsule()" class="absolute top-3 right-3 text-red-400 hover:text-white uppercase text-[11px] font-bold px-2 py-0.5 border border-red-900 rounded bg-red-950/60 transition-colors">[✕ TUTUP]</button>
             
             <div id="capsule-locked" class="block">
-                <h3 class="font-bold uppercase text-xl tracking-widest mb-2">ACCESS DENIED</h3>
-                <p class="text-[10px] mb-4 opacity-50 text-green-400" id="current-wib-time">CURRENT TIME (WIB): --:--:--</p>
-                <p class="text-xs mb-2 opacity-80 text-white">Target Unlock: <span class="font-bold text-red-400">30 Mar 2026, 00:00 WIB</span></p>
-                <p class="text-[10px] mb-2 opacity-50">Time remaining:</p>
-                <div id="countdown-display" class="text-3xl font-bold tracking-widest mb-4">00:00:00</div>
+                <div class="inline-block px-2 py-0.5 bg-red-950/80 border border-red-800 text-[9px] tracking-widest uppercase mb-2 text-red-300">
+                    STATUS ENKRIPSI: TERKUNCI (WIB UTC+7)
+                </div>
+                <h3 class="font-bold uppercase text-lg tracking-widest mb-1 text-white">Kapsul Waktu Refleksi</h3>
+                <p class="text-[10px] mb-3 text-emerald-400 font-semibold" id="current-wib-time">WAKTU REAL-TIME (WIB): Memuat...</p>
+                
+                <!-- Radar Momen Terdekat (Next Upcoming Milestone) -->
+                <div id="next-milestone-box" class="bg-gradient-to-r from-red-950/90 via-black to-red-950/90 p-3 rounded border border-red-700/60 mb-3 text-left relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[8px] tracking-widest uppercase font-bold text-yellow-400 font-mono flex items-center gap-1.5">
+                            <span class="inline-block w-2 h-2 rounded-full bg-yellow-400 animate-ping"></span>
+                            RADAR MOMEN TERDEKAT
+                        </span>
+                        <span id="next-milestone-badge" class="text-[8.5px] font-mono text-emerald-300 font-bold bg-black/80 px-2 py-0.5 rounded border border-emerald-500/40">MENGHITUNG...</span>
+                    </div>
+                    <h4 id="next-milestone-title" class="font-bold text-white text-xs font-serif italic mb-0.5">Memuat Momen Terdekat...</h4>
+                    <p id="next-milestone-desc" class="text-[8.5px] text-gray-300 font-sans leading-snug">Menghitung koordinat hari spesial berikutnya...</p>
+                    <button onclick="DossierSystem.jumpToNextMilestone()" class="mt-2 text-[8px] font-mono text-amber-300 hover:text-white underline decoration-dotted flex items-center gap-1">
+                        ▶ Buka Kalender Untuk Momen Ini
+                    </button>
+                </div>
+
+                <div class="bg-black/60 p-3 rounded border border-white/10 mb-4 text-left text-[10px] space-y-1">
+                    <p class="text-gray-300"><span class="text-gray-500 font-bold">Subjek:</span> JEVA MUAFIDA & NAUFAL</p>
+                    <p class="text-gray-300"><span class="text-gray-500 font-bold">Target Pergantian:</span> <span class="font-bold text-yellow-400">31 Des 2026, 23:59:59 WIB</span></p>
+                    <p class="text-gray-400 text-[9px] italic">Kapsul akan terbuka secara otomatis tepat pada detik pergantian menuju tahun baru.</p>
+                </div>
+
+                <p class="text-[10px] mb-2 uppercase tracking-widest text-gray-400">Sisa Waktu Menuju Tahun Baru:</p>
+                
+                <!-- Countdown Display Breakdown Grid -->
+                <div class="grid grid-cols-4 gap-2 text-center mb-5 bg-black/40 p-2.5 rounded border border-red-900/40">
+                    <div class="bg-black/70 p-1.5 rounded border border-red-950">
+                        <span id="countdown-days" class="text-xl md:text-2xl font-black text-red-400 block tabular-nums">--</span>
+                        <span class="text-[8px] text-gray-400 tracking-wider">HARI</span>
+                    </div>
+                    <div class="bg-black/70 p-1.5 rounded border border-red-950">
+                        <span id="countdown-hours" class="text-xl md:text-2xl font-black text-red-400 block tabular-nums">--</span>
+                        <span class="text-[8px] text-gray-400 tracking-wider">JAM</span>
+                    </div>
+                    <div class="bg-black/70 p-1.5 rounded border border-red-950">
+                        <span id="countdown-minutes" class="text-xl md:text-2xl font-black text-red-400 block tabular-nums">--</span>
+                        <span class="text-[8px] text-gray-400 tracking-wider">MENIT</span>
+                    </div>
+                    <div class="bg-black/70 p-1.5 rounded border border-red-950">
+                        <span id="countdown-seconds" class="text-xl md:text-2xl font-black text-red-400 block tabular-nums">--</span>
+                        <span class="text-[8px] text-gray-400 tracking-wider">DETIK</span>
+                    </div>
+                </div>
+
+                <!-- Simulation Toggle Button -->
+                <div class="pt-2 border-t border-white/10 flex flex-col gap-2">
+                    <button onclick="DossierSystem.toggleCapsuleSimulation()" class="w-full py-2 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600 text-emerald-300 text-[10px] uppercase font-bold tracking-wider rounded transition-colors">
+                        🔓 Simulasi Buka Kapsul Sekarang (Uji Coba)
+                    </button>
+                    <p class="text-[8px] text-gray-400">Tekan tombol di atas untuk melihat isi payload rahasia kapan saja tanpa harus menunggu tanggal target.</p>
+                </div>
             </div>
 
             <div id="capsule-unlocked" class="hidden">
-                <h3 class="font-bold uppercase text-2xl tracking-widest mb-4 text-green-500">PAYLOAD DECRYPTED</h3>
-                <p class="text-sm mb-4 text-white">Happy 17th Birthday, Aristia! 🎉</p>
-                <p class="text-xs text-gray-400 italic">"Semoga di umur yang baru ini, semua mimpimu tercapai. Aku selalu ada buat kamu."</p>
-                <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/Desain%20tanpa%20judul_20250821_003903_0000.jpg" class="mx-auto mt-4 border-2 border-green-500 rounded max-w-[200px]">
+                <div class="inline-block px-2 py-0.5 bg-emerald-950/90 border border-emerald-600 text-[9px] tracking-widest uppercase mb-2 text-emerald-300">
+                    PAYLOAD DECRYPTED // KAPSUL TERBUKA
+                </div>
+                <h3 class="font-bold uppercase text-xl tracking-widest mb-3 text-emerald-400 font-serif">Selamat Menyongsong Tahun Baru!</h3>
+                <p class="text-xs mb-3 text-white leading-relaxed font-sans text-justify">
+                    Terima kasih telah berjuang, tersenyum, dan melangkah begitu hebat sepanjang tahun ini, <b>Jeva Muafida</b>. Setiap detik perjalanan bersamamu adalah berkas paling berharga dalam arsip hidupku. Mari kita sambut tahun baru dengan sejuta harapan, kebahagiaan, dan cinta yang semakin mendalam.
+                </p>
+                <div class="p-2 bg-black/40 border border-emerald-800/50 rounded mb-4">
+                    <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20260402-WA0027(1).jpg" class="mx-auto border border-emerald-500 rounded max-w-[190px] shadow-lg" alt="Jeva Muafida">
+                    <p class="text-[9px] text-emerald-300/80 mt-1.5 italic font-serif">"Selamanya menjadi pusat dari segala koordinat kebahagiaanku."</p>
+                </div>
+                <button onclick="DossierSystem.toggleCapsuleSimulation()" class="w-full py-1.5 bg-red-950/70 hover:bg-red-900 border border-red-700 text-red-300 text-[9px] uppercase font-bold rounded">
+                    🔒 Kunci Kapsul Kembali
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- MODAL 2: Dedicated Video Player (Fix Bug Halaman 6) -->
+    <div id="video-modal" class="custom-modal">
+        <div class="video-card-container p-4 md:p-6 text-white font-mono flex flex-col">
+            <div class="flex justify-between items-center mb-3 pb-2 border-b border-amber-600/40">
+                <div>
+                    <h3 class="font-bold text-xs uppercase tracking-widest text-amber-400">KLASIFIKASI: DOKUMEN VISUAL TAHUNAN</h3>
+                    <p class="text-[9px] text-gray-400">SUBJEK: JEVA MUAFIDA // KILAS BALIK 1 TAHUN</p>
+                </div>
+                <button onclick="DossierSystem.closeVideoModal()" class="text-red-400 hover:text-white uppercase text-[10px] font-bold px-2 py-1 border border-red-800 rounded bg-red-950/50">[✕ TUTUP]</button>
+            </div>
+
+            <!-- Video Player Wrapper -->
+            <div class="relative bg-black rounded overflow-hidden border border-amber-900/60 shadow-inner flex items-center justify-center">
+                <video id="dossier-video" controls playsinline webkit-playsinline class="w-full max-h-[50vh] object-contain bg-black" preload="auto">
+                    <source src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/Hindia%20-%20everything%20u%20are%20edit%28720P_HD%29.mp4" type="video/mp4">
+                    Browser Anda tidak mendukung pemutar video HTML5.
+                </video>
+            </div>
+
+            <!-- Controls & Lyrics Ribbon -->
+            <div class="mt-3 p-2 bg-black/60 border border-white/10 rounded flex flex-col gap-2">
+                <div class="flex items-center justify-between text-[9px]">
+                    <span class="text-amber-300 flex items-center gap-1 font-sans">
+                        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                        Soundtrack: Hindia — Everything U Are
+                    </span>
+                    <button onclick="DossierSystem.playDossierVideo()" class="px-2.5 py-1 bg-amber-900/80 hover:bg-amber-800 border border-amber-500 text-yellow-200 uppercase font-bold text-[8px] rounded">
+                        ▶ Putar Ulang
+                    </button>
+                </div>
+                <p class="text-[9px] text-gray-300 font-serif italic text-center">
+                    "Setiap detik perjalanan bersamamu adalah rekaman terindah yang tersimpan abadi dalam arsip rahasia ini."
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Logbook Tanggal Multi-Momen Interaktif -->
+    <div id="date-note-modal" class="custom-modal" onclick="if(event.target === this) DossierSystem.closeDateNoteModal()">
+        <div class="date-note-container p-5 md:p-6 text-center shadow-2xl relative z-50 max-w-md w-[92%] bg-[#fdfbf7] rounded border border-amber-900/30" onclick="event.stopPropagation()">
+            <div class="washi-tape washi-yellow -translate-x-1/2 rotate-[-2deg]" style="top: -12px; left: 50%; width: 100px;"></div>
+            <button onclick="DossierSystem.closeDateNoteModal()" class="absolute top-2 right-2 text-gray-500 hover:text-black font-mono text-[10px] px-2 py-0.5 border border-black/20 rounded bg-white/70">[✕ TUTUP]</button>
+            
+            <div class="border-b-2 border-double border-red-900/30 pb-2 mb-3 mt-1">
+                <span id="date-note-ref" class="text-[8px] font-mono uppercase tracking-[0.3em] text-red-900 font-bold">LOGBOOK OPERASIONAL // KOORDINAT TANGGAL</span>
+                <h3 id="date-note-title" class="font-serif italic font-black text-xl md:text-2xl text-black mt-1">Catatan Momen Monumental</h3>
+                <div id="date-note-badge" class="mt-1.5 inline-block px-2.5 py-0.5 bg-red-950 text-white font-mono text-[8px] rounded uppercase font-bold tracking-wider shadow-xs">
+                    KOORDINAT SPESIAL
+                </div>
+            </div>
+            
+            <div id="date-note-body" class="p-3 bg-[#fff9ee] border border-amber-900/20 text-justify text-[11px] leading-relaxed font-serif text-gray-900 space-y-2 mb-3 max-h-[42vh] overflow-y-auto scrollbar-thin scrollbar-thumb-amber-800/30">
+                <!-- Content dynamically populated by JS -->
+            </div>
+
+            <!-- Interaktif: Catatan Memo Personal Tambahan -->
+            <div class="mb-3 text-left bg-white/70 p-2.5 rounded border border-black/10">
+                <div class="flex items-center justify-between mb-1">
+                    <label for="date-custom-memo" class="text-[8px] font-mono uppercase text-gray-700 font-bold flex items-center gap-1">
+                        <span>📝</span> Catatan Kenangan Personal (Tersimpan Lokal):
+                    </label>
+                    <span id="memo-save-status" class="text-[7.5px] font-mono text-emerald-700 font-bold italic"></span>
+                </div>
+                <textarea id="date-custom-memo" rows="2" placeholder="Tuliskan pesan kenangan atau catatan untuk momen ini..." class="w-full text-[10px] p-2 bg-[#fdfbf7] border border-black/20 rounded font-serif text-gray-900 outline-none focus:border-red-900 resize-none"></textarea>
+                <div class="flex justify-between items-center mt-1.5">
+                    <span class="text-[7px] text-gray-400 font-mono">Tersimpan otomatis saat menekan simpan</span>
+                    <button onclick="DossierSystem.saveCurrentDateMemo()" class="px-3 py-1 bg-amber-950 text-amber-100 hover:bg-amber-900 font-mono text-[8px] uppercase font-bold rounded shadow-xs transition-colors">
+                        💾 Simpan Catatan
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-2 border-t border-black/10">
+                <span id="date-note-footer-ref" class="text-[8px] font-mono text-gray-500">REF: 2026-JM</span>
+                <button onclick="DossierSystem.closeDateNoteModal()" class="px-5 py-1.5 bg-red-950 text-white font-mono text-[9px] uppercase tracking-wider rounded hover:bg-red-900 shadow-sm transition-colors">
+                    [Tutup Catatan]
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: Delete Confirmation -->
     <div id="delete-modal" class="custom-modal">
         <div class="bg-[#f2ecd9] p-6 max-w-xs w-full border-t-8 border-red-900 text-center shadow-2xl relative z-50">
-            <h3 class="font-bold uppercase text-[10px] tracking-widest mb-2">Penghancuran Berkas?</h3>
-            <p class="text-[9px] mb-6 opacity-70">Log transmisi akan dihapus secara permanen.</p>
+            <h3 class="font-bold uppercase text-[10px] tracking-widest mb-2 font-mono">Penghancuran Berkas?</h3>
+            <p class="text-[9px] mb-6 opacity-70">Log transmisi pesan akan dihapus secara permanen dari server.</p>
             <div class="flex gap-4">
-                <button onclick="DossierSystem.closeModal()" class="flex-1 py-2 border border-black text-[9px] uppercase">Abort</button>
-                <button onclick="DossierSystem.confirmPurge()" class="flex-1 py-2 bg-red-900 text-white text-[9px] uppercase">Execute</button>
+                <button onclick="DossierSystem.closeModal()" class="flex-1 py-2 border border-black text-[9px] uppercase font-mono">Batal</button>
+                <button onclick="DossierSystem.confirmPurge()" class="flex-1 py-2 bg-red-900 text-white text-[9px] uppercase font-mono">Eksekusi</button>
             </div>
         </div>
     </div>
 
+    <!-- MODAL 5: Alert System -->
     <div id="alert-modal" class="custom-modal">
         <div class="bg-[#f2ecd9] p-6 max-w-xs w-full border-t-8 border-green-900 text-center shadow-2xl relative z-50">
-            <h3 class="font-bold uppercase text-[10px] tracking-widest mb-2">System Notice</h3>
-            <p id="alert-message" class="text-[9px] mb-6 opacity-70"></p>
+            <h3 class="font-bold uppercase text-[10px] tracking-widest mb-2 font-mono">System Notice</h3>
+            <p id="alert-message" class="text-[9px] mb-6 opacity-70 font-mono"></p>
             <div class="flex gap-4">
-                <button onclick="DossierSystem.closeAlert()" class="flex-1 py-2 bg-green-900 text-white text-[9px] uppercase">Acknowledge</button>
+                <button onclick="DossierSystem.closeAlert()" class="flex-1 py-2 bg-green-900 text-white text-[9px] uppercase font-mono">Mengerti</button>
             </div>
         </div>
     </div>
 
+    <!-- MODAL 6: Database Manager -->
     <div id="db-manager-modal" class="custom-modal">
         <div class="bg-[#1a1a1a] p-6 max-w-2xl w-full border-t-8 border-green-900 text-left shadow-2xl relative z-50 font-mono text-green-500 max-h-[80vh] flex flex-col">
             <div class="flex justify-between items-center mb-4 border-b border-green-900/50 pb-2">
-                <h3 class="font-bold uppercase text-[12px] tracking-widest">Database Manager (Supabase)</h3>
-                <button onclick="DossierSystem.closeDbManager()" class="text-red-500 hover:text-red-400 uppercase text-[10px]">[X] Close</button>
+                <h3 class="font-bold uppercase text-[12px] tracking-widest">Database Manager // Transmisi Pesan</h3>
+                <button onclick="DossierSystem.closeDbManager()" class="text-red-500 hover:text-red-400 uppercase text-[10px]">[X] Tutup</button>
             </div>
             
             <div class="mb-4 text-[10px] bg-green-900/20 p-2 border border-green-900/50">
-                <p class="mb-1">> <strong>Status:</strong> <span id="db-status" class="text-green-400">Connected</span></p>
-                <p class="mb-1">> <strong>Auto-Ping:</strong> <span class="text-green-400">Active (Mencegah database keblokir/sleep)</span></p>
-                <p>> <strong>Total Records:</strong> <span id="db-total-records">0</span></p>
+                <p class="mb-1">> <strong>Status:</strong> <span id="db-status" class="text-green-400">Connected (Penyimpanan Lokal Siaga)</span></p>
+                <p class="mb-1">> <strong>Penyimpanan:</strong> <span class="text-green-400">Offline-First / Enkripsi Browser Aman</span></p>
+                <p>> <strong>Total Transmisi:</strong> <span id="db-total-records">0</span></p>
             </div>
 
             <div class="flex-1 overflow-y-auto mb-4 border border-green-900/50 p-2 scrollbar-thin scrollbar-thumb-green-900 scrollbar-track-transparent">
@@ -88,14 +237,12 @@
                     <thead class="sticky top-0 bg-[#1a1a1a] border-b border-green-900/50">
                         <tr>
                             <th class="p-1">ID</th>
-                            <th class="p-1">Sender</th>
-                            <th class="p-1">Content</th>
-                            <th class="p-1 text-right">Action</th>
+                            <th class="p-1">Pengirim</th>
+                            <th class="p-1">Pesan</th>
+                            <th class="p-1 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="db-records-table">
-                        <!-- Records injected here -->
-                    </tbody>
+                    <tbody id="db-records-table"></tbody>
                 </table>
             </div>
 
@@ -106,430 +253,544 @@
         </div>
     </div>
 
-    <!-- Login Auth -->
+    <!-- Login Auth PIN Screen -->
     <div id="auth-module" class="scanning-active">
         <div id="scanning-line"></div>
         <div id="init-screen" class="terminal-container">
-            <button class="init-btn" onclick="DossierSystem.showPin()">Access Archive</button>
+            <h2 class="text-white text-xs font-mono tracking-widest mb-4 opacity-70">CONFIDENTIAL DOSSIER SYSTEM</h2>
+            <button class="init-btn" onclick="DossierSystem.showPin()">Buka Arsip Jeva Muafida</button>
         </div>
         <div id="pin-screen" class="terminal-container decode-interface">
-            <input type="password" id="pin-field" maxlength="6" class="w-full bg-transparent border-b border-red-900 text-center text-4xl text-red-700 outline-none tracking-[0.5em] py-2" placeholder="******">
-            <p class="text-[9px] mt-6 text-white/40 tracking-widest uppercase">Hint: 300326</p>
+            <p class="text-[10px] text-yellow-300/80 mb-2 font-mono uppercase tracking-widest">Masukkan Kode Dekripsi</p>
+            <input type="password" id="pin-field" maxlength="6" class="w-full bg-transparent border-b border-red-900 text-center text-4xl text-red-600 outline-none tracking-[0.5em] py-2 font-mono" placeholder="******">
+            <p class="text-[10px] mt-6 text-white/50 tracking-widest uppercase font-mono">Hint: 300326 (Kode Akses Jeva Muafida)</p>
         </div>
     </div>
 
+    <!-- MAIN DOSSIER PAPER CONTAINER -->
     <main class="paper-container relative">
-        <!-- Tutorial Banner -->
-        <div id="tutorial-banner" class="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/95 text-green-400 border border-green-500/50 px-5 py-4 text-[11px] font-mono z-[60] rounded shadow-lg text-left w-11/12 max-w-md transition-opacity duration-300 pointer-events-auto opacity-0" style="display: none;">
-            <div class="flex justify-between items-center mb-2 border-b border-green-500/30 pb-2">
-                <span class="font-bold uppercase tracking-widest text-green-500">System Guide</span>
-                <button onclick="document.getElementById('tutorial-banner').style.opacity='0'; setTimeout(()=>document.getElementById('tutorial-banner').style.display='none',300)" class="text-red-400 hover:text-red-300 font-bold text-sm">[X]</button>
+        
+        <!-- Header HUD: Streamlined Minimalist Vintage Design -->
+        <header class="px-3 md:px-4 py-2 border-b border-black/10 flex justify-between items-center text-[9px] font-mono tracking-wider z-50 bg-[#f5efe0]/95 backdrop-blur-sm shadow-xs">
+            <div class="flex items-center gap-1.5 md:gap-2">
+                <span class="inline-block w-2 h-2 rounded-full bg-red-700 animate-pulse"></span>
+                <span class="font-bold text-red-950 font-serif tracking-normal text-[11px] sm:text-xs">The Ledger // Jeva Muafida</span>
             </div>
-            <div id="tutorial-text" class="leading-relaxed space-y-2">Ketuk sisi KANAN layar untuk membuka halaman berikutnya.</div>
+            
+            <!-- Minimalist Right Icon Cluster -->
+            <div class="flex items-center gap-1.5 md:gap-2">
+                <!-- Interactive Page Flip Hint Badge -->
+                <span id="page-turn-hint" class="hidden sm:inline-flex items-center gap-1 text-[8px] text-gray-600 bg-black/5 hover:bg-black/10 px-2 py-0.5 rounded-full select-none cursor-pointer transition-colors" onclick="DossierSystem.next()" title="Tarik sudut layar atau geser untuk membuka lembaran buku">
+                    <span>📖</span> Tarik lembar
+                </span>
+
+                <!-- Time Capsule Icon Button -->
+                <button onclick="DossierSystem.openTimeCapsule()" class="w-7 h-7 rounded-full bg-[#3d1818] text-amber-200 hover:bg-[#5a2323] hover:text-white border border-amber-900/40 flex items-center justify-center shadow-xs transition-all hover:scale-105 active:scale-95 group relative cursor-pointer" title="Kapsul Waktu & Hitung Mundur WIB">
+                    <span class="text-xs">⏳</span>
+                    <span class="absolute -bottom-7 right-0 text-[7.5px] font-mono uppercase bg-black/90 text-amber-200 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow">Kapsul Waktu</span>
+                </button>
+
+                <!-- System Guide Icon Button -->
+                <button onclick="DossierSystem.toggleTutorial()" class="w-7 h-7 rounded-full bg-white/80 hover:bg-white text-gray-800 hover:text-red-900 border border-black/15 flex items-center justify-center shadow-xs transition-all hover:scale-105 active:scale-95 group relative cursor-pointer" title="Panduan Berkas">
+                    <span class="text-xs">📖</span>
+                    <span class="absolute -bottom-7 right-0 text-[7.5px] font-mono uppercase bg-black/90 text-white px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow">Panduan</span>
+                </button>
+
+                <!-- Elegant Page Number Badge -->
+                <div class="px-2 py-0.5 bg-black/5 rounded-full border border-black/10 font-bold text-gray-700 text-[8.5px] ml-0.5 tabular-nums select-none" id="page-num-top">
+                    1 / 7
+                </div>
+            </div>
+        </header>
+
+        <!-- Interactive Guide Banner (Non-intrusive HUD) -->
+        <div id="tutorial-banner" class="absolute bottom-14 left-1/2 transform -translate-x-1/2 bg-[#121212]/95 text-emerald-300 border border-emerald-500/50 p-4 text-[10.5px] font-mono z-[70] rounded shadow-2xl text-left w-11/12 max-w-md transition-all duration-300 pointer-events-auto opacity-0" style="display: none;">
+            <div class="flex justify-between items-center mb-2 border-b border-emerald-500/30 pb-1.5">
+                <span id="guide-title" class="font-bold uppercase tracking-widest text-emerald-400">System Guide</span>
+                <button onclick="DossierSystem.hideTutorial()" class="text-red-400 hover:text-red-300 font-bold text-xs px-1.5 py-0.5 border border-red-900/60 rounded">[✕ Tutup]</button>
+            </div>
+            
+            <div id="tutorial-text" class="leading-relaxed space-y-1.5 text-gray-200">
+                Memuat petunjuk...
+            </div>
+
+            <!-- Quick Page Jump Bar -->
+            <div class="mt-3 pt-2 border-t border-emerald-500/20 flex items-center justify-between">
+                <span class="text-[8px] uppercase tracking-wider text-gray-400">Pilih Halaman:</span>
+                <div class="flex gap-1" id="page-chips-container">
+                    <button onclick="DossierSystem.goTo(0)" class="page-chip" id="chip-0">1</button>
+                    <button onclick="DossierSystem.goTo(1)" class="page-chip" id="chip-1">2</button>
+                    <button onclick="DossierSystem.goTo(2)" class="page-chip" id="chip-2">3</button>
+                    <button onclick="DossierSystem.goTo(3)" class="page-chip" id="chip-3">4</button>
+                    <button onclick="DossierSystem.goTo(4)" class="page-chip" id="chip-4">5</button>
+                    <button onclick="DossierSystem.goTo(5)" class="page-chip" id="chip-5">6</button>
+                    <button onclick="DossierSystem.goTo(6)" class="page-chip" id="chip-6">7</button>
+                </div>
+            </div>
         </div>
 
-        <div id="nav-l" class="nav-zone nav-left flex items-center justify-start pl-2" onclick="DossierSystem.prev()">
-            <div class="text-black/20 text-4xl font-black pointer-events-none animate-pulse hidden" id="arrow-l">&lt;</div>
+        <!-- Navigation Hit Zones -->
+        <div id="nav-l" class="nav-zone nav-left" onclick="DossierSystem.prev()" title="Halaman Sebelumnya">
+            <span class="text-black/50 hover:text-black font-black text-xs pointer-events-none" id="arrow-l">❮</span>
         </div>
-        <div id="nav-r" class="nav-zone nav-right flex items-center justify-end pr-2" onclick="DossierSystem.next()">
-            <div class="text-black/20 text-4xl font-black pointer-events-none animate-pulse" id="arrow-r">&gt;</div>
+        <div id="nav-r" class="nav-zone nav-right" onclick="DossierSystem.next()" title="Halaman Berikutnya">
+            <span class="text-black/50 hover:text-black font-black text-xs pointer-events-none" id="arrow-r">❯</span>
         </div>
 
+        <!-- Interactive Corner Book Page Peels (Tarik Sudut Layar) -->
+        <div id="corner-peel-r" class="corner-peel corner-peel-br" onclick="DossierSystem.next()" title="Tarik atau ketuk sudut untuk membuka lembaran selanjutnya">
+            <div class="peel-triangle"></div>
+            <span class="peel-hint">Tarik ❯</span>
+        </div>
+        <div id="corner-peel-l" class="corner-peel corner-peel-bl" onclick="DossierSystem.prev()" title="Tarik atau ketuk sudut untuk kembali ke lembaran sebelumnya" style="display: none;">
+            <div class="peel-triangle"></div>
+            <span class="peel-hint">❮ Balik</span>
+        </div>
+
+        <!-- VIEWPORT: 7 Modules (0 to 6) -->
         <div id="module-viewport" class="flex-1 relative overflow-hidden">
             
-            <!-- Halaman 0: Editorial -->
+            <!-- HALAMAN 1 (Index 0): Editorial Kover Kilas Balik -->
             <section class="page-module victorian-bg active" id="mod-0">
                 <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                    <div class="newspaper-fragment rotate-[12deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300 cursor-pointer" style="top: 8%; right: 5%; width: 100px; opacity: 0.8; box-shadow: 2px 2px 8px rgba(0,0,0,0.3);">
-                        <h4>BREAKING</h4>
-                        <p>Sinyal misterius terdeteksi dari sektor 17.</p>
+                    <div class="newspaper-fragment rotate-[12deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300 cursor-pointer pointer-events-auto" style="top: 8%; right: 5%; width: 105px; opacity: 0.85; box-shadow: 2px 2px 8px rgba(0,0,0,0.3);">
+                        <h4>KILAS BALIK</h4>
+                        <p>Rekapitulasi satu tahun penuh Jeva Muafida.</p>
                     </div>
-                    <div class="washi-tape washi-pattern rotate-[45deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="top: 5%; right: 2%; width: 60px;"></div>
+                    <div class="washi-tape washi-pattern rotate-[45deg]" style="top: 5%; right: 2%; width: 60px;"></div>
                     <div class="pushpin" style="top: 10%; left: 15%;"></div>
                 </div>
 
-                <div class="torn-paper torn-bottom p-6 shadow-xl relative bg-[#f9f7f1] mt-8 mx-2 rotate-[-2deg] z-10">
-                    <div class="washi-tape -translate-x-1/2 rotate-[-2deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="top: -12px; left: 50%; width: 120px;"></div>
+                <div class="torn-paper torn-bottom p-5 shadow-xl relative bg-[#f9f7f1] mt-6 mx-2 rotate-[-1.5deg] z-10">
+                    <div class="washi-tape -translate-x-1/2 rotate-[-2deg]" style="top: -12px; left: 50%; width: 120px;"></div>
                     <div class="text-center mb-2 border-b-2 border-double border-black/20 pb-2">
-                        <p class="text-[9px] uppercase tracking-[0.4em] opacity-50 font-serif">Special Issue: March 30, 2026</p>
+                        <p class="text-[9px] uppercase tracking-[0.35em] opacity-60 font-serif">Annual Monograph // Year in Review</p>
                     </div>
-                    <h1 class="text-5xl text-center my-4 font-black italic tracking-tighter leading-none" style="font-family: 'Playfair Display', serif;">The Ledger</h1>
+                    <h1 class="text-4xl text-center my-3 font-black italic tracking-tighter leading-none" style="font-family: 'Playfair Display', serif;">The Ledger</h1>
                     
-                    <div class="space-y-4 text-justify leading-relaxed relative z-10" style="font-family: 'EB Garamond', serif;">
-                        <p class="nyt-lead text-[1.2rem]">
-                            Tepat pada koordinat waktu yang telah ditentukan, <b>sayangku</b> secara resmi memasuki fase kedewasaan ke-17 tahun, menandai berakhirnya sebuah era dan dimulainya babak baru yang lebih krusial.
+                    <div class="space-y-3 text-justify leading-relaxed relative z-10" style="font-family: 'EB Garamond', serif;">
+                        <p class="nyt-lead text-[1.15rem]">
+                            Satu tahun penuh telah terlalui dengan beribu cerita. Dossier ini dirancang khusus untuk merefleksikan lembaran perjalanan hidup, keteguhan hati, dan memori berharga <b>Jeva Muafida</b>.
                         </p>
-                        <p class="text-[1rem]">Laporan intelijen ini bukan sekadar arsip rutin, melainkan bukti otentik dari perjalanan panjang yang penuh makna. <b>Tujuh belas tahun</b> bukanlah sekadar angka dalam kalender, melainkan akumulasi dari setiap tawa, mimpi, dan keberanian yang telah kamu bentuk dengan indah, <b>sayangku</b>.</p>
+                        <p class="text-[0.98rem]">
+                            Perjalanan sepanjang tahun ini bukanlah sekadar hitungan hari di kalender, melainkan akumulasi dari setiap tawa bahagia, perjuangan yang berhasil dilewati, dan ketulusan hati yang menjadikanmu sosok yang begitu istimewa.
+                        </p>
                     </div>
                 </div>
 
-                <div class="relative mt-6 mx-4 z-10">
-                    <div class="notebook-paper transform rotate-2">
-                        <div class="washi-tape washi-blue rotate-[-45deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="top: -10px; left: -10px; width: 50px;"></div>
-                        <div class="quote-block !m-0 !bg-transparent !border-none !p-0">
-                            "Beberapa jiwa bersinar terlalu terang untuk sekadar dilewatkan oleh waktu; mereka adalah naskah yang ditulis oleh takdir."
+                <div class="relative mt-3 mx-2 z-10 flex items-center justify-between gap-2.5">
+                    <div class="notebook-paper transform rotate-1 flex-1">
+                        <div class="washi-tape washi-blue rotate-[-45deg]" style="top: -10px; left: -10px; width: 50px;"></div>
+                        <div class="quote-block !m-0 !bg-transparent !border-none !p-0 font-serif italic text-gray-800 text-[10.5px]">
+                            "Setiap bab yang kita lalui bersama adalah prasasti kenangan indah yang tertulis rapi menuju gerbang tahun baru."
                         </div>
+                    </div>
+                    <div class="polaroid w-22 shrink-0 rotate-[4deg] hover:rotate-0 hover:scale-105 transition-all duration-300 shadow-md">
+                        <div class="pushpin" style="top: 2px; left: 50%; transform: translateX(-50%);"></div>
+                        <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20260607-WA0021.jpg" alt="Jeva Muafida" class="h-18 w-full object-cover rounded-xs">
+                        <div class="polaroid-caption text-[6.5px]">Jeva Muafida 🌸</div>
                     </div>
                 </div>
                 
-                <div class="mt-auto mb-8 p-4 relative z-10">
-                    <div class="torn-paper torn-top p-4 bg-white rotate-1 shadow-md">
-                        <div class="paperclip rotate-[15deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="top: -20px; right: 20px;"></div>
-                        <p class="text-[1rem] font-serif text-justify">Statusmu kini telah ditingkatkan menjadi <b>aset paling berharga</b> dalam sejarah operasional hidupku. Ketahuilah bahwa di setiap detak waktu yang berlalu, <b>sayangku</b> akan selalu menjadi pusat dari segala koordinat kebahagiaanku. Selamat datang di gerbang baru kehidupan.</p>
-                        <div class="mt-4 border-t border-dashed border-black/30 pt-2 text-right">
-                            <span class="scrap-text text-[8px]">REF: OPR-17-SWEET</span>
+                <div class="mt-auto mb-3 p-3 relative z-10">
+                    <div class="torn-paper torn-top p-4 bg-white rotate-[-0.5deg] shadow-md">
+                        <div class="paperclip rotate-[15deg]" style="top: -18px; right: 20px;"></div>
+                        <p class="text-[0.92rem] font-serif text-justify text-gray-800">
+                            Terima kasih telah melangkah begitu hebat sepanjang tahun ini, <b>Jeva</b>. Di setiap embusan napas dan detak waktu, kamu akan selalu menjadi bab paling bermakna dalam hidupku.
+                        </p>
+                        <div class="mt-3 border-t border-dashed border-black/30 pt-1.5 flex justify-between items-center">
+                            <span class="scrap-text text-[8px] font-mono">DOKUMEN RAHASIA: JM-RETROSPECTIVE</span>
+                            <span class="text-[8px] font-mono text-red-900 font-bold">2026 EDITION</span>
                         </div>
                     </div>
-                </div>
-
-                <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-50">
-                    <button onclick="DossierSystem.openTimeCapsule()" class="bg-red-900/90 text-white px-6 py-3 border-2 border-red-500 font-mono text-[10px] uppercase animate-pulse hover:bg-red-700 shadow-[0_0_15px_rgba(220,38,38,0.5)]">
-                        [LOCKED] Payload 30.03
-                    </button>
                 </div>
             </section>
 
-            <!-- Halaman 1: Evidence -->
+            <!-- HALAMAN 2 (Index 1): Evidence & Timeline Berkas -->
             <section class="page-module victorian-bg" id="mod-1">
-                <div class="grid-paper shadow-2xl rotate-[1deg] !h-auto mb-4 mt-6 mx-2 relative z-10 hover:z-50 hover:scale-[1.02] hover:rotate-0 transition-all duration-300">
-                    <div class="washi-tape washi-yellow rotate-[15deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="top: -10px; right: 20px; width: 80px;"></div>
-                    <div class="washi-tape rotate-[-15deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="bottom: -10px; left: 20px; width: 80px;"></div>
+                <div class="grid-paper shadow-2xl rotate-[0.5deg] !h-auto mb-4 mt-4 mx-2 relative z-10">
+                    <div class="washi-tape washi-yellow rotate-[12deg]" style="top: -10px; right: 20px; width: 80px;"></div>
+                    <div class="washi-tape rotate-[-12deg]" style="bottom: -10px; left: 20px; width: 80px;"></div>
                     
-                    <div class="absolute top-[-20px] right-[-10px] z-30">
-                        <div class="polaroid w-28 rotate-[5deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300">
+                    <div class="absolute top-[-15px] right-[-5px] z-30">
+                        <div class="polaroid w-28 rotate-[4deg] hover:rotate-0 hover:scale-105 transition-all duration-300">
                             <div class="pushpin" style="top: 5px; left: 50%; transform: translateX(-50%);"></div>
-                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/Desain%20tanpa%20judul_20250821_003903_0000.jpg" alt="Sayangku">
-                            <div class="polaroid-caption">Target Acquired</div>
+                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20260607-WA0021.jpg" alt="Jeva Muafida" class="h-28 object-cover">
+                            <div class="polaroid-caption">Jeva Muafida 🌸</div>
                         </div>
                     </div>
                     
-                    <div class="form-header border-b-2 border-black mb-4 pb-1 w-2/3">
-                        <div class="text-[14px] font-black uppercase tracking-[0.1em] text-black font-serif">CONFIDENTIAL FILE</div>
-                        <div class="text-[8px] font-mono">CASE ID: 017/AF-MAR</div>
+                    <div class="form-header border-b-2 border-black mb-3 pb-1 w-2/3">
+                        <div class="text-[13px] font-black uppercase tracking-[0.1em] text-black font-serif">CONFIDENTIAL FILE</div>
+                        <div class="text-[8px] font-mono text-gray-600">CASE ID: 2026/JM-YEAR</div>
                     </div>
 
-                    <div class="mt-2 space-y-2 pr-[95px] font-mono text-[10px]">
-                        <div class="bg-white/50 p-1 border-b border-dotted border-black/30 flex justify-between">
-                            <span class="font-bold text-gray-500">SUBJECT:</span>
-                            <span class="font-bold">ARISTIA FIRLIN</span>
+                    <div class="mt-2 space-y-1.5 pr-[95px] font-mono text-[9.5px]">
+                        <div class="bg-white/60 p-1 border-b border-dotted border-black/30 flex justify-between">
+                            <span class="font-bold text-gray-500">SUBJEK:</span>
+                            <span class="font-bold text-red-950">JEVA MUAFIDA</span>
                         </div>
-                        <div class="bg-white/50 p-1 border-b border-dotted border-black/30 flex justify-between">
-                            <span class="font-bold text-gray-500">CLASS:</span>
-                            <span class="font-bold text-red-800">S-TIER ASSET</span>
+                        <div class="bg-white/60 p-1 border-b border-dotted border-black/30 flex justify-between">
+                            <span class="font-bold text-gray-500">KLASIFIKASI:</span>
+                            <span class="font-bold text-emerald-800">MOST CHERISHED</span>
                         </div>
-                        <div class="bg-white/50 p-1 border-b border-dotted border-black/30 flex justify-between">
-                            <span class="font-bold text-gray-500">AGE:</span>
-                            <span class="font-bold">17 YEARS</span>
+                        <div class="bg-white/60 p-1 border-b border-dotted border-black/30 flex justify-between">
+                            <span class="font-bold text-gray-500">PERIODE:</span>
+                            <span class="font-bold">1 TAHUN PENUH</span>
                         </div>
-                        <div class="bg-white/50 p-1 border-b border-dotted border-black/30 flex justify-between">
-                            <span class="font-bold text-gray-500">ORIGIN:</span>
-                            <span class="font-bold">30/03/2009</span>
+                        <div class="bg-white/60 p-1 border-b border-dotted border-black/30 flex justify-between">
+                            <span class="font-bold text-gray-500">STATUS:</span>
+                            <span class="font-bold text-red-700">EXTRAORDINARY</span>
                         </div>
                     </div>
                     
-                    <div class="mt-6 relative">
-                        <div class="newspaper-fragment rotate-[-5deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300 cursor-pointer" style="top: -15px; left: -15px; z-index: 10;">
+                    <div class="mt-5 relative">
+                        <div class="newspaper-fragment rotate-[-4deg] cursor-pointer" style="top: -12px; left: -10px; z-index: 10;">
                             <h4>EVIDENCE #1</h4>
                             <p>Rekaman visual terenkripsi.</p>
                         </div>
-                        <div class="bg-black/[0.04] p-3 border-2 border-dashed border-black/20 rounded-sm relative group bg-white">
+                        <div class="p-3 border-2 border-dashed border-black/20 rounded-sm relative bg-white/90">
                             <div class="flex justify-between items-center mb-2">
-                                <p class="text-[8px] font-bold uppercase opacity-50">Encrypted Signal:</p>
-                                <span class="text-[7px] font-mono text-red-800 bg-red-100 px-1 border border-red-200">LOCKED</span>
+                                <p class="text-[8px] font-bold uppercase opacity-60 font-mono">Encrypted Signal:</p>
+                                <span class="text-[7px] font-mono text-red-800 bg-red-100 px-1 border border-red-200 font-bold">TERKUNCI</span>
                             </div>
                             
-                            <div id="video-container" class="hidden transition-all duration-500 ease-in-out">
-                                <video controls class="w-full border border-black/10 shadow-sm" style="max-height: 120px; object-fit: cover;">
+                            <div id="video-container" class="hidden transition-all duration-300">
+                                <video controls class="w-full border border-black/10 rounded" style="max-height: 120px; object-fit: cover;">
                                     <source src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/VID_20250808204246202.mp4" type="video/mp4">
-                                    Your browser does not support the video tag.
                                 </video>
                             </div>
 
-                            <button id="decrypt-btn" onclick="document.getElementById('video-container').classList.remove('hidden'); this.style.display='none';" class="w-full py-3 border border-dashed border-black/30 bg-[#f0f0f0] hover:bg-white transition-colors flex flex-col items-center justify-center gap-1 cursor-pointer">
-                                <span class="text-[9px] font-bold uppercase tracking-widest text-gray-700">Tap to Decrypt</span>
+                            <button id="decrypt-btn" onclick="document.getElementById('video-container').classList.remove('hidden'); this.style.display='none';" class="w-full py-2.5 border border-dashed border-black/30 bg-[#f4f1ea] hover:bg-white transition-colors flex flex-col items-center justify-center gap-1 cursor-pointer">
+                                <span class="text-[9px] font-bold uppercase tracking-widest text-red-950 font-mono">Tap to Decrypt Signal</span>
                             </button>
                         </div>
                     </div>
 
-                    <div class="mt-4 p-2 bg-yellow-50 border border-yellow-100 text-justify relative">
-                        <div class="washi-tape washi-pattern" style="top: -5px; left: 40%; width: 60px; height: 15px;"></div>
+                    <div class="mt-3 p-2 bg-amber-50/80 border border-amber-200 text-justify relative">
                         <p class="text-[9px] leading-relaxed text-gray-800 font-serif italic">
-                            "Subjek menunjukkan perkembangan emosional yang signifikan. Prioritas pengawasan: MUTLAK."
+                            "Subjek menunjukkan ketangguhan luar biasa, senyum yang menerangi hari, dan dedikasi mengagumkan sepanjang perjalanan tahun ini."
                         </p>
                     </div>
                     
-                    <div class="stamp-container-v2 mt-4">
-                        <div class="round-stamp opacity-80 rotate-[-10deg]">
-                            VERIFIED<br>BY N.<br>SECURE
+                    <div class="stamp-container-v2 mt-3">
+                        <div class="round-stamp opacity-80 rotate-[-8deg] font-mono text-[8px]">
+                            VERIFIED<br>BY N.<br>2026 RETRO
                         </div>
-                        <img src="https://img.icons8.com/ios/100/000000/fingerprint.png" class="fingerprint-zone opacity-40" alt="Fingerprint">
+                        <img src="https://img.icons8.com/ios/100/000000/fingerprint.png" class="fingerprint-zone opacity-30" alt="Fingerprint">
                         <div class="barcode-strip opacity-30"></div>
                     </div>
                 </div>
             </section>
 
-            <!-- Halaman 2: Clipping (New) -->
+            <!-- HALAMAN 3 (Index 2): Digital Clipping & Highlight Reels -->
             <section class="page-module victorian-bg" id="mod-2">
-                <h2 class="text-center font-bold text-[10px] uppercase mb-6 border-b pb-2 tracking-[0.2em]">Digital Clipping: Ext. Source</h2>
+                <h2 class="text-center font-bold text-[10px] uppercase mb-4 border-b pb-2 tracking-[0.2em] font-mono">Digital Clipping: Highlight Jejak Tahun Ini</h2>
                 
-                <div class="relative bg-white p-2 shadow-lg rotate-1 border border-gray-300 mt-4 mx-2 z-10 transition-transform duration-300 hover:z-50 hover:scale-[1.02]">
-                    <div class="washi-tape washi-blue rotate-[-2deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="top: -10px; left: 10%; width: 80px;"></div>
-                    <div class="washi-tape washi-yellow rotate-[2deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="bottom: -10px; right: 10%; width: 80px;"></div>
-                    <div class="border border-black/10 p-4 bg-gray-50">
-                        <p class="text-[8px] font-bold uppercase mb-3 text-center opacity-60 tracking-widest">Intercepted Signal: Instagram</p>
-                        <a href="https://www.instagram.com/reel/DQEbbnuEj95/?igsh=MXJ0ejJ5amxsZW1y" target="_blank" class="block group relative overflow-hidden border border-black/20">
+                <div class="relative bg-white p-2.5 shadow-lg rotate-1 border border-gray-300 mt-2 mx-2 z-10">
+                    <div class="washi-tape washi-blue rotate-[-2deg]" style="top: -10px; left: 10%; width: 80px;"></div>
+                    <div class="washi-tape washi-yellow rotate-[2deg]" style="bottom: -10px; right: 10%; width: 80px;"></div>
+                    <div class="border border-black/10 p-3 bg-gray-50">
+                        <p class="text-[8px] font-bold uppercase mb-2 text-center opacity-70 tracking-widest font-mono">Intercepted Signal: Instagram Reel</p>
+                        <a href="https://www.instagram.com/reel/DQEbbnuEj95/?igsh=MXJ0ejJ5amxsZW1y" target="_blank" rel="noopener noreferrer" class="block group relative overflow-hidden border border-black/20">
                             <div class="aspect-video bg-black/5 flex items-center justify-center group-hover:bg-black/10 transition-colors">
-                                <div class="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                                <div class="w-11 h-11 rounded-full bg-white/90 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-pink-600" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                                     </svg>
                                 </div>
-                                <span class="absolute bottom-2 text-[8px] font-bold bg-white/90 px-2 py-0.5 rounded-sm shadow-sm">TAP TO VIEW REEL</span>
+                                <span class="absolute bottom-2 text-[8px] font-bold bg-white/95 px-2 py-0.5 rounded shadow font-mono">KETUK UNTUK LIHAT REEL</span>
                             </div>
                         </a>
-                        <div class="mt-3 text-justify">
-                            <p class="text-[9px] font-serif italic leading-relaxed text-gray-600">
-                                "Visual evidence intercepted from public channels. Subject appears in high spirits. Archiving for sentimental analysis."
+                        <div class="mt-2.5 text-justify">
+                            <p class="text-[9px] font-serif italic leading-relaxed text-gray-700">
+                                "Bukti visual cuplikan keceriaan Jeva Muafida yang tersimpan rapi dalam arsip perjalanan tahun ini."
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-8 grid grid-cols-3 gap-4 relative z-0">
-                    <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/images.jpeg" class="w-full h-auto rounded-md shadow-lg transform rotate-[-3deg] hover:scale-110 hover:z-50 hover:rotate-0 transition-all duration-300" alt="Postcard from Japan">
-                    <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/1196-front-661x1024.jpg" class="w-full h-auto rounded-md shadow-lg transform rotate-[2deg] hover:scale-110 hover:z-50 hover:rotate-0 transition-all duration-300" alt="Postcard from Paris">
-                    <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/images%20(1).jpeg" class="w-full h-auto rounded-md shadow-lg transform rotate-[-1deg] hover:scale-110 hover:z-50 hover:rotate-0 transition-all duration-300" alt="Postcard from New York">
+                <!-- Koleksi Perangko Vintage & Polaroid Jeva -->
+                <div class="mt-3 relative z-10 px-1">
+                    <div class="flex items-center justify-between text-[7.5px] font-mono uppercase tracking-wider text-red-900 font-bold mb-1.5 border-t border-black/10 pt-1.5">
+                        <span class="flex items-center gap-1">📮 KOLEKSI PERANGKO POS & KLIPING:</span>
+                        <span class="text-gray-500">ARSIP 2026</span>
+                    </div>
+
+                    <div class="grid grid-cols-4 gap-2 items-center">
+                        <!-- Perangko 1: Kyoto -->
+                        <div class="vintage-stamp rotate-[-3deg] hover:scale-105 transition-all shadow-md">
+                            <div class="stamp-postmark text-[5.5px] font-mono text-red-900 font-bold">AIR MAIL</div>
+                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/images.jpeg" class="h-16 w-full object-cover rounded-xs" alt="Perangko Kyoto">
+                            <div class="text-[6px] font-mono text-center mt-0.5 text-gray-700 font-bold">KYOTO 15¢</div>
+                        </div>
+
+                        <!-- Perangko 2: Paris -->
+                        <div class="vintage-stamp rotate-[2deg] hover:scale-105 transition-all shadow-md">
+                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/1196-front-661x1024.jpg" class="h-16 w-full object-cover rounded-xs" alt="Perangko Paris">
+                            <div class="text-[6px] font-mono text-center mt-0.5 text-gray-700 font-bold">PARIS 20¢</div>
+                        </div>
+
+                        <!-- Perangko 3: New York -->
+                        <div class="vintage-stamp rotate-[-2deg] hover:scale-105 transition-all shadow-md">
+                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/images%20(1).jpeg" class="h-16 w-full object-cover rounded-xs" alt="Perangko New York">
+                            <div class="text-[6px] font-mono text-center mt-0.5 text-gray-700 font-bold">NYC 25¢</div>
+                        </div>
+
+                        <!-- Polaroid Foto Jeva (Photo 3) nestled with washi tape -->
+                        <div class="polaroid rotate-[3deg] hover:rotate-0 hover:scale-105 transition-all duration-300 shadow-md">
+                            <div class="washi-tape washi-yellow -translate-x-1/2 rotate-[-5deg]" style="top: -7px; left: 50%; width: 42px;"></div>
+                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20261010-WA0002.jpg" class="h-16 w-full object-cover rounded-xs" alt="Jeva Muafida">
+                            <div class="polaroid-caption text-[6px]">Jeva ✨</div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <!-- Halaman 3: Calendar (Shifted) -->
-            <section class="page-module victorian-bg" id="mod-3">
+            <!-- HALAMAN 4 (Index 3): Logbook Kalender Multi-Momen (8 Mar, 24 Apr, 13 Des, 30) -->
+            <section class="page-module victorian-bg justify-between" id="mod-3">
                 <audio id="applause-sfx" src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/Applause%20Sound%20Effect%28MP3_320K%29.mp3" preload="auto"></audio>
-                <h2 class="text-center font-bold text-[10px] uppercase mb-4 border-b pb-2 tracking-[0.2em] relative z-10">Logbook Operasional: Maret 2026</h2>
                 
-                <!-- Scrapbook Collage Area -->
-                <div class="relative h-48 mb-4">
-                    <!-- Mini Postcard Decoration -->
-                    <div class="absolute top-2 left-2 w-24 h-16 bg-[#f4ebd0] border border-[#d3c5a3] shadow-md transform rotate-[-15deg] z-10 p-1 flex flex-col justify-between transition-transform duration-300 hover:z-50 hover:scale-110 hover:rotate-0">
-                        <div class="washi-tape washi-blue rotate-[-30deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="top: -10px; left: -10px; width: 40px;"></div>
-                        <div class="flex justify-between items-start border-b border-double border-[#d3c5a3] pb-1">
-                            <span class="text-[4px] font-serif uppercase text-[#8b0000]">Postcard</span>
-                            <div class="w-3 h-4 border border-dashed border-[#d3c5a3]"></div>
+                <div>
+                    <h2 class="text-center font-bold text-[10px] uppercase mb-2 border-b pb-1 tracking-[0.2em] font-mono text-red-950 flex items-center justify-center gap-2">
+                        <span>✦</span> Logbook Operasional // Momen Monumental <span>✦</span>
+                    </h2>
+
+                    <!-- Scrapbook Mini Collage Header -->
+                    <div class="relative h-24 mb-2 bg-[#f4ece1]/80 border border-black/10 rounded overflow-hidden flex items-center px-3 shadow-xs">
+                        <!-- Newspaper Fragment -->
+                        <div class="newspaper-fragment rotate-[-3deg] absolute left-2 top-2 max-w-[155px] z-10 scale-90">
+                            <h4>CHRONICLE 2026</h4>
+                            <p id="scrapbook-snippet-text">Koordinat penting: 08 Mar (Awal Chat), 24 Apr (Ultah Tersayang), 13 Des (Ultah Naufal).</p>
                         </div>
-                        <div class="flex-1 flex flex-col justify-center gap-1 mt-1">
-                            <div class="border-b border-[#d3c5a3] w-full"></div>
-                            <div class="border-b border-[#d3c5a3] w-full"></div>
-                            <div class="border-b border-[#d3c5a3] w-3/4"></div>
+
+                        <!-- Main Photo Clipping -->
+                        <div class="absolute right-3 top-1 z-20 cursor-pointer" onclick="DossierSystem.openCurrentMilestoneModal()" title="Ketuk untuk melihat catatan momen">
+                            <div class="polaroid w-24 rotate-[2deg] hover:rotate-0 hover:scale-105 transition-all duration-300 shadow-md">
+                                <div class="pushpin" style="top: 2px; left: 50%; transform: translateX(-50%);"></div>
+                                <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20260402-WA0027(1).jpg" alt="Jeva Muafida Milestone" class="h-14 object-cover">
+                                <div class="polaroid-caption text-[7px]" id="polaroid-caption-text">Milestone 2026</div>
+                            </div>
+                        </div>
+
+                        <!-- Stamp -->
+                        <div class="absolute right-28 top-2 w-11 h-11 border-2 border-red-800 rounded-full flex items-center justify-center transform -rotate-12 opacity-80 z-10 pointer-events-none">
+                            <span class="text-[5.5px] font-bold text-red-800 text-center leading-tight font-mono">JEVA & NAUFAL<br>LOGBOOK<br>2026</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Milestone Navigator Ribbon (Tab 3 Tanggal Utama) -->
+                    <div class="mb-2">
+                        <div class="text-[7.5px] uppercase font-mono tracking-wider text-red-900 font-bold mb-1 flex items-center justify-between">
+                            <span class="flex items-center gap-1">📍 PIN KOORDINAT MOMEN SPESIAL:</span>
+                            <span class="text-gray-500 font-normal">Ketuk untuk buka</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5 font-mono text-[8px]">
+                            <button id="chip-milestone-mar" onclick="DossierSystem.selectMilestone('08-03')" class="p-1.5 bg-white/90 hover:bg-white border border-red-900/30 hover:border-red-900 rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95">
+                                <span class="text-red-950 font-black flex items-center gap-1">🌸 08 MAR</span>
+                                <span class="text-[7px] text-gray-700 truncate group-hover:text-red-900 font-sans">Awal Chat Kita</span>
+                            </button>
+                            <button id="chip-milestone-apr" onclick="DossierSystem.selectMilestone('24-04')" class="p-1.5 bg-white/90 hover:bg-white border border-red-900/30 hover:border-red-900 rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95">
+                                <span class="text-red-950 font-black flex items-center gap-1">🎂 24 APR</span>
+                                <span class="text-[7px] text-gray-700 truncate group-hover:text-red-900 font-sans">Ultah Tersayang</span>
+                            </button>
+                            <button id="chip-milestone-des" onclick="DossierSystem.selectMilestone('13-12')" class="p-1.5 bg-white/90 hover:bg-white border border-red-900/30 hover:border-red-900 rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95">
+                                <span class="text-red-950 font-black flex items-center gap-1">🎁 13 DES</span>
+                                <span class="text-[7px] text-gray-700 truncate group-hover:text-red-900 font-sans">Ultah Naufal</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Background Scraps -->
-                    <div class="newspaper-fragment rotate-[-8deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300 cursor-pointer" style="top: 10px; left: 20px; z-index: 5;">
-                        <h4>DAILY CHRONICLE</h4>
-                        <p>Laporan cuaca menunjukkan kondisi cerah pada tanggal 30. Persiapan perayaan telah mencapai tahap akhir.</p>
-                    </div>
-                    <div class="newspaper-fragment rotate-[5deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300 cursor-pointer" style="bottom: 20px; right: -5px; width: 120px; background: #dcd0c0; z-index: 5;">
-                        <h4>ARCHIVE 017</h4>
-                        <p>Dokumen rahasia ini diklasifikasikan sebagai prioritas utama. Jangan disebarluaskan tanpa izin otoritas tertinggi.</p>
-                    </div>
-
-                    <!-- Main Photo Clipping -->
-                    <div class="absolute top-4 left-1/2 transform -translate-x-1/2 rotate-2 z-20 hover:z-50 hover:scale-110 hover:rotate-0 transition-all duration-300 cursor-pointer">
-                        <div class="polaroid w-32 rotate-[-2deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300">
-                            <div class="pushpin" style="top: 5px; left: 50%; transform: translateX(-50%);"></div>
-                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20250502-WA0070.jpg" alt="Featured Memory">
-                            <div class="polaroid-caption">March 30th</div>
+                    <!-- Month Selector & Controls -->
+                    <div class="flex items-center justify-between px-2.5 py-1 bg-black/5 border border-black/15 rounded-t font-mono text-[9px] relative z-10">
+                        <button onclick="DossierSystem.changeCalendarMonth(-1)" class="px-2 py-0.5 hover:bg-black/10 rounded font-bold text-red-950 transition-colors" title="Bulan Sebelumnya">◀</button>
+                        <div class="flex items-center gap-1.5">
+                            <span id="calendar-month-label" class="font-bold tracking-widest uppercase text-red-950 text-[10px]">MARET 2026</span>
+                            <span id="calendar-active-tag" class="text-[7px] px-1 py-0.2 bg-red-900 text-white rounded font-mono uppercase">1 Momen</span>
                         </div>
+                        <button onclick="DossierSystem.changeCalendarMonth(1)" class="px-2 py-0.5 hover:bg-black/10 rounded font-bold text-red-950 transition-colors" title="Bulan Berikutnya">▶</button>
                     </div>
 
-                    <!-- Decorative Stickers/Stamps -->
-                    <div class="absolute top-0 right-4 w-12 h-12 border-2 border-red-800 rounded-full flex items-center justify-center transform rotate-12 opacity-70 z-30 pointer-events-none">
-                        <span class="text-[6px] font-bold text-red-800 text-center leading-tight">MARCH<br>30<br>2026</span>
+                    <!-- Interactive Calendar Grid -->
+                    <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-[10.5px] text-center p-2.5 bg-white/80 border-x border-b border-black/15 relative z-10 shadow-sm rounded-b font-mono">
+                        <!-- Calendar injected by JS -->
                     </div>
                 </div>
-
-                <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-[11px] text-center p-4 bg-white/50 border border-black/10 relative z-10 shadow-sm">
-                    <!-- Calendar injected by JS -->
-                </div>
                 
-                <div class="radar-box relative z-10 bg-[#f2ecd9]/80 backdrop-blur-sm p-2 mt-4 border border-black/5">
+                <div class="radar-box relative z-10 bg-[#f2ecd9]/90 p-2 mt-2 border border-black/10 rounded">
                     <div class="monitor-line">
                         <div class="wave-pulse"></div>
                     </div>
-                    <div class="data-readout uppercase mt-2">
-                        <div>Target: Aristia F.</div>
-                        <div>Coord: 30.0326.N</div>
-                        <div>Status: Critical Path</div>
-                        <div>Signal: Strong 100%</div>
+                    <div class="data-readout uppercase font-mono mt-0.5 text-[7.5px] flex justify-between">
+                        <span>Target: Jeva & Naufal</span>
+                        <span>Momen: Multi-Koordinat</span>
+                        <span>Status: Sinkron</span>
                     </div>
-                    <p class="text-[7px] opacity-60 mt-2 text-justify font-serif italic">
-                        "Pemantauan transmisi otomatis diaktifkan. Seluruh sistem sinkron dengan detak waktu target."
+                    <p id="calendar-hint-text" class="text-[7.5px] opacity-80 mt-1 text-justify font-serif italic text-gray-800">
+                        "Petunjuk: Ketuk tanggal bertanda khusus (08 Mar, 24 Apr, 13 Des, atau tanggal 30) untuk membuka lembar memori rahasia."
                     </p>
                 </div>
             </section>
 
-            <!-- Halaman 4: Surprise (Shifted) -->
+            <!-- HALAMAN 5 (Index 4): Lentera Refleksi & Surat Mesin Tik -->
             <section class="page-module" id="mod-4">
                 <audio id="birthday-song" src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/gemini_generated_media_e9d2356c.mp3" preload="auto"></audio>
                 
-                <div id="bday-text" class="absolute top-[10%] left-1/2 transform -translate-x-1/2 text-center w-full opacity-0 transition-opacity duration-1000 z-50 pointer-events-none">
-                    <h2 class="text-4xl md:text-6xl font-bold text-[#f2ecd9] drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="font-family: 'Playfair Display', serif;">Happy 17th Birthday!</h2>
-                    <p class="text-lg text-[#f2ecd9] mt-2 italic drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]">Make a wish...</p>
+                <div id="bday-text" class="absolute top-[8%] left-1/2 transform -translate-x-1/2 text-center w-full opacity-0 transition-opacity duration-1000 z-50 pointer-events-none">
+                    <h2 class="text-3xl md:text-5xl font-bold text-[#f2ecd9] drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] font-serif italic">Year in Reflection</h2>
+                    <p class="text-sm text-[#f2ecd9] mt-1 italic drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] font-serif">Menyongsong Tahun Baru Bersama Jeva Muafida...</p>
                 </div>
 
+                <!-- Interactive Candle / Lantern Stage -->
                 <div id="candle-stage">
                     <div class="candle">
                         <div class="candle-glow"></div>
-                        <div class="flame" onclick="DossierSystem.extinguish()"></div>
+                        <div class="flame cursor-pointer" onclick="DossierSystem.extinguish()" title="Ketuk nyala lentera"></div>
                     </div>
-                    <p class="candle-hint">Tap flame to initiate</p>
+                    <p class="candle-hint font-mono text-[9px]">Ketuk nyala api untuk memulai pengetikan surat refleksi</p>
                 </div>
                 
-                <div class="notebook-paper shadow-lg h-full relative rotate-1 mx-2 mt-4 z-10 flex flex-col">
-                    <div class="washi-tape washi-pattern -translate-x-1/2 rotate-[2deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="top: -15px; left: 50%; width: 100px;"></div>
-                    <div class="washi-tape washi-blue rotate-[-5deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="bottom: -15px; right: 20px; width: 80px;"></div>
+                <div class="notebook-paper shadow-lg h-full relative rotate-[0.5deg] mx-1 mt-3 z-10 flex flex-col">
+                    <div class="washi-tape washi-pattern -translate-x-1/2 rotate-[1deg]" style="top: -12px; left: 50%; width: 100px;"></div>
+                    <div class="washi-tape washi-blue rotate-[-4deg]" style="bottom: -12px; right: 20px; width: 80px;"></div>
                     
-                    <div class="flex justify-between items-end mb-4 opacity-60 border-b border-black/10 pb-2 shrink-0">
-                        <h2 class="text-[9px] font-bold uppercase tracking-widest font-serif text-red-900">Internal Memo: Confidential</h2>
-                        <span class="text-[8px] font-mono bg-black/5 px-1">LOG-ID: 300326</span>
+                    <div class="flex justify-between items-end mb-3 opacity-70 border-b border-black/10 pb-1.5 shrink-0 font-mono text-[8.5px]">
+                        <h2 class="font-bold uppercase tracking-widest font-serif text-red-950">Surat Refleksi: Satu Tahun Penuh</h2>
+                        <span class="bg-black/5 px-1 rounded">LOG-ID: 2026-JM</span>
                     </div>
                     
-                    <div id="typewriter-output" class="relative z-10 flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"></div>
+                    <div id="typewriter-output" class="relative z-10 flex-1 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent"></div>
 
-                    <!-- Tarot Card Decorations -->
-                    <div class="tarot-card rotate-[-15deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300 cursor-pointer" style="top: 20px; left: -40px;">
-                        <img id="tarot-lovers" src="https://picsum.photos/seed/lovers/60/100" alt="The Lovers">
+                    <!-- Tarot / Reflection Card Decorations -->
+                    <div class="tarot-card rotate-[-12deg] hover:rotate-0 hover:scale-105 transition-all duration-300 cursor-pointer" style="top: 15px; left: -35px;">
+                        <img id="tarot-lovers" src="https://picsum.photos/seed/lovers/60/100" alt="Harapan">
                         <div class="tarot-label">The Lovers</div>
                     </div>
-                    <div class="tarot-card rotate-[-5deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300 cursor-pointer" style="top: 140px; left: -35px;">
-                        <img id="tarot-star" src="https://picsum.photos/seed/star/60/100" alt="The Star">
+                    <div class="tarot-card rotate-[10deg] hover:rotate-0 hover:scale-105 transition-all duration-300 cursor-pointer" style="top: 90px; right: -35px;">
+                        <img id="tarot-star" src="https://picsum.photos/seed/star/60/100" alt="Harapan">
                         <div class="tarot-label">The Star</div>
                     </div>
-                    <div class="tarot-card rotate-[12deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300 cursor-pointer" style="top: 80px; right: -40px;">
-                        <img id="tarot-moon" src="https://picsum.photos/seed/moon/60/100" alt="The Moon">
-                        <div class="tarot-label">The Moon</div>
+
+                    <!-- Authentic Photo Keepsake on Reflection Letter -->
+                    <div class="polaroid w-20 rotate-[6deg] absolute right-2 bottom-16 shadow-md hover:scale-105 transition-all z-20">
+                        <div class="paperclip rotate-[12deg]" style="top: -10px; right: 8px;"></div>
+                        <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20261002-WA0020(1).jpg" class="h-16 w-full object-cover rounded-xs" alt="Jeva Muafida Memory">
+                        <div class="polaroid-caption text-[6px]">02 Okt '26 💖</div>
                     </div>
                     
-                    <div id="wax-seal-area" class="wax-seal-decoration mt-auto shrink-0 pt-4">
-                        <div class="newspaper-fragment rotate-[5deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300 cursor-pointer" style="bottom: 10px; left: -10px; width: 80px; z-index: 0;">
+                    <div id="wax-seal-area" class="wax-seal-decoration mt-auto shrink-0 pt-3">
+                        <div class="newspaper-fragment rotate-[4deg]" style="bottom: 10px; left: -10px; width: 85px; z-index: 0;">
                             <h4>VERIFIED</h4>
-                            <p>Otentikasi biometrik selesai.</p>
+                            <p>Arsip refleksi terautentikasi.</p>
                         </div>
                         
                         <div class="relative z-10 flex flex-col items-center">
                             <div class="red-ribbon shadow-sm"></div>
                             <div id="wax-seal-element" class="wax-seal shadow-md"></div>
-                            <div class="verification-grid mt-4 bg-white/50 p-2 border border-black/5">
+                            <div class="verification-grid mt-3 bg-white/60 p-2 border border-black/10 font-mono text-[7px]">
                                 <div class="bio-info">
                                     <div class="bio-row">AUTH: <span class="bio-val">OPR_N</span></div>
-                                    <div class="bio-row">SESS: <span class="bio-val">AF-17</span></div>
-                                    <div class="bio-row">SIG: <span class="bio-val">ENCR</span></div>
+                                    <div class="bio-row">SESS: <span class="bio-val">JM-2026</span></div>
+                                    <div class="bio-row">SIG: <span class="bio-val">ENCRYPTED</span></div>
                                 </div>
                                 <div class="retro-qr-graphic opacity-60"></div>
                             </div>
                         </div>
                         
-                        <div class="footer-shred mt-4"></div>
-                        <p class="text-[7px] opacity-30 uppercase tracking-[0.4em] -mt-2 text-center">Official Archive Termination</p>
-                        
-
+                        <div class="footer-shred mt-2"></div>
+                        <p class="text-[7px] opacity-40 uppercase tracking-[0.3em] text-center font-mono mt-1">Official Year-End Termination</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Halaman 7: Postcard Scrapbook (New) -->
-            <section class="page-module victorian-bg" id="mod-7">
-                <div id="lyrics-overlay" class="lyrics-overlay hidden"></div>
-                <video id="hidden-greeting" src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/Hindia%20-%20everything%20u%20are%20edit(720P_HD).mp4" class="hidden absolute inset-0 w-full h-full object-cover z-[100]" preload="auto" onclick="this.pause(); this.classList.add('hidden'); DossierSystem.stopSparkles();"></video>
+            <!-- HALAMAN 6 (Index 5): Carte Postale & Video Experience -->
+            <section class="page-module victorian-bg" id="mod-5">
                 <div class="relative h-full w-full flex items-center justify-center">
                     
                     <!-- Postcard Background -->
-                    <div class="relative bg-[#f4ebd0] p-3 shadow-md transform rotate-[-2deg] border border-[#d3c5a3] w-[95%] max-w-[380px] z-10 transition-transform duration-300 hover:z-50 hover:scale-[1.02]">
+                    <div class="relative bg-[#f4ebd0] p-3.5 shadow-xl transform rotate-[-1.5deg] border border-[#d3c5a3] w-[96%] max-w-[390px] z-10 transition-transform duration-300 hover:rotate-0">
                         <!-- Postcard Header -->
-                        <div class="flex justify-between items-start border-b-2 border-double border-[#d3c5a3] pb-2 mb-2">
-                            <div class="text-[8px] font-serif uppercase tracking-widest text-[#8b0000]">Carte Postale</div>
-                            <div class="w-8 h-10 border border-dashed border-[#d3c5a3] flex items-center justify-center text-[6px] text-gray-400 text-center">Place<br>Stamp<br>Here</div>
+                        <div class="flex justify-between items-start border-b-2 border-double border-[#d3c5a3] pb-1.5 mb-2.5">
+                            <div class="text-[8.5px] font-serif uppercase tracking-widest text-[#8b0000] font-bold">Carte Postale // 2026 Retrospective</div>
+                            <div class="w-8 h-10 border border-dashed border-[#d3c5a3] flex items-center justify-center text-[6px] text-gray-500 text-center font-mono">Place<br>Stamp<br>Here</div>
                         </div>
                         
                         <!-- Postcard Content Area -->
-                        <div class="flex gap-2">
-                            <!-- Left: Photo -->
-                            <div class="w-1/2 relative cursor-pointer group z-[50] hover:scale-105 transition-transform duration-300" onclick="event.stopPropagation(); DossierSystem.playPostcardExperience()" title="Tap to play memory">
-                                <div class="tape-strip rotate-[-15deg] hover:animate-none hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="top: -5px; left: -5px; width: 30px;"></div>
-                                <div class="tape-strip rotate-[15deg] hover:animate-none hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="bottom: -5px; right: -5px; width: 30px;"></div>
-                                <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20250504-WA0073.jpg" class="w-full h-auto border-4 border-white shadow-sm filter sepia-[0.1] group-hover:sepia-0 transition-all duration-500" alt="Sweet Memory">
-                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <div class="bg-white/80 rounded-full p-2 shadow-lg">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-800" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <div class="flex gap-2.5">
+                            <!-- Left: Photo with Clickable Video Trigger -->
+                            <div class="w-1/2 relative cursor-pointer group z-[50]" onclick="DossierSystem.openVideoModal()" title="Ketuk foto untuk memutar video kenangan Jeva Muafida">
+                                <div class="tape-strip rotate-[-15deg]" style="top: -6px; left: -6px; width: 30px;"></div>
+                                <div class="tape-strip rotate-[15deg]" style="bottom: -6px; right: -6px; width: 30px;"></div>
+                                
+                                <div class="relative overflow-hidden rounded border-2 border-white shadow-md">
+                                    <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20250504-WA0073.jpg" class="w-full h-auto filter sepia-[0.1] group-hover:sepia-0 group-hover:scale-105 transition-all duration-300" alt="Jeva Muafida Memory">
+                                    
+                                    <!-- Animated Play Button Indicator -->
+                                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 flex flex-col items-center justify-center transition-all">
+                                        <div class="w-10 h-10 rounded-full bg-red-900/90 text-white flex items-center justify-center shadow-lg border-2 border-yellow-300 group-hover:scale-110 transition-transform">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-current ml-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                        </div>
+                                        <span class="mt-1.5 text-[7px] font-mono uppercase font-bold text-white bg-black/70 px-1.5 py-0.5 rounded border border-white/20">
+                                            KETUK FOTO
+                                        </span>
                                     </div>
                                 </div>
+                                <p class="text-[7.5px] text-center font-mono text-red-950 font-bold mt-1">▶ Buka Video Rekaman</p>
                             </div>
                             
-                            <!-- Right: Message & Audio -->
-                            <div class="w-1/2 flex flex-col justify-between">
-                                <div class="space-y-2 mt-2">
-                                    <div class="border-b border-[#d3c5a3] text-[6px] font-serif italic text-[#8b0000] pt-1">Dearest,</div>
-                                    <div class="border-b border-[#d3c5a3] text-[6px] font-serif italic text-[#5a4a42] pt-1">Selamat ulang tahun yang ke-17.</div>
-                                    <div class="border-b border-[#d3c5a3] text-[6px] font-serif italic text-[#5a4a42] pt-1">Semoga harimu seindah</div>
-                                    <div class="border-b border-[#d3c5a3] text-[6px] font-serif italic text-[#5a4a42] pt-1">senyumanmu.</div>
-                                    <div class="border-b border-[#d3c5a3] text-[6px] font-serif italic text-[#8b0000] text-right pt-1">Love, N</div>
+                            <!-- Right: Heartfelt Handwritten Postcard Note -->
+                            <div class="w-1/2 flex flex-col justify-between font-serif">
+                                <div class="space-y-1.5 text-[9px] leading-relaxed text-gray-800">
+                                    <div class="border-b border-[#d3c5a3] pb-0.5 font-bold italic text-red-950">Dearest Jeva Muafida,</div>
+                                    <div class="border-b border-[#d3c5a3] pb-0.5 italic text-gray-700">Terima kasih atas segala cerita indah sepanjang satu tahun ini.</div>
+                                    <div class="border-b border-[#d3c5a3] pb-0.5 italic text-gray-700">Setiap detik bersamamu adalah berkah luar biasa.</div>
+                                    <div class="border-b border-[#d3c5a3] pb-0.5 italic text-gray-700">Menyongsong tahun baru dengan cinta dan harapan.</div>
+                                    <div class="border-b border-[#d3c5a3] pb-0.5 italic text-red-950 text-right font-bold">Selamanya milikmu, N.</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Decorative Scraps -->
-                    <div class="newspaper-fragment rotate-[-10deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300 cursor-pointer" style="bottom: 15%; left: 5%; z-index: 20;">
-                        <h4>MEMORIES</h4>
-                        <p>Tersimpan rapi dalam arsip waktu.</p>
+                    <div class="newspaper-fragment rotate-[-8deg]" style="bottom: 12%; left: 6%; z-index: 20;">
+                        <h4>ARSIP MEMORI</h4>
+                        <p>Kilas balik perjalanan penuh rasa.</p>
                     </div>
                     
-                    <div class="absolute bottom-10 right-5 transform rotate-12 z-20 pointer-events-none">
-                        <div class="w-10 h-10 rounded-full border-2 border-red-800 flex items-center justify-center bg-transparent">
-                            <span class="text-[8px] font-bold text-red-800 uppercase transform -rotate-12">Love</span>
+                    <div class="absolute bottom-8 right-6 transform rotate-12 z-20 pointer-events-none">
+                        <div class="w-11 h-11 rounded-full border-2 border-red-800 flex items-center justify-center bg-transparent">
+                            <span class="text-[8px] font-bold text-red-800 uppercase font-mono">2026/27</span>
                         </div>
-                    </div>
-                    
-                    <!-- Cute Sticker -->
-                    <div class="absolute top-2 right-10 transform rotate-12 z-30 opacity-80 pointer-events-none">
-                        <img src="https://img.icons8.com/color/48/000000/hearts.png" width="24" alt="Heart Sticker">
                     </div>
                 </div>
             </section>
 
-            <!-- Halaman 5: Chat Terminal (Shifted) -->
-            <section class="page-module" id="mod-5">
-                <div class="torn-paper p-1 bg-[#f0f0f0] shadow-2xl h-full flex flex-col rotate-[0.5deg] hover:z-50 hover:scale-[1.02] hover:rotate-0 transition-all duration-300">
-                    <div class="tape-strip rotate-[-10deg] hover:animate-none hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="top: -10px; left: 10px;"></div>
-                    <div class="tape-strip rotate-[10deg] hover:animate-none hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300" style="top: -10px; right: 10px;"></div>
+            <!-- HALAMAN 7 (Index 6): Terminal Transmisi (Live Supabase Chat) -->
+            <section class="page-module" id="mod-6">
+                <div class="torn-paper p-1 bg-[#f0f0f0] shadow-2xl h-full flex flex-col rotate-[0.5deg]">
+                    <div class="tape-strip rotate-[-8deg]" style="top: -8px; left: 10px;"></div>
+                    <div class="tape-strip rotate-[8deg]" style="top: -8px; right: 10px;"></div>
                     
-                    <div class="bg-[#1a1a1a] text-green-500 p-4 flex-1 flex flex-col font-mono text-[10px] relative overflow-hidden border-4 border-gray-300 shadow-inner">
-                        <!-- CRT Scanline Overlay -->
-                        <div class="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] z-20"></div>
-                        
-                        <div class="flex justify-between items-center mb-4 border-b border-green-900/50 pb-2 relative z-30">
-                            <h2 class="font-bold uppercase tracking-widest animate-pulse">Terminal Comms</h2>
-                            <button onclick="DossierSystem.openDbManager()" class="text-green-500 hover:text-green-400 font-bold uppercase underline decoration-dotted">Manage Database</button>
+                    <div class="bg-[#181818] text-emerald-400 p-3.5 flex-1 flex flex-col font-mono text-[9.5px] relative overflow-hidden border-2 border-gray-400 shadow-inner rounded">
+                        <div class="flex justify-between items-center mb-3 border-b border-emerald-900/60 pb-2 relative z-30">
+                            <div>
+                                <h2 class="font-bold uppercase tracking-wider text-emerald-300">Terminal Transmisi // Catatan Harapan</h2>
+                                <p class="text-[7.5px] text-gray-400">Arsip Pesan Refleksi & Doa Tahun Baru</p>
+                            </div>
+                            <button onclick="DossierSystem.openDbManager()" class="text-emerald-400 hover:text-emerald-200 text-[8px] underline decoration-dotted font-bold">Database</button>
                         </div>
                         
-                        <div id="msg-display" class="relative z-30 flex-1 overflow-y-auto space-y-2 pr-2 scrollbar-thin scrollbar-thumb-green-900 scrollbar-track-transparent"></div>
+                        <div id="msg-display" class="relative z-30 flex-1 overflow-y-auto space-y-2 pr-1 scrollbar-thin scrollbar-thumb-emerald-900 scrollbar-track-transparent"></div>
                         
-                        <div class="mt-4 pt-4 border-t border-green-900/50 relative z-30">
-                            <div class="identity-toggle mb-2 border border-green-900/30 inline-flex">
-                                <div id="btn-n" onclick="DossierSystem.setSender('N')" class="toggle-btn text-green-500 hover:bg-green-900/20 active">OPR_N</div>
-                                <div id="btn-aristia" onclick="DossierSystem.setSender('Aristia')" class="toggle-btn text-green-500 hover:bg-green-900/20">SUB_A</div>
+                        <div class="mt-3 pt-3 border-t border-emerald-900/60 relative z-30">
+                            <div class="identity-toggle mb-2 border border-emerald-900/50 inline-flex rounded overflow-hidden">
+                                <div id="btn-n" onclick="DossierSystem.setSender('N')" class="toggle-btn text-emerald-400 hover:bg-emerald-900/30 active font-bold">OPR_N</div>
+                                <div id="btn-jeva" onclick="DossierSystem.setSender('Jeva')" class="toggle-btn text-emerald-400 hover:bg-emerald-900/30 font-bold">JEVA</div>
                             </div>
                             <div class="flex gap-2">
-                                <input type="text" id="msg-field" placeholder="Input transmission..." class="flex-1 bg-black border-b border-green-700 text-green-400 outline-none py-2 px-1 placeholder-green-900" autocomplete="off">
-                                <button onclick="DossierSystem.send()" class="bg-green-900/30 text-green-400 border border-green-700 px-4 py-2 uppercase font-bold hover:bg-green-900/50 transition-colors">Send</button>
+                                <input type="text" id="msg-field" placeholder="Ketik doa atau pesan refleksi..." class="flex-1 bg-black border-b border-emerald-700 text-emerald-300 outline-none py-1.5 px-2 text-[10px] placeholder-emerald-900 rounded-sm" autocomplete="off">
+                                <button onclick="DossierSystem.send()" class="bg-emerald-950 text-emerald-300 border border-emerald-600 px-3 py-1.5 uppercase font-bold hover:bg-emerald-900 transition-colors text-[9px] rounded-sm">Kirim</button>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <div class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 z-40">
-                        <div class="newspaper-fragment !relative rotate-[-2deg] shadow-lg hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300 cursor-pointer">
-                            <h4>SYSTEM STATUS</h4>
-                            <p>Koneksi aman. Enkripsi end-to-end aktif.</p>
                         </div>
                     </div>
                 </div>
@@ -537,15 +798,15 @@
 
         </div>
 
-
-        <footer class="p-4 border-t border-black/5 flex justify-between items-center text-[8px] opacity-40 font-bold tracking-widest uppercase relative z-50">
-            <div class="flex items-center">
-                <span id="back-nav-btn" onclick="DossierSystem.prev()">[ BACK ]</span>
-                <span>Dossier Cryptography v1.15</span>
-            </div>
-            <span id="center-stamp">AUTHORIZED ACCESS ONLY</span>
+        <!-- Footer Navigation HUD -->
+        <footer class="p-3 border-t border-black/10 flex justify-between items-center text-[8px] font-mono opacity-60 font-bold tracking-widest uppercase relative z-50 bg-[#f5efe0]/90">
             <div class="flex items-center gap-2">
-                <button onclick="DossierSystem.showTutorial(false)" class="border border-black/30 px-1 hover:bg-black/10 transition-colors" title="System Guide">[?]</button>
+                <span id="back-nav-btn" onclick="DossierSystem.prev()" class="cursor-pointer text-red-900 hover:underline">[ &lt; KEMBALI ]</span>
+                <span class="hidden sm:inline">Dossier Retrospective v2.0</span>
+            </div>
+            <span id="center-stamp">AUTHORIZED: JEVA MUAFIDA</span>
+            <div class="flex items-center gap-2">
+                <button onclick="DossierSystem.toggleTutorial()" class="border border-black/40 px-1.5 py-0.5 hover:bg-black/10 transition-colors rounded text-[8px]" title="Buka Panduan">PANDUAN [?]</button>
                 <span id="page-num">1 / 7</span>
             </div>
         </footer>
@@ -554,4 +815,3 @@
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
-
