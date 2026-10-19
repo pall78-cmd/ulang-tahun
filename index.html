@@ -9,6 +9,49 @@
     <meta property="og:description" content="A confidential digital archive and interactive year-to-year retrospective dossier for Jeva Muafida." />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
+    <!-- Immediate DossierSystem Bootstrap to guarantee zero race conditions on initial user interaction -->
+    <script>
+      (function() {
+        window.DossierSystem = window.DossierSystem || {
+          showPin: function() {
+            var initScreen = document.getElementById('init-screen');
+            var pinScreen = document.getElementById('pin-screen');
+            var pinField = document.getElementById('pin-field');
+            if (initScreen) initScreen.style.display = 'none';
+            if (pinScreen) pinScreen.style.display = 'block';
+            if (pinField) pinField.focus();
+          },
+          next: function() {},
+          prev: function() {},
+          goTo: function() {},
+          openModal: function() {},
+          closeModal: function() {},
+          confirmPurge: function() {},
+          openDbManager: function() {},
+          closeDbManager: function() {},
+          pingDatabase: function() {},
+          openTimeCapsule: function() {},
+          closeTimeCapsule: function() {},
+          toggleCapsuleSimulation: function() {},
+          toggleTutorial: function() {},
+          showTutorial: function() {},
+          hideTutorial: function() {},
+          selectMilestone: function() {},
+          changeCalendarMonth: function() {},
+          openCurrentMilestoneModal: function() {},
+          closeDateNoteModal: function() {},
+          saveCurrentDateMemo: function() {},
+          extinguish: function() {},
+          openVideoModal: function() {},
+          closeVideoModal: function() {},
+          playDossierVideo: function() {},
+          closeAlert: function() {},
+          setSender: function() {},
+          send: function() {}
+        };
+      })();
+    </script>
+    <script type="module" src="/src/main.ts"></script>
   </head>
   <body class="flex items-center justify-center min-h-screen bg-[#050505] text-[#1a1a1a]">
 
@@ -269,6 +312,8 @@
 
     <!-- MAIN DOSSIER PAPER CONTAINER -->
     <main class="paper-container relative">
+        <!-- Tactile Paper Page-Flip Audio Element (HTML5 Audio API) -->
+        <audio id="page-flip-sfx" preload="auto"></audio>
         
         <!-- Header HUD: Streamlined Minimalist Vintage Design -->
         <header class="px-3 md:px-4 py-2 border-b border-black/10 flex justify-between items-center text-[9px] font-mono tracking-wider z-50 bg-[#f5efe0]/95 backdrop-blur-sm shadow-xs">
@@ -278,12 +323,7 @@
             </div>
             
             <!-- Minimalist Right Icon Cluster -->
-            <div class="flex items-center gap-1.5 md:gap-2">
-                <!-- Interactive Page Flip Hint Badge -->
-                <span id="page-turn-hint" class="hidden sm:inline-flex items-center gap-1 text-[8px] text-gray-600 bg-black/5 hover:bg-black/10 px-2 py-0.5 rounded-full select-none cursor-pointer transition-colors" onclick="DossierSystem.next()" title="Tarik sudut layar atau geser untuk membuka lembaran buku">
-                    <span>📖</span> Tarik lembar
-                </span>
-
+            <div class="flex items-center gap-2">
                 <!-- Time Capsule Icon Button -->
                 <button onclick="DossierSystem.openTimeCapsule()" class="w-7 h-7 rounded-full bg-[#3d1818] text-amber-200 hover:bg-[#5a2323] hover:text-white border border-amber-900/40 flex items-center justify-center shadow-xs transition-all hover:scale-105 active:scale-95 group relative cursor-pointer" title="Kapsul Waktu & Hitung Mundur WIB">
                     <span class="text-xs">⏳</span>
@@ -329,22 +369,16 @@
             </div>
         </div>
 
-        <!-- Navigation Hit Zones -->
-        <div id="nav-l" class="nav-zone nav-left" onclick="DossierSystem.prev()" title="Halaman Sebelumnya">
-            <span class="text-black/50 hover:text-black font-black text-xs pointer-events-none" id="arrow-l">❮</span>
-        </div>
-        <div id="nav-r" class="nav-zone nav-right" onclick="DossierSystem.next()" title="Halaman Berikutnya">
-            <span class="text-black/50 hover:text-black font-black text-xs pointer-events-none" id="arrow-r">❯</span>
-        </div>
+        <!-- Navigation Hit Zones (Ultra-minimal edge touch zones) -->
+        <div id="nav-l" class="nav-zone nav-left" onclick="DossierSystem.prev()" title="Halaman Sebelumnya"></div>
+        <div id="nav-r" class="nav-zone nav-right" onclick="DossierSystem.next()" title="Halaman Berikutnya"></div>
 
-        <!-- Interactive Corner Book Page Peels (Tarik Sudut Layar) -->
-        <div id="corner-peel-r" class="corner-peel corner-peel-br" onclick="DossierSystem.next()" title="Tarik atau ketuk sudut untuk membuka lembaran selanjutnya">
+        <!-- Interactive Corner Book Page Peels (Lipatan Sudut Alami) -->
+        <div id="corner-peel-r" class="corner-peel corner-peel-br" onclick="DossierSystem.next()" title="Buka lembaran selanjutnya">
             <div class="peel-triangle"></div>
-            <span class="peel-hint">Tarik ❯</span>
         </div>
-        <div id="corner-peel-l" class="corner-peel corner-peel-bl" onclick="DossierSystem.prev()" title="Tarik atau ketuk sudut untuk kembali ke lembaran sebelumnya" style="display: none;">
+        <div id="corner-peel-l" class="corner-peel corner-peel-bl" onclick="DossierSystem.prev()" title="Kembali ke lembaran sebelumnya" style="display: none;">
             <div class="peel-triangle"></div>
-            <span class="peel-hint">❮ Balik</span>
         </div>
 
         <!-- VIEWPORT: 7 Modules (0 to 6) -->
@@ -352,55 +386,63 @@
             
             <!-- HALAMAN 1 (Index 0): Editorial Kover Kilas Balik -->
             <section class="page-module victorian-bg active" id="mod-0">
+                <!-- Background scrapbook accents -->
                 <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                    <div class="newspaper-fragment rotate-[12deg] hover:rotate-0 hover:scale-110 hover:z-50 transition-all duration-300 cursor-pointer pointer-events-auto" style="top: 8%; right: 5%; width: 105px; opacity: 0.85; box-shadow: 2px 2px 8px rgba(0,0,0,0.3);">
+                    <div class="newspaper-fragment rotate-[10deg] opacity-75" style="top: 2%; right: 4%; width: 88px; box-shadow: 1px 2px 6px rgba(0,0,0,0.22);">
                         <h4>KILAS BALIK</h4>
-                        <p>Rekapitulasi satu tahun penuh Jeva Muafida.</p>
+                        <p>Arsip 1 Tahun Penuh Jeva Muafida.</p>
                     </div>
-                    <div class="washi-tape washi-pattern rotate-[45deg]" style="top: 5%; right: 2%; width: 60px;"></div>
-                    <div class="pushpin" style="top: 10%; left: 15%;"></div>
+                    <div class="washi-tape washi-pattern rotate-[35deg]" style="top: 1%; right: 1%; width: 50px; height: 18px;"></div>
+                    <div class="pushpin" style="top: 5%; left: 8%;"></div>
                 </div>
 
-                <div class="torn-paper torn-bottom p-5 shadow-xl relative bg-[#f9f7f1] mt-6 mx-2 rotate-[-1.5deg] z-10">
-                    <div class="washi-tape -translate-x-1/2 rotate-[-2deg]" style="top: -12px; left: 50%; width: 120px;"></div>
-                    <div class="text-center mb-2 border-b-2 border-double border-black/20 pb-2">
-                        <p class="text-[9px] uppercase tracking-[0.35em] opacity-60 font-serif">Annual Monograph // Year in Review</p>
+                <!-- Main Editorial Card -->
+                <div class="torn-paper torn-bottom p-3.5 sm:p-5 shadow-xl relative bg-[#f9f7f1] mt-3 sm:mt-5 mx-1 sm:mx-2 rotate-[-1deg] z-10">
+                    <div class="washi-tape -translate-x-1/2 rotate-[-2deg]" style="top: -10px; left: 50%; width: 95px; height: 20px;"></div>
+                    <div class="text-center mb-1 border-b-2 border-double border-black/20 pb-1">
+                        <p class="text-[8px] sm:text-[9px] uppercase tracking-[0.3em] opacity-60 font-serif">Annual Monograph // Year in Review</p>
                     </div>
-                    <h1 class="text-4xl text-center my-3 font-black italic tracking-tighter leading-none" style="font-family: 'Playfair Display', serif;">The Ledger</h1>
                     
-                    <div class="space-y-3 text-justify leading-relaxed relative z-10" style="font-family: 'EB Garamond', serif;">
-                        <p class="nyt-lead text-[1.15rem]">
+                    <h1 class="text-2xl sm:text-3xl text-center my-1.5 font-black italic tracking-tighter leading-none text-red-950" style="font-family: 'Playfair Display', serif;">The Ledger</h1>
+                    
+                    <div class="space-y-2 text-justify leading-relaxed relative z-10 text-gray-800" style="font-family: 'EB Garamond', serif;">
+                        <p class="nyt-lead text-[13px] sm:text-[14px] leading-snug">
                             Satu tahun penuh telah terlalui dengan beribu cerita. Dossier ini dirancang khusus untuk merefleksikan lembaran perjalanan hidup, keteguhan hati, dan memori berharga <b>Jeva Muafida</b>.
                         </p>
-                        <p class="text-[0.98rem]">
+                        <p class="text-[11.5px] sm:text-[12.5px] leading-snug">
                             Perjalanan sepanjang tahun ini bukanlah sekadar hitungan hari di kalender, melainkan akumulasi dari setiap tawa bahagia, perjuangan yang berhasil dilewati, dan ketulusan hati yang menjadikanmu sosok yang begitu istimewa.
                         </p>
                     </div>
                 </div>
 
-                <div class="relative mt-3 mx-2 z-10 flex items-center justify-between gap-2.5">
-                    <div class="notebook-paper transform rotate-1 flex-1">
-                        <div class="washi-tape washi-blue rotate-[-45deg]" style="top: -10px; left: -10px; width: 50px;"></div>
-                        <div class="quote-block !m-0 !bg-transparent !border-none !p-0 font-serif italic text-gray-800 text-[10.5px]">
+                <!-- Compact Scrapbook Keepsake Strip (Quote + Mini Polaroid optimized for Mobile) -->
+                <div class="relative mt-2.5 sm:mt-3 mx-1 sm:mx-2 z-10 flex items-center justify-between gap-2">
+                    <!-- Quote Ticket -->
+                    <div class="bg-[#fffdf8] border-l-2 border-red-400 p-2 sm:p-2.5 shadow-xs flex-1 rounded-xs rotate-[0.5deg] relative">
+                        <div class="washi-tape washi-blue rotate-[-25deg]" style="top: -7px; left: 6px; width: 36px; height: 16px;"></div>
+                        <p class="font-serif italic text-gray-800 text-[9.5px] sm:text-[10.5px] leading-snug m-0">
                             "Setiap bab yang kita lalui bersama adalah prasasti kenangan indah yang tertulis rapi menuju gerbang tahun baru."
-                        </div>
+                        </p>
                     </div>
-                    <div class="polaroid w-22 shrink-0 rotate-[4deg] hover:rotate-0 hover:scale-105 transition-all duration-300 shadow-md">
-                        <div class="pushpin" style="top: 2px; left: 50%; transform: translateX(-50%);"></div>
-                        <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20260607-WA0021.jpg" alt="Jeva Muafida" class="h-18 w-full object-cover rounded-xs">
-                        <div class="polaroid-caption text-[6.5px]">Jeva Muafida 🌸</div>
+
+                    <!-- Mini Mobile Polaroid of Jeva -->
+                    <div class="polaroid-mini w-[68px] sm:w-[76px] shrink-0 rotate-[3deg] hover:rotate-0 hover:scale-105 transition-all duration-300 shadow-md">
+                        <div class="pushpin" style="top: -4px; left: 50%; transform: translateX(-50%) scale(0.75);"></div>
+                        <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20260607-WA0021.jpg" alt="Jeva Muafida" class="h-14 sm:h-16 w-full object-cover object-top rounded-xs">
+                        <div class="polaroid-caption">Jeva 🌸</div>
                     </div>
                 </div>
                 
-                <div class="mt-auto mb-3 p-3 relative z-10">
-                    <div class="torn-paper torn-top p-4 bg-white rotate-[-0.5deg] shadow-md">
-                        <div class="paperclip rotate-[15deg]" style="top: -18px; right: 20px;"></div>
-                        <p class="text-[0.92rem] font-serif text-justify text-gray-800">
+                <!-- Bottom Confidential Note -->
+                <div class="mt-auto mb-2 sm:mb-3 p-1 sm:p-2 relative z-10">
+                    <div class="torn-paper torn-top p-2.5 sm:p-3 bg-white rotate-[-0.5deg] shadow-md">
+                        <div class="paperclip rotate-[15deg] scale-75" style="top: -14px; right: 15px;"></div>
+                        <p class="text-[11px] sm:text-[12px] font-serif text-justify text-gray-800 leading-snug">
                             Terima kasih telah melangkah begitu hebat sepanjang tahun ini, <b>Jeva</b>. Di setiap embusan napas dan detak waktu, kamu akan selalu menjadi bab paling bermakna dalam hidupku.
                         </p>
-                        <div class="mt-3 border-t border-dashed border-black/30 pt-1.5 flex justify-between items-center">
-                            <span class="scrap-text text-[8px] font-mono">DOKUMEN RAHASIA: JM-RETROSPECTIVE</span>
-                            <span class="text-[8px] font-mono text-red-900 font-bold">2026 EDITION</span>
+                        <div class="mt-2 border-t border-dashed border-black/30 pt-1 flex justify-between items-center text-[7.5px] font-mono">
+                            <span class="opacity-60">DOKUMEN RAHASIA: JM-RETROSPECTIVE</span>
+                            <span class="text-red-900 font-bold">2026 EDITION</span>
                         </div>
                     </div>
                 </div>
@@ -415,7 +457,7 @@
                     <div class="absolute top-[-15px] right-[-5px] z-30">
                         <div class="polaroid w-28 rotate-[4deg] hover:rotate-0 hover:scale-105 transition-all duration-300">
                             <div class="pushpin" style="top: 5px; left: 50%; transform: translateX(-50%);"></div>
-                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20260607-WA0021.jpg" alt="Jeva Muafida" class="h-28 object-cover">
+                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20260921-WA0022(1).jpg" alt="Jeva Muafida" class="h-28 object-cover">
                             <div class="polaroid-caption">Jeva Muafida 🌸</div>
                         </div>
                     </div>
@@ -483,67 +525,86 @@
                 </div>
             </section>
 
-            <!-- HALAMAN 3 (Index 2): Digital Clipping & Highlight Reels -->
-            <section class="page-module victorian-bg" id="mod-2">
-                <h2 class="text-center font-bold text-[10px] uppercase mb-4 border-b pb-2 tracking-[0.2em] font-mono">Digital Clipping: Highlight Jejak Tahun Ini</h2>
-                
-                <div class="relative bg-white p-2.5 shadow-lg rotate-1 border border-gray-300 mt-2 mx-2 z-10">
-                    <div class="washi-tape washi-blue rotate-[-2deg]" style="top: -10px; left: 10%; width: 80px;"></div>
-                    <div class="washi-tape washi-yellow rotate-[2deg]" style="bottom: -10px; right: 10%; width: 80px;"></div>
-                    <div class="border border-black/10 p-3 bg-gray-50">
-                        <p class="text-[8px] font-bold uppercase mb-2 text-center opacity-70 tracking-widest font-mono">Intercepted Signal: Instagram Reel</p>
-                        <a href="https://www.instagram.com/reel/DQEbbnuEj95/?igsh=MXJ0ejJ5amxsZW1y" target="_blank" rel="noopener noreferrer" class="block group relative overflow-hidden border border-black/20">
-                            <div class="aspect-video bg-black/5 flex items-center justify-center group-hover:bg-black/10 transition-colors">
-                                <div class="w-11 h-11 rounded-full bg-white/90 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-pink-600" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                                    </svg>
+            <!-- HALAMAN 3 (Index 2): Digital Clipping & Koleksi 3 Perangko Pos Vintage -->
+            <section class="page-module victorian-bg flex flex-col justify-between" id="mod-2">
+                <div>
+                    <!-- Section Title -->
+                    <h2 class="text-center font-bold text-[10px] uppercase mb-2 border-b border-black/15 pb-1 tracking-[0.2em] font-mono text-red-950 flex items-center justify-center gap-2">
+                        <span>📮</span> Digital Clipping // 3 Perangko Pos & Kenangan <span>📮</span>
+                    </h2>
+
+                    <!-- Top Scrapbook Clipping: Reel & Polaroid Keepsake -->
+                    <div class="relative bg-white/95 p-2 shadow-md rotate-[-0.5deg] border border-gray-300 mx-1 mt-1 z-10 rounded-xs">
+                        <div class="washi-tape washi-blue rotate-[-2deg]" style="top: -8px; left: 15%; width: 65px;"></div>
+                        <div class="washi-tape washi-yellow rotate-[2deg]" style="top: -8px; right: 15%; width: 65px;"></div>
+                        
+                        <div class="flex items-center gap-2.5">
+                            <!-- Instagram Reel Link Preview -->
+                            <a href="https://www.instagram.com/reel/DQEbbnuEj95/?igsh=MXJ0ejJ5amxsZW1y" target="_blank" rel="noopener noreferrer" class="block group relative overflow-hidden border border-black/20 flex-1 rounded-xs shadow-xs hover:border-red-900 transition-colors">
+                                <div class="h-16 bg-gradient-to-r from-stone-900 to-stone-800 flex items-center justify-between px-3 text-white">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-full bg-white/90 text-pink-600 flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                                        </div>
+                                        <div>
+                                            <div class="text-[7px] font-mono text-gray-300 uppercase tracking-widest">Signal Intercepted</div>
+                                            <div class="text-[8.5px] font-bold font-sans">Instagram Reel // Jeva</div>
+                                        </div>
+                                    </div>
+                                    <span class="text-[7.5px] font-mono bg-pink-700/80 px-2 py-0.5 rounded text-white font-bold group-hover:bg-pink-600 transition-colors shrink-0">Buka Reel ↗</span>
                                 </div>
-                                <span class="absolute bottom-2 text-[8px] font-bold bg-white/95 px-2 py-0.5 rounded shadow font-mono">KETUK UNTUK LIHAT REEL</span>
+                            </a>
+
+                            <!-- Polaroid Jeva (Photo 3) nestled beside -->
+                            <div class="polaroid w-20 shrink-0 rotate-[2deg] hover:rotate-0 hover:scale-105 transition-all duration-300 shadow-md">
+                                <div class="paperclip rotate-[-10deg]" style="top: -10px; left: 6px;"></div>
+                                <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20261010-WA0002.jpg" class="h-13 w-full object-cover rounded-xs" alt="Jeva Muafida">
+                                <div class="polaroid-caption text-[6px]">Jeva ✨</div>
                             </div>
-                        </a>
-                        <div class="mt-2.5 text-justify">
-                            <p class="text-[9px] font-serif italic leading-relaxed text-gray-700">
-                                "Bukti visual cuplikan keceriaan Jeva Muafida yang tersimpan rapi dalam arsip perjalanan tahun ini."
-                            </p>
+                        </div>
+
+                        <p class="text-[8px] font-serif italic text-gray-700 mt-1.5 px-1 leading-snug">
+                            "Kliping kenangan manis dan keceriaan Jeva Muafida yang terabadikan rapi."
+                        </p>
+                    </div>
+
+                    <!-- Koleksi 3 Perangko Pos Vintage Asli (Kyoto, Paris, New York) -->
+                    <div class="mt-3 relative z-10 px-1">
+                        <div class="flex items-center justify-between text-[7.5px] font-mono uppercase tracking-wider text-red-900 font-bold mb-2 border-t border-black/10 pt-1.5">
+                            <span class="flex items-center gap-1">📮 3 KOLEKSI PERANGKO POS VINTAGE:</span>
+                            <span class="text-gray-500 font-mono">ARSIP 2026</span>
+                        </div>
+
+                        <!-- Grid 3 Perangko Rapi -->
+                        <div class="grid grid-cols-3 gap-2.5 items-center">
+                            <!-- Perangko 1: Kyoto -->
+                            <div class="vintage-stamp rotate-[-2deg] hover:scale-105 transition-all shadow-md">
+                                <div class="stamp-postmark text-[5.5px] font-mono text-red-900 font-bold">AIR MAIL</div>
+                                <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/images.jpeg" class="h-24 w-full object-cover rounded-xs" alt="Perangko Kyoto">
+                                <div class="text-[6.5px] font-mono text-center mt-1 text-gray-800 font-bold">KYOTO 15¢</div>
+                            </div>
+
+                            <!-- Perangko 2: Paris -->
+                            <div class="vintage-stamp rotate-[1.5deg] hover:scale-105 transition-all shadow-md">
+                                <div class="stamp-postmark text-[5.5px] font-mono text-blue-900 font-bold" style="border-color: #1e3a8a;">PARIS</div>
+                                <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/1196-front-661x1024.jpg" class="h-24 w-full object-cover rounded-xs" alt="Perangko Paris">
+                                <div class="text-[6.5px] font-mono text-center mt-1 text-gray-800 font-bold">PARIS 20¢</div>
+                            </div>
+
+                            <!-- Perangko 3: New York -->
+                            <div class="vintage-stamp rotate-[-1.5deg] hover:scale-105 transition-all shadow-md">
+                                <div class="stamp-postmark text-[5.5px] font-mono text-red-900 font-bold">EXPRESS</div>
+                                <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/images%20(1).jpeg" class="h-24 w-full object-cover rounded-xs" alt="Perangko New York">
+                                <div class="text-[6.5px] font-mono text-center mt-1 text-gray-800 font-bold">NYC 25¢</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Koleksi Perangko Vintage & Polaroid Jeva -->
-                <div class="mt-3 relative z-10 px-1">
-                    <div class="flex items-center justify-between text-[7.5px] font-mono uppercase tracking-wider text-red-900 font-bold mb-1.5 border-t border-black/10 pt-1.5">
-                        <span class="flex items-center gap-1">📮 KOLEKSI PERANGKO POS & KLIPING:</span>
-                        <span class="text-gray-500">ARSIP 2026</span>
-                    </div>
-
-                    <div class="grid grid-cols-4 gap-2 items-center">
-                        <!-- Perangko 1: Kyoto -->
-                        <div class="vintage-stamp rotate-[-3deg] hover:scale-105 transition-all shadow-md">
-                            <div class="stamp-postmark text-[5.5px] font-mono text-red-900 font-bold">AIR MAIL</div>
-                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/images.jpeg" class="h-16 w-full object-cover rounded-xs" alt="Perangko Kyoto">
-                            <div class="text-[6px] font-mono text-center mt-0.5 text-gray-700 font-bold">KYOTO 15¢</div>
-                        </div>
-
-                        <!-- Perangko 2: Paris -->
-                        <div class="vintage-stamp rotate-[2deg] hover:scale-105 transition-all shadow-md">
-                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/1196-front-661x1024.jpg" class="h-16 w-full object-cover rounded-xs" alt="Perangko Paris">
-                            <div class="text-[6px] font-mono text-center mt-0.5 text-gray-700 font-bold">PARIS 20¢</div>
-                        </div>
-
-                        <!-- Perangko 3: New York -->
-                        <div class="vintage-stamp rotate-[-2deg] hover:scale-105 transition-all shadow-md">
-                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/images%20(1).jpeg" class="h-16 w-full object-cover rounded-xs" alt="Perangko New York">
-                            <div class="text-[6px] font-mono text-center mt-0.5 text-gray-700 font-bold">NYC 25¢</div>
-                        </div>
-
-                        <!-- Polaroid Foto Jeva (Photo 3) nestled with washi tape -->
-                        <div class="polaroid rotate-[3deg] hover:rotate-0 hover:scale-105 transition-all duration-300 shadow-md">
-                            <div class="washi-tape washi-yellow -translate-x-1/2 rotate-[-5deg]" style="top: -7px; left: 50%; width: 42px;"></div>
-                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20261010-WA0002.jpg" class="h-16 w-full object-cover rounded-xs" alt="Jeva Muafida">
-                            <div class="polaroid-caption text-[6px]">Jeva ✨</div>
-                        </div>
-                    </div>
+                <!-- Scrapbook Footer Stamp -->
+                <div class="mt-2 text-center border-t border-dashed border-black/20 pt-1 text-[7px] font-mono text-gray-500 flex justify-between px-2">
+                    <span>PHILATELIC ARCHIVE 2026</span>
+                    <span class="text-red-900 font-bold">3 AUTHENTIC STAMPS</span>
                 </div>
             </section>
 
@@ -798,20 +859,14 @@
 
         </div>
 
-        <!-- Footer Navigation HUD -->
-        <footer class="p-3 border-t border-black/10 flex justify-between items-center text-[8px] font-mono opacity-60 font-bold tracking-widest uppercase relative z-50 bg-[#f5efe0]/90">
+        <!-- Footer Navigation HUD: Minimalist & Clean Vintage Monograph -->
+        <footer class="px-4 py-2 border-t border-black/10 flex justify-between items-center text-[8.5px] font-mono opacity-70 tracking-widest uppercase relative z-50 bg-[#f5efe0]/90">
+            <span class="text-red-950 font-bold font-serif">The Ledger // JM-2026</span>
+            <span id="center-stamp" class="hidden sm:inline text-gray-500 font-mono text-[7.5px]">AUTHORIZED: JEVA MUAFIDA</span>
             <div class="flex items-center gap-2">
-                <span id="back-nav-btn" onclick="DossierSystem.prev()" class="cursor-pointer text-red-900 hover:underline">[ &lt; KEMBALI ]</span>
-                <span class="hidden sm:inline">Dossier Retrospective v2.0</span>
-            </div>
-            <span id="center-stamp">AUTHORIZED: JEVA MUAFIDA</span>
-            <div class="flex items-center gap-2">
-                <button onclick="DossierSystem.toggleTutorial()" class="border border-black/40 px-1.5 py-0.5 hover:bg-black/10 transition-colors rounded text-[8px]" title="Buka Panduan">PANDUAN [?]</button>
-                <span id="page-num">1 / 7</span>
+                <span id="page-num" class="font-bold text-gray-700 tabular-nums">1 / 7</span>
             </div>
         </footer>
     </main>
-
-    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

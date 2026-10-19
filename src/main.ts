@@ -183,6 +183,7 @@ export interface DossierSystemType {
 
     fadeIn: (audioId: string, duration?: number) => void;
     fadeOut: (audioId: string, duration?: number) => void;
+    playPageFlipSound: () => void;
     
     openVideoModal: () => void;
     closeVideoModal: () => void;
@@ -243,8 +244,95 @@ declare global {
     }
 }
 
+// Generates an organic, subtle paper page-flip WAV Data URI for tactile HTML5 audio feedback
+let cachedPageFlipDataUri: string | null = null;
+function createPageFlipWavDataUri(): string {
+    if (cachedPageFlipDataUri) return cachedPageFlipDataUri;
+
+    const sampleRate = 22050;
+    const duration = 0.28; // 280ms
+    const numSamples = Math.floor(sampleRate * duration);
+    const buffer = new Int16Array(numSamples);
+
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+
+    for (let i = 0; i < numSamples; i++) {
+        const t = i / sampleRate;
+
+        // Envelope: soft physical attack, swift friction body, gentle tail
+        let env = 0;
+        if (t < 0.035) {
+            env = Math.sin((t / 0.035) * (Math.PI / 2));
+        } else if (t < 0.16) {
+            env = 1.0 - ((t - 0.035) / 0.125) * 0.3;
+        } else {
+            const tailT = (t - 0.16) / (duration - 0.16);
+            env = 0.7 * Math.pow(Math.max(0, 1.0 - tailT), 2.2);
+        }
+
+        // Pink/brown filtered noise simulating paper fibers sliding against each other
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        const pink = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+        b6 = white * 0.115926;
+
+        // Gentle low-frequency fold wave (mimicking paper stiffness flexing ~90-120Hz)
+        const foldThump = Math.sin(2 * Math.PI * (120 - t * 90) * t) * Math.exp(-t * 22);
+
+        // Micro-flutter for the turning paper edge
+        const flutter = Math.sin(2 * Math.PI * 320 * t) * (Math.random() * 0.25);
+
+        // Mix and master with delicate volume for tactile subtlety
+        const sample = (pink * 0.75 + foldThump * 0.22 + flutter * 0.15) * env * 0.32;
+        const clamped = Math.max(-1, Math.min(1, sample));
+        buffer[i] = clamped < 0 ? clamped * 0x8000 : clamped * 0x7FFF;
+    }
+
+    // 44-byte standard RIFF/WAVE header
+    const dataSize = numSamples * 2;
+    const header = new ArrayBuffer(44);
+    const view = new DataView(header);
+
+    function writeString(offset: number, str: string) {
+        for (let j = 0; j < str.length; j++) {
+            view.setUint8(offset + j, str.charCodeAt(j));
+        }
+    }
+
+    writeString(0, "RIFF");
+    view.setUint32(4, 36 + dataSize, true);
+    writeString(8, "WAVE");
+    writeString(12, "fmt ");
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true); // PCM
+    view.setUint16(22, 1, true); // Mono
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true); // Block align
+    view.setUint16(34, 16, true); // Bits per sample
+    writeString(36, "data");
+    view.setUint32(40, dataSize, true);
+
+    const wavBytes = new Uint8Array(44 + dataSize);
+    wavBytes.set(new Uint8Array(header), 0);
+    wavBytes.set(new Uint8Array(buffer.buffer), 44);
+
+    let binary = '';
+    const len = wavBytes.byteLength;
+    for (let k = 0; k < len; k++) {
+        binary += String.fromCharCode(wavBytes[k]);
+    }
+    cachedPageFlipDataUri = `data:audio/wav;base64,${btoa(binary)}`;
+    return cachedPageFlipDataUri;
+}
+
 // Implementation of window.DossierSystem
-window.DossierSystem = {
+const systemImplementation: DossierSystemType = {
     index: 0,
     currentSender: 'N',
     isTyping: false,
@@ -299,6 +387,36 @@ window.DossierSystem = {
                 audio.fadeInterval = null;
             }
         }, interval);
+    },
+
+    playPageFlipSound() {
+        try {
+            // HTML5 Audio API element lookup or fallback instantiation
+            let audio = document.getElementById('page-flip-sfx') as HTMLAudioElement | null;
+            if (!audio) {
+                audio = new Audio();
+                audio.id = 'page-flip-sfx';
+                document.body.appendChild(audio);
+            }
+
+            if (!audio.src || !audio.src.startsWith('data:audio/wav')) {
+                audio.src = createPageFlipWavDataUri();
+                audio.preload = 'auto';
+            }
+
+            // Subtle, tactile volume to complement the physical page-flip aesthetic
+            audio.volume = 0.32;
+            audio.currentTime = 0;
+
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // Autoplay policy restrictions silently handled without interrupting UI
+                });
+            }
+        } catch (e) {
+            console.debug('Page flip audio notice:', e);
+        }
     },
 
     openVideoModal() {
@@ -693,8 +811,16 @@ window.DossierSystem = {
         // Render Interactive Multi-Moment Calendar
         this.renderCalendar();
 
-        // Initialize 3D Book Gesture Pull & Drag System
+        // Initialize 3D Book Corner Peel Navigation
         this.initBookGestures();
+
+        // Pre-warm HTML5 Page-Flip Audio element for tactile auditory feedback
+        const pageFlipAudio = document.getElementById('page-flip-sfx') as HTMLAudioElement | null;
+        if (pageFlipAudio) {
+            pageFlipAudio.src = createPageFlipWavDataUri();
+            pageFlipAudio.volume = 0.32;
+            pageFlipAudio.preload = 'auto';
+        }
 
         if (supabaseClient && IS_REMOTE_SYNC_ACTIVE) {
             try {
@@ -712,173 +838,152 @@ window.DossierSystem = {
         if (msgField) {
             msgField.addEventListener('keypress', (e) => { if (e.key === 'Enter') this.send(); });
         }
-
-        // Tape Interactivity Easter Egg
-        document.querySelectorAll('.tape-strip, .washi-tape').forEach(tape => {
-            tape.addEventListener('click', (e) => {
-                const mouseEvent = e as MouseEvent;
-                const msgs = ["Jeva Muafida ✨", "Kilas Balik 2026", "Menyongsong Tahun Baru", "Memori Terbaik", "Top Secret Dossier"];
-                const msg = msgs[Math.floor(Math.random() * msgs.length)];
-                
-                const note = document.createElement('div');
-                note.className = 'hidden-note';
-                note.innerText = msg;
-                note.style.left = (mouseEvent.clientX - 20) + 'px';
-                note.style.top = (mouseEvent.clientY - 30) + 'px';
-                note.style.display = 'block';
-                document.body.appendChild(note);
-                
-                setTimeout(() => note.remove(), 2000);
-            });
-        });
     },
 
     initBookGestures() {
-        const viewport = document.getElementById('module-viewport');
-        if (!viewport) return;
+        const peelR = document.getElementById('corner-peel-r');
+        const peelL = document.getElementById('corner-peel-l');
+        const navR = document.getElementById('nav-r');
+        const navL = document.getElementById('nav-l');
 
+        let isPulling = false;
+        let pullDirection: 'next' | 'prev' | null = null;
         let startX = 0;
-        let startY = 0;
         let currentX = 0;
-        let isDragging = false;
-        let startTime = 0;
         let activeModule: HTMLElement | null = null;
 
-        const onPointerDown = (e: MouseEvent | TouchEvent) => {
-            if ('touches' in e && e.touches.length > 1) return;
-
-            const target = e.target as HTMLElement | null;
-            if (!target) return;
-
-            // Don't hijack if user is interacting with form inputs, buttons, media or modal elements
-            const tag = target.tagName;
-            if (['INPUT', 'TEXTAREA', 'BUTTON', 'A', 'VIDEO', 'AUDIO'].includes(tag) && !target.closest('.corner-peel')) {
-                return;
-            }
-            if (target.closest('button, input, textarea, a, video, .flame, .date-highlight, #date-note-modal, #capsule-modal, #video-modal, #db-manager-modal, #delete-modal, #alert-modal')) {
-                return;
-            }
+        const onPullStart = (e: MouseEvent | TouchEvent, direction: 'next' | 'prev') => {
+            if (this.isFlipping) return;
+            if (direction === 'next' && this.index >= 6) return;
+            if (direction === 'prev' && this.index <= 0) return;
 
             const point = 'touches' in e ? e.touches[0] : (e as MouseEvent);
             startX = point.clientX;
-            startY = point.clientY;
             currentX = startX;
-            startTime = Date.now();
-            isDragging = true;
-
+            isPulling = true;
+            pullDirection = direction;
             activeModule = document.querySelector<HTMLElement>('.page-module.active');
+
+            if (e.cancelable) e.preventDefault();
         };
 
-        const onPointerMove = (e: MouseEvent | TouchEvent) => {
-            if (!isDragging || !activeModule || this.isFlipping) return;
+        const onPullMove = (e: MouseEvent | TouchEvent) => {
+            if (!isPulling || !pullDirection || this.isFlipping) return;
 
             const point = 'touches' in e ? e.touches[0] : (e as MouseEvent);
             currentX = point.clientX;
             const deltaX = currentX - startX;
-            const deltaY = point.clientY - startY;
 
-            // Vertical scrolling intent check
-            if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaX) < 18) {
-                return;
-            }
-
-            if (Math.abs(deltaX) > 18 && e.cancelable) {
-                e.preventDefault();
-            }
-
-            // Turning forward (right to left): 3D page curl along left spine
-            if (deltaX < 0 && this.index < 6) {
+            if (pullDirection === 'next' && activeModule && this.index < 6) {
+                // Pulling right corner inward to the left
+                const pullProgress = Math.min(Math.max(-deltaX, 0) / 160, 1);
                 const nextMod = document.getElementById(`mod-${this.index + 1}`);
-                if (nextMod) {
-                    nextMod.classList.add('page-underneath');
-                }
-                const progress = Math.min(Math.abs(deltaX) / 240, 1);
-                const rotateDeg = -progress * 65;
+                if (nextMod) nextMod.classList.add('page-underneath');
+
+                const rotateDeg = -pullProgress * 55;
                 activeModule.style.transformOrigin = 'left center';
-                activeModule.style.transform = `perspective(1800px) rotateY(${rotateDeg}deg) translateZ(${progress * 10}px)`;
-                activeModule.style.boxShadow = `${-progress * 25}px 0 ${progress * 35}px rgba(0,0,0,${progress * 0.4})`;
+                activeModule.style.transform = `perspective(1600px) rotateY(${rotateDeg}deg) translateZ(${pullProgress * 8}px)`;
+                activeModule.style.boxShadow = `${-pullProgress * 22}px 0 ${pullProgress * 30}px rgba(0,0,0,${pullProgress * 0.4})`;
                 activeModule.style.transition = 'none';
-            }
-            // Turning backward (left to right): 3D page curl along right edge
-            else if (deltaX > 0 && this.index > 0) {
+
+                if (e.cancelable) e.preventDefault();
+            } else if (pullDirection === 'prev' && this.index > 0) {
+                // Pulling left corner inward to the right
                 const prevMod = document.getElementById(`mod-${this.index - 1}`);
                 if (prevMod) {
                     prevMod.classList.add('page-flipping-in-prev');
-                    const progress = Math.min(deltaX / 240, 1);
-                    const rotateDeg = -88 + (progress * 88);
+                    const pullProgress = Math.min(Math.max(deltaX, 0) / 160, 1);
+                    const rotateDeg = -90 + (pullProgress * 90);
                     prevMod.style.transformOrigin = 'left center';
-                    prevMod.style.transform = `perspective(1800px) rotateY(${rotateDeg}deg) translateZ(${(1 - progress) * 10}px)`;
-                    prevMod.style.boxShadow = `${-(1 - progress) * 25}px 0 ${(1 - progress) * 35}px rgba(0,0,0,${(1 - progress) * 0.4})`;
+                    prevMod.style.transform = `perspective(1600px) rotateY(${rotateDeg}deg) translateZ(${(1 - pullProgress) * 8}px)`;
+                    prevMod.style.boxShadow = `${-(1 - pullProgress) * 22}px 0 ${(1 - pullProgress) * 30}px rgba(0,0,0,${(1 - pullProgress) * 0.4})`;
                     prevMod.style.transition = 'none';
                 }
+
+                if (e.cancelable) e.preventDefault();
             }
         };
 
-        const onPointerUp = () => {
-            if (!isDragging) return;
-            isDragging = false;
-
+        const onPullEnd = () => {
+            if (!isPulling) return;
+            isPulling = false;
             const deltaX = currentX - startX;
-            const elapsed = Math.max(Date.now() - startTime, 1);
-            const velocity = Math.abs(deltaX) / elapsed;
+            const dir = pullDirection;
+            pullDirection = null;
 
             const nextMod = document.getElementById(`mod-${this.index + 1}`);
             const prevMod = document.getElementById(`mod-${this.index - 1}`);
 
-            // If user swiped or pulled past 40px or with swipe flick speed:
-            if (deltaX < -40 || (deltaX < -18 && velocity > 0.32)) {
-                if (activeModule) {
-                    activeModule.style.transform = '';
-                    activeModule.style.boxShadow = '';
-                    activeModule.style.transition = '';
+            if (dir === 'next') {
+                if (deltaX < -24 || Math.abs(deltaX) < 4) {
+                    // Trigger forward flip
+                    if (activeModule) {
+                        activeModule.style.transform = '';
+                        activeModule.style.boxShadow = '';
+                        activeModule.style.transition = '';
+                    }
+                    if (this.index < 6) this.next();
+                } else {
+                    // Reset smoothly
+                    if (activeModule) {
+                        activeModule.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.25s ease';
+                        activeModule.style.transform = '';
+                        activeModule.style.boxShadow = '';
+                    }
+                    if (nextMod) nextMod.classList.remove('page-underneath');
                 }
-                if (this.index < 6) this.next();
-            } else if (deltaX > 40 || (deltaX > 18 && velocity > 0.32)) {
-                if (prevMod) {
-                    prevMod.style.transform = '';
-                    prevMod.style.boxShadow = '';
-                    prevMod.style.transition = '';
-                }
-                if (this.index > 0) this.prev();
-            } else {
-                if (activeModule) {
-                    activeModule.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.25s ease';
-                    activeModule.style.transform = '';
-                    activeModule.style.boxShadow = '';
-                }
-                if (nextMod) {
-                    nextMod.classList.remove('page-underneath');
-                }
-                if (prevMod) {
-                    prevMod.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.25s ease';
-                    prevMod.style.transform = '';
-                    prevMod.style.boxShadow = '';
-                    setTimeout(() => prevMod?.classList.remove('page-flipping-in-prev'), 250);
+            } else if (dir === 'prev') {
+                if (deltaX > 24 || Math.abs(deltaX) < 4) {
+                    // Trigger backward flip
+                    if (prevMod) {
+                        prevMod.style.transform = '';
+                        prevMod.style.boxShadow = '';
+                        prevMod.style.transition = '';
+                    }
+                    if (this.index > 0) this.prev();
+                } else {
+                    // Reset smoothly
+                    if (prevMod) {
+                        prevMod.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.25s ease';
+                        prevMod.style.transform = '';
+                        prevMod.style.boxShadow = '';
+                        setTimeout(() => prevMod?.classList.remove('page-flipping-in-prev'), 250);
+                    }
                 }
             }
         };
 
-        // Viewport Listeners
-        viewport.addEventListener('mousedown', onPointerDown);
-        window.addEventListener('mousemove', onPointerMove);
-        window.addEventListener('mouseup', onPointerUp);
+        // Right corner peel & right edge listeners
+        [peelR, navR].forEach(el => {
+            if (!el) return;
+            el.addEventListener('mousedown', (e) => onPullStart(e as MouseEvent, 'next'));
+            el.addEventListener('touchstart', (e) => onPullStart(e as TouchEvent, 'next'), { passive: false });
+        });
 
-        viewport.addEventListener('touchstart', onPointerDown, { passive: false });
-        window.addEventListener('touchmove', onPointerMove, { passive: false });
-        window.addEventListener('touchend', onPointerUp);
-        window.addEventListener('touchcancel', onPointerUp);
+        // Left corner peel & left edge listeners
+        [peelL, navL].forEach(el => {
+            if (!el) return;
+            el.addEventListener('mousedown', (e) => onPullStart(e as MouseEvent, 'prev'));
+            el.addEventListener('touchstart', (e) => onPullStart(e as TouchEvent, 'prev'), { passive: false });
+        });
 
-        // Corner Peels Listeners
-        const peelR = document.getElementById('corner-peel-r');
-        const peelL = document.getElementById('corner-peel-l');
-        if (peelR) {
-            peelR.addEventListener('touchstart', onPointerDown, { passive: false });
-            peelR.addEventListener('mousedown', onPointerDown);
-        }
-        if (peelL) {
-            peelL.addEventListener('touchstart', onPointerDown, { passive: false });
-            peelL.addEventListener('mousedown', onPointerDown);
-        }
+        // Window listeners for smooth pull tracking while holding corner
+        window.addEventListener('mousemove', onPullMove);
+        window.addEventListener('mouseup', onPullEnd);
+        window.addEventListener('touchmove', onPullMove, { passive: false });
+        window.addEventListener('touchend', onPullEnd);
+        window.addEventListener('touchcancel', onPullEnd);
+
+        // Keyboard arrow navigation
+        window.addEventListener('keydown', (e: KeyboardEvent) => {
+            const tag = (e.target as HTMLElement)?.tagName;
+            if (['INPUT', 'TEXTAREA'].includes(tag)) return;
+            if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+                if (this.index < 6) this.next();
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                if (this.index > 0) this.prev();
+            }
+        });
     },
 
     showPin() {
@@ -961,11 +1066,11 @@ window.DossierSystem = {
             },
             {
                 title: "HALAMAN 2: EVIDENCE (LINIMASA ARSIP)",
-                text: "Dossier rekapitulasi babak-babak penting sepanjang tahun ini.<br><br>👉 <strong>INTERAKSI:</strong> Ketuk tombol <strong>'Tap to Decrypt Signal'</strong> di tengah berkas untuk membuka arsip rekaman visual pendek.<br><br>👉 <strong>NAVIGASI BUKU:</strong> Tarik sudut layar [❮ Balik] atau [Tarik ❯] untuk membalik lembaran."
+                text: "Dossier rekapitulasi babak-babak penting sepanjang tahun ini.<br><br>👉 <strong>INTERAKSI:</strong> Ketuk tombol <strong>'Tap to Decrypt Signal'</strong> di tengah berkas untuk membuka arsip rekaman visual pendek.<br><br>👉 <strong>NAVIGASI BUKU:</strong> Tarik lipatan sudut buku atau geser tepi layar untuk membalik lembaran secara alami."
             },
             {
-                title: "HALAMAN 3: DIGITAL CLIPPING (KLIPING MEMORI)",
-                text: "Koleksi foto polaroid kenangan manis dan cuplikan reels perjalanan tahun ini.<br><br>👉 <strong>INTERAKSI:</strong> Ketuk banner Instagram Reel untuk melihat cuplikan media, atau amati 3 foto polaroid terbaru Jeva.<br><br>👉 <strong>NAVIGASI BUKU:</strong> Tarik lembar buku ke kiri untuk menuju Kalender Momen."
+                title: "HALAMAN 3: DIGITAL CLIPPING // 3 PERANGKO & REEL",
+                text: "Koleksi 3 perangko pos vintage asli (Kyoto, Paris, New York) dan kliping reels kenangan.<br><br>👉 <strong>ESTETIKA SCRAPBOOK:</strong> Perangko pos autentik dan foto kenangan tertata rapi dalam tata letak scrapbook vintage.<br><br>👉 <strong>NAVIGASI BUKU:</strong> Tarik lipatan sudut lembar buku ke kiri untuk menuju Logbook Kalender Momen."
             },
             {
                 title: "HALAMAN 4: LOGBOOK OPERASIONAL // MULTI-MOMEN SPESIAL",
@@ -992,12 +1097,7 @@ window.DossierSystem = {
         if (guideTitle) guideTitle.innerHTML = currentGuide.title;
         if (tutText) tutText.innerHTML = currentGuide.text;
 
-        // Manage navigation arrows and corner peel visibility
-        const arrowL = document.getElementById('arrow-l');
-        const arrowR = document.getElementById('arrow-r');
-        if (arrowL) arrowL.style.display = this.index > 0 ? 'inline-block' : 'none';
-        if (arrowR) arrowR.style.display = this.index < 6 ? 'inline-block' : 'none';
-
+        // Manage edge hit zones and corner peel visibility
         const navL = document.getElementById('nav-l');
         const navR = document.getElementById('nav-r');
         if (navL) navL.style.display = this.index > 0 ? 'flex' : 'none';
@@ -1007,12 +1107,6 @@ window.DossierSystem = {
         const peelR = document.getElementById('corner-peel-r');
         if (peelL) peelL.style.display = this.index > 0 ? 'block' : 'none';
         if (peelR) peelR.style.display = this.index < 6 ? 'block' : 'none';
-
-        const backBtn = document.getElementById('back-nav-btn');
-        if (backBtn) backBtn.style.display = this.index > 0 ? 'inline-block' : 'none';
-
-        const nextBtn = document.getElementById('next-nav-btn');
-        if (nextBtn) nextBtn.style.display = this.index < 6 ? 'inline-block' : 'none';
 
         if (this.index === 6) {
             this.loadMsgs();
@@ -1076,6 +1170,9 @@ window.DossierSystem = {
     turnPage(targetIdx: number, dir: 'next' | 'prev') {
         if (targetIdx === this.index || targetIdx < 0 || targetIdx > 6) return;
         if (this.isFlipping) return;
+
+        // Trigger tactile auditory feedback for page-turning
+        this.playPageFlipSound();
 
         const currentIdx = this.index;
         const currentMod = document.getElementById(`mod-${currentIdx}`);
@@ -1531,9 +1628,17 @@ window.DossierSystem = {
     }
 };
 
+window.DossierSystem = Object.assign(window.DossierSystem || {}, systemImplementation);
+
 const initApp = () => {
     console.log("DOM ready, initializing DossierSystem for Jeva Muafida...");
     
+    // Explicit binding for entry button
+    const initBtn = document.querySelector('.init-btn') as HTMLElement | null;
+    if (initBtn) {
+        initBtn.onclick = () => window.DossierSystem.showPin();
+    }
+
     // PIN listener
     const pinField = document.getElementById('pin-field') as HTMLInputElement | null;
     if (pinField) {

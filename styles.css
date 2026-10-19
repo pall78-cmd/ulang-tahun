@@ -105,14 +105,17 @@ body {
 #module-viewport {
     position: relative;
     flex: 1;
-    perspective: 1800px;
-    -webkit-perspective: 1800px;
+    perspective: 1600px;
+    -webkit-perspective: 1600px;
     perspective-origin: center center;
     -webkit-perspective-origin: center center;
     transform-style: preserve-3d;
     -webkit-transform-style: preserve-3d;
     overflow: hidden;
     touch-action: pan-y pinch-zoom;
+    /* Subtle radial mask to prevent jagged WebKit 3D edge clipping during rotation */
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
 }
 
 .page-module {
@@ -131,7 +134,6 @@ body {
     -webkit-transform-origin: left center;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    will-change: transform, opacity, box-shadow;
     transform: translate3d(0, 0, 0);
     -webkit-transform: translate3d(0, 0, 0);
     box-sizing: border-box;
@@ -142,8 +144,8 @@ body {
     opacity: 1;
     pointer-events: auto;
     z-index: 15;
-    transform: perspective(1800px) rotateY(0deg) translate3d(0, 0, 0);
-    -webkit-transform: perspective(1800px) rotateY(0deg) translate3d(0, 0, 0);
+    transform: perspective(1600px) rotateY(0deg) translate3d(0, 0, 0);
+    -webkit-transform: perspective(1600px) rotateY(0deg) translate3d(0, 0, 0);
 }
 
 /* Page Turning Forward (Next): The outgoing page physically folds left across spine */
@@ -154,8 +156,9 @@ body {
     z-index: 35 !important;
     transform-origin: left center;
     -webkit-transform-origin: left center;
-    animation: flipPageNext 0.52s cubic-bezier(0.25, 1, 0.4, 1) forwards;
-    -webkit-animation: flipPageNext 0.52s cubic-bezier(0.25, 1, 0.4, 1) forwards;
+    will-change: transform, opacity, box-shadow;
+    animation: flipPageNext 0.55s cubic-bezier(0.25, 1, 0.35, 1) forwards;
+    -webkit-animation: flipPageNext 0.55s cubic-bezier(0.25, 1, 0.35, 1) forwards;
 }
 
 /* Page Turning Backward (Prev): Incoming page unfolds from left spine into view */
@@ -165,8 +168,9 @@ body {
     z-index: 35 !important;
     transform-origin: left center;
     -webkit-transform-origin: left center;
-    animation: flipPagePrev 0.52s cubic-bezier(0.25, 1, 0.4, 1) forwards;
-    -webkit-animation: flipPagePrev 0.52s cubic-bezier(0.25, 1, 0.4, 1) forwards;
+    will-change: transform, opacity, box-shadow;
+    animation: flipPagePrev 0.55s cubic-bezier(0.25, 1, 0.35, 1) forwards;
+    -webkit-animation: flipPagePrev 0.55s cubic-bezier(0.25, 1, 0.35, 1) forwards;
 }
 
 /* The underlying revealed page during flip */
@@ -175,56 +179,56 @@ body {
     opacity: 1 !important;
     pointer-events: none;
     z-index: 10 !important;
-    transform: perspective(1800px) rotateY(0deg) translate3d(0, 0, 0) !important;
-    -webkit-transform: perspective(1800px) rotateY(0deg) translate3d(0, 0, 0) !important;
+    transform: perspective(1600px) rotateY(0deg) translate3d(0, 0, 0) !important;
+    -webkit-transform: perspective(1600px) rotateY(0deg) translate3d(0, 0, 0) !important;
 }
 
 @keyframes flipPageNext {
     0% {
-        transform: perspective(1800px) rotateY(0deg) translate3d(0, 0, 0);
+        transform: perspective(1600px) rotateY(0deg) translate3d(0, 0, 0);
         box-shadow: 0 0 0 rgba(0, 0, 0, 0);
         opacity: 1;
     }
-    40% {
-        box-shadow: -15px 0 25px rgba(0, 0, 0, 0.35);
-        opacity: 0.95;
+    35% {
+        box-shadow: -18px 0 28px rgba(0, 0, 0, 0.38);
+        opacity: 0.98;
     }
     100% {
-        transform: perspective(1800px) rotateY(-88deg) translate3d(0, 0, 8px);
-        box-shadow: -25px 0 35px rgba(0, 0, 0, 0.45);
+        transform: perspective(1600px) rotateY(-90deg) translate3d(0, 0, 6px);
+        box-shadow: -28px 0 40px rgba(0, 0, 0, 0.48);
         opacity: 0;
     }
 }
 
 @-webkit-keyframes flipPageNext {
     0% {
-        -webkit-transform: perspective(1800px) rotateY(0deg) translate3d(0, 0, 0);
+        -webkit-transform: perspective(1600px) rotateY(0deg) translate3d(0, 0, 0);
         box-shadow: 0 0 0 rgba(0, 0, 0, 0);
         opacity: 1;
     }
-    40% {
-        box-shadow: -15px 0 25px rgba(0, 0, 0, 0.35);
-        opacity: 0.95;
+    35% {
+        box-shadow: -18px 0 28px rgba(0, 0, 0, 0.38);
+        opacity: 0.98;
     }
     100% {
-        -webkit-transform: perspective(1800px) rotateY(-88deg) translate3d(0, 0, 8px);
-        box-shadow: -25px 0 35px rgba(0, 0, 0, 0.45);
+        -webkit-transform: perspective(1600px) rotateY(-90deg) translate3d(0, 0, 6px);
+        box-shadow: -28px 0 40px rgba(0, 0, 0, 0.48);
         opacity: 0;
     }
 }
 
 @keyframes flipPagePrev {
     0% {
-        transform: perspective(1800px) rotateY(-88deg) translate3d(0, 0, 8px);
-        box-shadow: -25px 0 35px rgba(0, 0, 0, 0.45);
+        transform: perspective(1600px) rotateY(-90deg) translate3d(0, 0, 6px);
+        box-shadow: -28px 0 40px rgba(0, 0, 0, 0.48);
         opacity: 0;
     }
-    60% {
-        box-shadow: -15px 0 25px rgba(0, 0, 0, 0.35);
-        opacity: 0.95;
+    65% {
+        box-shadow: -18px 0 28px rgba(0, 0, 0, 0.38);
+        opacity: 0.98;
     }
     100% {
-        transform: perspective(1800px) rotateY(0deg) translate3d(0, 0, 0);
+        transform: perspective(1600px) rotateY(0deg) translate3d(0, 0, 0);
         box-shadow: 0 0 0 rgba(0, 0, 0, 0);
         opacity: 1;
     }
@@ -232,20 +236,22 @@ body {
 
 @-webkit-keyframes flipPagePrev {
     0% {
-        -webkit-transform: perspective(1800px) rotateY(-88deg) translate3d(0, 0, 8px);
-        box-shadow: -25px 0 35px rgba(0, 0, 0, 0.45);
+        -webkit-transform: perspective(1600px) rotateY(-90deg) translate3d(0, 0, 6px);
+        box-shadow: -28px 0 40px rgba(0, 0, 0, 0.48);
         opacity: 0;
     }
-    60% {
-        box-shadow: -15px 0 25px rgba(0, 0, 0, 0.35);
-        opacity: 0.95;
+    65% {
+        box-shadow: -18px 0 28px rgba(0, 0, 0, 0.38);
+        opacity: 0.98;
     }
     100% {
-        -webkit-transform: perspective(1800px) rotateY(0deg) translate3d(0, 0, 0);
+        -webkit-transform: perspective(1600px) rotateY(0deg) translate3d(0, 0, 0);
         box-shadow: 0 0 0 rgba(0, 0, 0, 0);
         opacity: 1;
     }
 }
+
+/* Vintage Scrapbook Layout & Elements */
 
 /* Vintage Postage Stamps (Perangko Pos Scrapbook) */
 .vintage-stamp {
@@ -296,21 +302,18 @@ body {
     z-index: 45;
 }
 
-/* Corner Dog-Ear Page Peel (Tarik Sudut Layar) */
+/* Corner Dog-Ear Page Peel (Pure Physical Book Fold) */
 .corner-peel {
     position: absolute;
-    bottom: 46px;
-    width: 60px;
-    height: 60px;
+    bottom: 38px;
+    width: 64px;
+    height: 64px;
     z-index: 60;
-    cursor: grab;
+    cursor: pointer;
     overflow: hidden;
-    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-}
-.corner-peel:active {
-    cursor: grabbing;
 }
 .corner-peel-br {
     right: 0;
@@ -326,15 +329,17 @@ body {
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: 0 0 46px 46px;
-    border-color: transparent transparent #cbbba1 transparent;
-    filter: drop-shadow(-3px -3px 5px rgba(0, 0, 0, 0.35));
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    border-width: 0 0 52px 52px;
+    border-color: transparent transparent #cfbfa6 transparent;
+    filter: drop-shadow(-4px -4px 6px rgba(0, 0, 0, 0.38));
+    transition: transform 0.22s ease, border-color 0.22s ease, filter 0.22s ease;
 }
 
-.corner-peel-br:hover .peel-triangle {
-    transform: translate(-3px, -3px) scale(1.15);
-    border-color: transparent transparent #bfae92 transparent;
+.corner-peel-br:hover .peel-triangle,
+.corner-peel-br:active .peel-triangle {
+    transform: translate(-4px, -4px) scale(1.15);
+    border-color: transparent transparent #c3b194 transparent;
+    filter: drop-shadow(-6px -6px 8px rgba(0, 0, 0, 0.45));
 }
 
 .corner-peel-bl .peel-triangle {
@@ -344,62 +349,44 @@ body {
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: 46px 0 0 46px;
-    border-color: transparent transparent transparent #cbbba1;
-    filter: drop-shadow(3px -3px 5px rgba(0, 0, 0, 0.35));
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    border-width: 52px 0 0 52px;
+    border-color: transparent transparent transparent #cfbfa6;
+    filter: drop-shadow(4px -4px 6px rgba(0, 0, 0, 0.38));
+    transition: transform 0.22s ease, border-color 0.22s ease, filter 0.22s ease;
 }
 
-.corner-peel-bl:hover .peel-triangle {
-    transform: translate(3px, -3px) scale(1.15);
-    border-color: transparent transparent transparent #bfae92;
+.corner-peel-bl:hover .peel-triangle,
+.corner-peel-bl:active .peel-triangle {
+    transform: translate(4px, -4px) scale(1.15);
+    border-color: transparent transparent transparent #c3b194;
+    filter: drop-shadow(6px -6px 8px rgba(0, 0, 0, 0.45));
 }
 
-.corner-peel .peel-hint {
-    position: absolute;
-    bottom: 5px;
-    font-size: 7px;
-    font-family: 'Courier Prime', monospace;
-    font-weight: bold;
-    color: #432818;
-    pointer-events: none;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-.corner-peel-br .peel-hint {
-    right: 5px;
-}
-.corner-peel-bl .peel-hint {
-    left: 5px;
-}
-
-/* Nav Hit Zones - Sleek and Non-Intrusive */
+/* Nav Hit Zones - Ultra-Minimalist Edge Touch Zones */
 .nav-zone {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 28px;
-    height: 64px;
-    z-index: 65;
+    width: 20px;
+    height: 72px;
+    z-index: 58;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 4px;
-    background: rgba(245, 239, 224, 0.4);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(2px);
-    transition: all 0.2s ease;
+    background: transparent;
+    border: none;
+    transition: all 0.25s ease;
     user-select: none;
+    opacity: 0;
 }
 .nav-zone:hover {
-    background: rgba(245, 239, 224, 0.85);
-    border-color: rgba(139, 0, 0, 0.3);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    transform: translateY(-50%) scale(1.08);
+    opacity: 0.5;
+    background: rgba(245, 239, 224, 0.4);
 }
-.nav-left { left: 4px; }
-.nav-right { right: 4px; }
+.nav-left { left: 0; }
+.nav-right { right: 0; }
 
 /* Scrapbook Page Background */
 .victorian-bg::before {
@@ -427,6 +414,35 @@ body {
 }
 .polaroid img { width: 100%; height: auto; filter: sepia(0.12) contrast(1.05); }
 .polaroid-caption { font-family: 'Special Elite', cursive; font-size: 9px; text-align: center; position: absolute; bottom: 8px; width: 100%; left: 0; color: #333; }
+
+/* Mini Polaroid for compact mobile layouts */
+.polaroid-mini {
+    background: #fff;
+    padding: 4px 4px 18px 4px;
+    box-shadow: 1px 3px 8px rgba(0,0,0,0.22);
+    position: relative;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border-radius: 1px;
+}
+.polaroid-mini:hover {
+    box-shadow: 2px 6px 14px rgba(0,0,0,0.3);
+}
+.polaroid-mini img {
+    width: 100%;
+    display: block;
+    filter: sepia(0.12) contrast(1.05);
+}
+.polaroid-mini .polaroid-caption {
+    font-family: 'Special Elite', cursive;
+    font-size: 6.5px;
+    text-align: center;
+    position: absolute;
+    bottom: 3px;
+    width: 100%;
+    left: 0;
+    color: #333;
+    letter-spacing: 0.02em;
+}
 
 .washi-tape {
     position: absolute;
