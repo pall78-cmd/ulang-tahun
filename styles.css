@@ -1151,3 +1151,96 @@ body {
     border-color: #ef4444;
 }
 
+/* Tactile Video & Shorts Interactive Opening Animations */
+.shorts-opening,
+.shorts-active-opening {
+    animation: shortsScaleAndGlow 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes shortsScaleAndGlow {
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    45% {
+        transform: scale(1.04) translateY(-2px);
+        filter: brightness(1.25) contrast(1.1);
+        box-shadow: 0 10px 24px rgba(220, 38, 38, 0.45), 0 0 15px rgba(239, 68, 68, 0.3);
+    }
+    100% {
+        transform: scale(1.02);
+        filter: brightness(1.15);
+        box-shadow: 0 6px 18px rgba(220, 38, 38, 0.35);
+    }
+}
+
+.decrypt-btn-opening {
+    animation: decryptPulse 0.24s ease-in-out forwards;
+}
+
+@keyframes decryptPulse {
+    0% { transform: scale(1); filter: brightness(1); }
+    40% { transform: scale(0.965); filter: brightness(1.2); border-color: rgba(185, 28, 28, 0.8); }
+    100% { transform: scale(0.98); opacity: 0.5; }
+}
+
+.video-scale-up-fade {
+    animation: videoScaleUpFade 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes videoScaleUpFade {
+    0% {
+        opacity: 0;
+        transform: scale(0.92) translateY(8px);
+        filter: blur(2px);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.015) translateY(-1px);
+        filter: blur(0px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0px);
+    }
+}
+
+/* Modal opening animation for Carte Postale video */
+#video-modal.modal-opening {
+    animation: modalBackdropFadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+#video-modal.modal-opening .video-card-container {
+    animation: videoCardScaleUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalBackdropFadeIn {
+    0% { opacity: 0; backdrop-filter: blur(0px); }
+    100% { opacity: 1; backdrop-filter: blur(6px); }
+}
+
+@keyframes videoCardScaleUp {
+    0% {
+        opacity: 0;
+        transform: scale(0.85) translateY(18px);
+    }
+    65% {
+        opacity: 1;
+        transform: scale(1.02) translateY(-2px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+    animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+

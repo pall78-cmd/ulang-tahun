@@ -193,10 +193,14 @@ export interface DossierSystemType {
     fadeIn: (audioId: string, duration?: number) => void;
     fadeOut: (audioId: string, duration?: number) => void;
     playPageFlipSound: () => void;
+    playTapeClickSound: () => void;
+    playLinkChimeSound: () => void;
     
     openVideoModal: () => void;
     closeVideoModal: () => void;
     playDossierVideo: () => void;
+    playEvidenceVideo: () => void;
+    openShortsVideo: (e?: Event) => void;
     
     renderCalendar: () => void;
     changeCalendarMonth: (delta: number) => void;
@@ -340,6 +344,104 @@ function createPageFlipWavDataUri(): string {
     return cachedPageFlipDataUri;
 }
 
+// Tactile mechanical tape head engage / camera shutter click for video playback triggers
+let cachedTapeClickDataUri: string | null = null;
+function createTapeClickWavDataUri(): string {
+    if (cachedTapeClickDataUri) return cachedTapeClickDataUri;
+    const sampleRate = 22050;
+    const duration = 0.12;
+    const numSamples = Math.floor(sampleRate * duration);
+    const buffer = new Int16Array(numSamples);
+
+    for (let i = 0; i < numSamples; i++) {
+        const t = i / sampleRate;
+        const click = Math.sin(2 * Math.PI * 850 * t) * Math.exp(-t * 90);
+        const subPop = Math.sin(2 * Math.PI * 180 * t) * Math.exp(-t * 45);
+        const noise = (Math.random() * 2 - 1) * Math.exp(-t * 120) * 0.4;
+        const sample = (click * 0.6 + subPop * 0.35 + noise * 0.25) * 0.45;
+        const clamped = Math.max(-1, Math.min(1, sample));
+        buffer[i] = clamped < 0 ? clamped * 0x8000 : clamped * 0x7FFF;
+    }
+
+    const dataSize = numSamples * 2;
+    const header = new ArrayBuffer(44);
+    const view = new DataView(header);
+    function writeString(offset: number, str: string) {
+        for (let j = 0; j < str.length; j++) view.setUint8(offset + j, str.charCodeAt(j));
+    }
+    writeString(0, "RIFF");
+    view.setUint32(4, 36 + dataSize, true);
+    writeString(8, "WAVE");
+    writeString(12, "fmt ");
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
+    writeString(36, "data");
+    view.setUint32(40, dataSize, true);
+
+    const wavBytes = new Uint8Array(44 + dataSize);
+    wavBytes.set(new Uint8Array(header), 0);
+    wavBytes.set(new Uint8Array(buffer.buffer), 44);
+
+    let binary = '';
+    for (let k = 0; k < wavBytes.byteLength; k++) binary += String.fromCharCode(wavBytes[k]);
+    cachedTapeClickDataUri = `data:audio/wav;base64,${btoa(binary)}`;
+    return cachedTapeClickDataUri;
+}
+
+// Gentle vintage chime sound for external memories and links
+let cachedChimeDataUri: string | null = null;
+function createChimeWavDataUri(): string {
+    if (cachedChimeDataUri) return cachedChimeDataUri;
+    const sampleRate = 22050;
+    const duration = 0.32;
+    const numSamples = Math.floor(sampleRate * duration);
+    const buffer = new Int16Array(numSamples);
+
+    for (let i = 0; i < numSamples; i++) {
+        const t = i / sampleRate;
+        const tone1 = Math.sin(2 * Math.PI * 659.25 * t) * Math.exp(-t * 9);
+        const tone2 = Math.sin(2 * Math.PI * 987.77 * t) * Math.exp(-t * 12);
+        const tone3 = Math.sin(2 * Math.PI * 1318.5 * t) * Math.exp(-t * 15);
+        const sample = (tone1 * 0.45 + tone2 * 0.35 + tone3 * 0.2) * 0.35;
+        const clamped = Math.max(-1, Math.min(1, sample));
+        buffer[i] = clamped < 0 ? clamped * 0x8000 : clamped * 0x7FFF;
+    }
+
+    const dataSize = numSamples * 2;
+    const header = new ArrayBuffer(44);
+    const view = new DataView(header);
+    function writeString(offset: number, str: string) {
+        for (let j = 0; j < str.length; j++) view.setUint8(offset + j, str.charCodeAt(j));
+    }
+    writeString(0, "RIFF");
+    view.setUint32(4, 36 + dataSize, true);
+    writeString(8, "WAVE");
+    writeString(12, "fmt ");
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
+    writeString(36, "data");
+    view.setUint32(40, dataSize, true);
+
+    const wavBytes = new Uint8Array(44 + dataSize);
+    wavBytes.set(new Uint8Array(header), 0);
+    wavBytes.set(new Uint8Array(buffer.buffer), 44);
+
+    let binary = '';
+    for (let k = 0; k < wavBytes.byteLength; k++) binary += String.fromCharCode(wavBytes[k]);
+    cachedChimeDataUri = `data:audio/wav;base64,${btoa(binary)}`;
+    return cachedChimeDataUri;
+}
+
 // Implementation of window.DossierSystem
 const systemImplementation: DossierSystemType = {
     index: 0,
@@ -428,11 +530,97 @@ const systemImplementation: DossierSystemType = {
         }
     },
 
+    playTapeClickSound() {
+        try {
+            // Instant real-time Web Audio synthesis for tactile mechanical click
+            const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+            if (AudioCtx) {
+                const ctx = new AudioCtx();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(850, now);
+                osc.frequency.exponentialRampToValueAtTime(110, now + 0.075);
+                gain.gain.setValueAtTime(0.28, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.075);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            }
+        } catch {
+            // Handled gracefully by HTML5 fallback
+        }
+
+        try {
+            let audio = document.getElementById('tape-click-sfx') as HTMLAudioElement | null;
+            if (audio) {
+                if (!audio.src || !audio.src.startsWith('data:audio/wav')) {
+                    audio.src = createTapeClickWavDataUri();
+                    audio.preload = 'auto';
+                }
+                audio.volume = 0.35;
+                audio.currentTime = 0;
+                audio.play().catch(() => {});
+            }
+        } catch (e) {
+            console.debug('Tape click audio notice:', e);
+        }
+    },
+
+    playLinkChimeSound() {
+        try {
+            // Instant real-time Web Audio harmonic chord for warm acoustic feedback
+            const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+            if (AudioCtx) {
+                const ctx = new AudioCtx();
+                const now = ctx.currentTime;
+                const osc1 = ctx.createOscillator();
+                const osc2 = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc1.type = 'sine';
+                osc2.type = 'sine';
+                osc1.frequency.setValueAtTime(659.25, now); // E5
+                osc2.frequency.setValueAtTime(987.77, now); // B5
+                gain.gain.setValueAtTime(0.22, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(ctx.destination);
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + 0.29);
+                osc2.stop(now + 0.29);
+            }
+        } catch {
+            // Handled gracefully by HTML5 fallback
+        }
+
+        try {
+            let audio = document.getElementById('chime-sfx') as HTMLAudioElement | null;
+            if (audio) {
+                if (!audio.src || !audio.src.startsWith('data:audio/wav')) {
+                    audio.src = createChimeWavDataUri();
+                    audio.preload = 'auto';
+                }
+                audio.volume = 0.32;
+                audio.currentTime = 0;
+                audio.play().catch(() => {});
+            }
+        } catch (e) {
+            console.debug('Chime audio notice:', e);
+        }
+    },
+
     openVideoModal() {
+        this.playTapeClickSound();
         const modal = document.getElementById('video-modal');
         const video = document.getElementById('dossier-video') as HTMLVideoElement | null;
         if (modal) {
             modal.style.display = 'flex';
+            modal.classList.add('modal-opening');
+            setTimeout(() => modal.classList.remove('modal-opening'), 450);
         }
         if (video) {
             video.currentTime = 0;
@@ -456,11 +644,63 @@ const systemImplementation: DossierSystemType = {
     },
 
     playDossierVideo() {
+        this.playTapeClickSound();
         const video = document.getElementById('dossier-video') as HTMLVideoElement | null;
         if (video) {
             video.currentTime = 0;
             video.play().catch(e => console.warn("Video play triggered:", e));
         }
+    },
+
+    playEvidenceVideo() {
+        this.playTapeClickSound();
+        const decryptBtn = document.getElementById('decrypt-btn');
+        const container = document.getElementById('video-container');
+        const video = document.getElementById('evidence-video-h2') as HTMLVideoElement | null;
+        
+        if (decryptBtn) {
+            decryptBtn.classList.add('decrypt-btn-opening');
+        }
+
+        setTimeout(() => {
+            if (decryptBtn) decryptBtn.style.display = 'none';
+            if (container) {
+                container.classList.remove('hidden');
+                container.classList.add('video-scale-up-fade');
+            }
+            if (video) {
+                if (!video.src || video.src === '' || video.src === window.location.href) {
+                    video.src = 'https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/VID_20261020170628490.mp4';
+                    video.load();
+                }
+                video.play().catch(e => console.warn('Evidence video play notice:', e));
+            }
+        }, 220);
+    },
+
+    openShortsVideo(e?: Event) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        this.playLinkChimeSound();
+        const card = document.getElementById('shorts-card-btn');
+        const btnText = document.getElementById('shorts-play-btn-text');
+        
+        if (card) {
+            card.classList.add('shorts-active-opening');
+        }
+        if (btnText) {
+            btnText.innerHTML = '<span class="inline-block animate-spin mr-0.5">✦</span> Membuka...';
+        }
+
+        setTimeout(() => {
+            if (card) card.classList.remove('shorts-active-opening');
+            if (btnText) {
+                btnText.innerHTML = '<span>Putar Shorts</span> <span>↗</span>';
+            }
+            window.open('https://youtube.com/shorts/S95wMLXdp_M?si=eRZVr4REOjk5be0X', '_blank', 'noopener,noreferrer');
+        }, 300);
     },
 
     renderCalendar() {
@@ -825,12 +1065,24 @@ const systemImplementation: DossierSystemType = {
         // Initialize 3D Book Corner Peel Navigation
         this.initBookGestures();
 
-        // Pre-warm HTML5 Page-Flip Audio element for tactile auditory feedback
+        // Pre-warm HTML5 Audio elements for instant tactile auditory feedback
         const pageFlipAudio = document.getElementById('page-flip-sfx') as HTMLAudioElement | null;
         if (pageFlipAudio) {
             pageFlipAudio.src = createPageFlipWavDataUri();
             pageFlipAudio.volume = 0.32;
             pageFlipAudio.preload = 'auto';
+        }
+        const tapeClickAudio = document.getElementById('tape-click-sfx') as HTMLAudioElement | null;
+        if (tapeClickAudio) {
+            tapeClickAudio.src = createTapeClickWavDataUri();
+            tapeClickAudio.volume = 0.38;
+            tapeClickAudio.preload = 'auto';
+        }
+        const chimeAudio = document.getElementById('chime-sfx') as HTMLAudioElement | null;
+        if (chimeAudio) {
+            chimeAudio.src = createChimeWavDataUri();
+            chimeAudio.volume = 0.35;
+            chimeAudio.preload = 'auto';
         }
 
         if (supabaseClient && IS_REMOTE_SYNC_ACTIVE) {
@@ -1064,6 +1316,21 @@ const systemImplementation: DossierSystemType = {
         if (this.index !== 4) this.fadeOut('birthday-song', 1200);
         if (this.index !== 3) this.fadeOut('applause-sfx', 500);
 
+        // Pause Halaman 2 evidence video when navigating away
+        if (this.index !== 1) {
+            const h2Video = document.getElementById('evidence-video-h2') as HTMLVideoElement | null;
+            if (h2Video && !h2Video.paused) {
+                h2Video.pause();
+            }
+        }
+        // Pause Halaman 6 dossier modal video when navigating away
+        if (this.index !== 5) {
+            const h6Video = document.getElementById('dossier-video') as HTMLVideoElement | null;
+            if (h6Video && !h6Video.paused) {
+                h6Video.pause();
+            }
+        }
+
         // Reset inline transforms and transition classes on modules
         document.querySelectorAll<HTMLElement>('.page-module').forEach((m, i) => {
             m.style.transform = '';
@@ -1151,33 +1418,42 @@ const systemImplementation: DossierSystemType = {
     },
 
     extinguish() {
+        if (this.candleBlown) return;
+        this.candleBlown = true;
+
+        // Immediately extinguish flame and remove hint text so no unaesthetic text lingers
+        const flame = document.querySelector('.flame') as HTMLElement | null;
+        if (flame) flame.style.display = 'none';
+        const candleHint = document.querySelector('.candle-hint') as HTMLElement | null;
+        if (candleHint) candleHint.style.display = 'none';
+
         const flash = document.getElementById('flash-overlay');
         if (flash) flash.classList.add('flash-active');
         this.fadeIn('birthday-song', 2000);
         
         setTimeout(() => {
             const candleStage = document.getElementById('candle-stage');
-            if (candleStage) candleStage.style.opacity = '0';
-            
-            const bdayText = document.getElementById('bday-text');
-            if (bdayText) bdayText.style.opacity = '1';
+            if (candleStage) {
+                candleStage.style.opacity = '0';
+                candleStage.style.pointerEvents = 'none';
+            }
 
-            // Confetti celebration
-            const duration = 2.5 * 1000;
+            // Confetti celebration (single clean burst, no infinite loop)
+            const duration = 2.0 * 1000;
             const end = Date.now() + duration;
 
             (function frame() {
                 confetti({
-                    particleCount: 5,
+                    particleCount: 4,
                     angle: 60,
-                    spread: 55,
+                    spread: 50,
                     origin: { x: 0 },
                     colors: ['#8b0000', '#ffffff', '#ffd700']
                 });
                 confetti({
-                    particleCount: 5,
+                    particleCount: 4,
                     angle: 120,
-                    spread: 55,
+                    spread: 50,
                     origin: { x: 1 },
                     colors: ['#8b0000', '#ffffff', '#ffd700']
                 });
@@ -1189,11 +1465,10 @@ const systemImplementation: DossierSystemType = {
 
             setTimeout(() => {
                 if (candleStage) candleStage.style.display = 'none';
-                this.candleBlown = true;
                 this.type();
-            }, 800);
+            }, 500);
             if (flash) flash.classList.remove('flash-active');
-        }, 400); 
+        }, 300); 
     },
 
     turnPage(targetIdx: number, dir: 'next' | 'prev') {
@@ -1668,13 +1943,25 @@ const initApp = () => {
         initBtn.onclick = () => window.DossierSystem.showPin();
     }
 
-    // PIN listener
+    // PIN listener: Decryption access code updated to ChapterOfUs with anti-XSS sanitized validation
     const pinField = document.getElementById('pin-field') as HTMLInputElement | null;
     if (pinField) {
-        pinField.oninput = (e) => {
-            const target = e.target as HTMLInputElement;
-            if (target.value === "300326") {
+        const verifyPin = () => {
+            const raw = pinField.value || '';
+            // Anti-XSS and tag/symbol sanitization to prevent injection
+            const sanitized = raw.replace(/[<>"'&/\\;`]/g, '').trim();
+            if (raw !== sanitized) {
+                pinField.value = sanitized;
+            }
+            if (sanitized.toLowerCase() === "chapterofus".toLowerCase()) {
                 window.DossierSystem.runConstellationTransition();
+            }
+        };
+
+        pinField.oninput = verifyPin;
+        pinField.onkeydown = (e: KeyboardEvent) => {
+            if (e.key === 'Enter') {
+                verifyPin();
             }
         };
     }
