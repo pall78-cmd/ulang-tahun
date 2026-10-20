@@ -302,88 +302,27 @@ body {
     z-index: 45;
 }
 
-/* Corner Dog-Ear Page Peel (Pure Physical Book Fold) */
-.corner-peel {
-    position: absolute;
-    bottom: 38px;
-    width: 64px;
-    height: 64px;
-    z-index: 60;
-    cursor: pointer;
-    overflow: hidden;
-    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-}
-.corner-peel-br {
-    right: 0;
-}
-.corner-peel-bl {
-    left: 0;
-}
-
-.corner-peel-br .peel-triangle {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 0 52px 52px;
-    border-color: transparent transparent #cfbfa6 transparent;
-    filter: drop-shadow(-4px -4px 6px rgba(0, 0, 0, 0.38));
-    transition: transform 0.22s ease, border-color 0.22s ease, filter 0.22s ease;
-}
-
-.corner-peel-br:hover .peel-triangle,
-.corner-peel-br:active .peel-triangle {
-    transform: translate(-4px, -4px) scale(1.15);
-    border-color: transparent transparent #c3b194 transparent;
-    filter: drop-shadow(-6px -6px 8px rgba(0, 0, 0, 0.45));
-}
-
-.corner-peel-bl .peel-triangle {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 52px 0 0 52px;
-    border-color: transparent transparent transparent #cfbfa6;
-    filter: drop-shadow(4px -4px 6px rgba(0, 0, 0, 0.38));
-    transition: transform 0.22s ease, border-color 0.22s ease, filter 0.22s ease;
-}
-
-.corner-peel-bl:hover .peel-triangle,
-.corner-peel-bl:active .peel-triangle {
-    transform: translate(4px, -4px) scale(1.15);
-    border-color: transparent transparent transparent #c3b194;
-    filter: drop-shadow(6px -6px 8px rgba(0, 0, 0, 0.45));
-}
-
-/* Nav Hit Zones - Ultra-Minimalist Edge Touch Zones */
+/* Invisible Gesture Pull Zones (Zero Visual Markers, 100% Tactile 3D Physics) */
 .nav-zone {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 72px;
-    z-index: 58;
-    cursor: pointer;
+    top: 0;
+    height: 100%;
+    width: 32px;
+    z-index: 55;
+    cursor: grab;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
     background: transparent;
     border: none;
-    transition: all 0.25s ease;
     user-select: none;
     opacity: 0;
+    pointer-events: auto;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: pan-y;
 }
-.nav-zone:hover {
-    opacity: 0.5;
-    background: rgba(245, 239, 224, 0.4);
+.nav-zone:active {
+    cursor: grabbing;
 }
 .nav-left { left: 0; }
 .nav-right { right: 0; }
@@ -511,8 +450,6 @@ body {
     border: 8px solid transparent;
     border-image: repeating-linear-gradient(45deg, #d32f2f, #d32f2f 10px, transparent 10px, transparent 20px, #1976d2 20px, #1976d2 30px, transparent 30px, transparent 40px) 10;
 }
-
-.page-module > * { position: relative; z-index: 1; }
 
 /* --- EVIDENCE FORM --- */
 .evidence-form {

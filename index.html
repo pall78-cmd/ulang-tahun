@@ -369,17 +369,9 @@
             </div>
         </div>
 
-        <!-- Navigation Hit Zones (Ultra-minimal edge touch zones) -->
-        <div id="nav-l" class="nav-zone nav-left" onclick="DossierSystem.prev()" title="Halaman Sebelumnya"></div>
-        <div id="nav-r" class="nav-zone nav-right" onclick="DossierSystem.next()" title="Halaman Berikutnya"></div>
-
-        <!-- Interactive Corner Book Page Peels (Lipatan Sudut Alami) -->
-        <div id="corner-peel-r" class="corner-peel corner-peel-br" onclick="DossierSystem.next()" title="Buka lembaran selanjutnya">
-            <div class="peel-triangle"></div>
-        </div>
-        <div id="corner-peel-l" class="corner-peel corner-peel-bl" onclick="DossierSystem.prev()" title="Kembali ke lembaran sebelumnya" style="display: none;">
-            <div class="peel-triangle"></div>
-        </div>
+        <!-- Gesture Pull Zones (Invisible edge zones, zero visible markers) -->
+        <div id="nav-l" class="nav-zone nav-left" title="Tarik untuk halaman sebelumnya"></div>
+        <div id="nav-r" class="nav-zone nav-right" title="Tarik untuk halaman berikutnya"></div>
 
         <!-- VIEWPORT: 7 Modules (0 to 6) -->
         <div id="module-viewport" class="flex-1 relative overflow-hidden">
@@ -448,79 +440,96 @@
                 </div>
             </section>
 
-            <!-- HALAMAN 2 (Index 1): Evidence & Timeline Berkas -->
-            <section class="page-module victorian-bg" id="mod-1">
-                <div class="grid-paper shadow-2xl rotate-[0.5deg] !h-auto mb-4 mt-4 mx-2 relative z-10">
-                    <div class="washi-tape washi-yellow rotate-[12deg]" style="top: -10px; right: 20px; width: 80px;"></div>
-                    <div class="washi-tape rotate-[-12deg]" style="bottom: -10px; left: 20px; width: 80px;"></div>
+            <!-- HALAMAN 2 (Index 1): Dossier Biografi & Rekaman Berkas -->
+            <section class="page-module victorian-bg flex flex-col justify-between" id="mod-1">
+                <div class="grid-paper shadow-2xl rotate-[0.5deg] !h-auto mb-2 mt-2 sm:mt-3 mx-1 sm:mx-2 p-3 sm:p-4 relative z-10 bg-[#fbf9f4]">
+                    <div class="washi-tape washi-yellow rotate-[12deg]" style="top: -8px; right: 25px; width: 70px;"></div>
+                    <div class="washi-tape washi-blue rotate-[-8deg]" style="bottom: -8px; left: 25px; width: 70px;"></div>
                     
-                    <div class="absolute top-[-15px] right-[-5px] z-30">
-                        <div class="polaroid w-28 rotate-[4deg] hover:rotate-0 hover:scale-105 transition-all duration-300">
-                            <div class="pushpin" style="top: 5px; left: 50%; transform: translateX(-50%);"></div>
-                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20260921-WA0022(1).jpg" alt="Jeva Muafida" class="h-28 object-cover">
-                            <div class="polaroid-caption">Jeva Muafida 🌸</div>
+                    <!-- Dossier Official Header -->
+                    <div class="form-header border-b-2 border-black/80 mb-2.5 pb-1 flex justify-between items-end">
+                        <div>
+                            <div class="text-[12px] sm:text-[13px] font-black uppercase tracking-[0.15em] text-red-950 font-serif">CONFIDENTIAL DOSSIER</div>
+                            <div class="text-[7.5px] sm:text-[8px] font-mono text-gray-600">CASE ID: 2026/JM-BIOGRAPHY // FILE #02</div>
                         </div>
-                    </div>
-                    
-                    <div class="form-header border-b-2 border-black mb-3 pb-1 w-2/3">
-                        <div class="text-[13px] font-black uppercase tracking-[0.1em] text-black font-serif">CONFIDENTIAL FILE</div>
-                        <div class="text-[8px] font-mono text-gray-600">CASE ID: 2026/JM-YEAR</div>
+                        <span class="text-[7.5px] font-mono px-1.5 py-0.5 bg-red-900/10 text-red-900 border border-red-900/30 rounded font-bold uppercase">DECRYPTED</span>
                     </div>
 
-                    <div class="mt-2 space-y-1.5 pr-[95px] font-mono text-[9.5px]">
-                        <div class="bg-white/60 p-1 border-b border-dotted border-black/30 flex justify-between">
-                            <span class="font-bold text-gray-500">SUBJEK:</span>
-                            <span class="font-bold text-red-950">JEVA MUAFIDA</span>
+                    <!-- Top Row: Structured Biography Table & Compact Polaroid -->
+                    <div class="flex items-start gap-2.5 mb-2.5">
+                        <!-- Biography Data Table -->
+                        <div class="flex-1 font-mono text-[9px] sm:text-[10px] space-y-1">
+                            <div class="bg-white/80 p-1 border-b border-dotted border-black/30 flex justify-between items-center">
+                                <span class="font-bold text-gray-500 text-[8px] sm:text-[8.5px]">NAMA:</span>
+                                <span class="font-black text-red-950 font-sans tracking-wide">JEVA MUAFIDA</span>
+                            </div>
+                            <div class="bg-white/80 p-1 border-b border-dotted border-black/30 flex justify-between items-center">
+                                <span class="font-bold text-gray-500 text-[8px] sm:text-[8.5px]">TGL LAHIR:</span>
+                                <span class="font-bold text-gray-900">24 April 2007</span>
+                            </div>
+                            <div class="bg-white/80 p-1 border-b border-dotted border-black/30 flex justify-between items-center">
+                                <span class="font-bold text-gray-500 text-[8px] sm:text-[8.5px]">GOL. DARAH:</span>
+                                <span class="font-bold text-red-800 bg-red-50 px-1 rounded border border-red-200">B</span>
+                            </div>
+                            <div class="bg-white/80 p-1 border-b border-dotted border-black/30 flex justify-between items-center">
+                                <span class="font-bold text-gray-500 text-[8px] sm:text-[8.5px]">WARNA SUKA:</span>
+                                <span class="font-bold text-blue-700 flex items-center gap-1">Biru 💙</span>
+                            </div>
+                            <div class="bg-white/80 p-1 border-b border-dotted border-black/30 flex justify-between items-center">
+                                <span class="font-bold text-gray-500 text-[8px] sm:text-[8.5px]">KLASIFIKASI:</span>
+                                <span class="font-bold text-emerald-800 text-[8px] sm:text-[8.5px]">MOST CHERISHED</span>
+                            </div>
+                            <div class="bg-white/80 p-1 border-b border-dotted border-black/30 flex justify-between items-center">
+                                <span class="font-bold text-gray-500 text-[8px] sm:text-[8.5px]">STATUS:</span>
+                                <span class="font-bold text-red-700 text-[8px] sm:text-[8.5px]">EXTRAORDINARY</span>
+                            </div>
                         </div>
-                        <div class="bg-white/60 p-1 border-b border-dotted border-black/30 flex justify-between">
-                            <span class="font-bold text-gray-500">KLASIFIKASI:</span>
-                            <span class="font-bold text-emerald-800">MOST CHERISHED</span>
-                        </div>
-                        <div class="bg-white/60 p-1 border-b border-dotted border-black/30 flex justify-between">
-                            <span class="font-bold text-gray-500">PERIODE:</span>
-                            <span class="font-bold">1 TAHUN PENUH</span>
-                        </div>
-                        <div class="bg-white/60 p-1 border-b border-dotted border-black/30 flex justify-between">
-                            <span class="font-bold text-gray-500">STATUS:</span>
-                            <span class="font-bold text-red-700">EXTRAORDINARY</span>
+
+                        <!-- Fixed Polaroid of Jeva with Pushpin -->
+                        <div class="polaroid-mini w-[78px] sm:w-[92px] shrink-0 rotate-[3deg] shadow-md hover:rotate-0 transition-transform">
+                            <div class="pushpin" style="top: -4px; left: 50%; transform: translateX(-50%) scale(0.75);"></div>
+                            <img src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/IMG-20260921-WA0022(1).jpg" alt="Jeva Muafida" class="h-20 sm:h-24 w-full object-cover object-top rounded-xs">
+                            <div class="polaroid-caption">Jeva 🌸</div>
                         </div>
                     </div>
                     
-                    <div class="mt-5 relative">
-                        <div class="newspaper-fragment rotate-[-4deg] cursor-pointer" style="top: -12px; left: -10px; z-index: 10;">
-                            <h4>EVIDENCE #1</h4>
-                            <p>Rekaman visual terenkripsi.</p>
+                    <!-- Evidence Video Section -->
+                    <div class="mt-2 relative">
+                        <div class="newspaper-fragment rotate-[-2deg]" style="top: -10px; left: -6px; z-index: 10; width: 85px;">
+                            <h4 class="text-[7.5px]">EVIDENCE #1</h4>
+                            <p class="text-[7px]">Sinyal Terenkripsi</p>
                         </div>
-                        <div class="p-3 border-2 border-dashed border-black/20 rounded-sm relative bg-white/90">
-                            <div class="flex justify-between items-center mb-2">
-                                <p class="text-[8px] font-bold uppercase opacity-60 font-mono">Encrypted Signal:</p>
-                                <span class="text-[7px] font-mono text-red-800 bg-red-100 px-1 border border-red-200 font-bold">TERKUNCI</span>
+                        <div class="p-2 sm:p-2.5 border-2 border-dashed border-black/20 rounded-xs relative bg-white/95 shadow-2xs">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <p class="text-[7.5px] font-bold uppercase opacity-60 font-mono">Arsip Video Kenangan:</p>
+                                <span class="text-[7px] font-mono text-red-800 bg-red-100 px-1 border border-red-200 font-bold">READY</span>
                             </div>
                             
                             <div id="video-container" class="hidden transition-all duration-300">
-                                <video controls class="w-full border border-black/10 rounded" style="max-height: 120px; object-fit: cover;">
+                                <video controls class="w-full border border-black/10 rounded-xs" style="max-height: 110px; object-fit: cover;">
                                     <source src="https://urcxbufxcebfgrsfvmsj.supabase.co/storage/v1/object/public/my%20pacar/VID_20250808204246202.mp4" type="video/mp4">
                                 </video>
                             </div>
 
-                            <button id="decrypt-btn" onclick="document.getElementById('video-container').classList.remove('hidden'); this.style.display='none';" class="w-full py-2.5 border border-dashed border-black/30 bg-[#f4f1ea] hover:bg-white transition-colors flex flex-col items-center justify-center gap-1 cursor-pointer">
-                                <span class="text-[9px] font-bold uppercase tracking-widest text-red-950 font-mono">Tap to Decrypt Signal</span>
+                            <button id="decrypt-btn" onclick="document.getElementById('video-container').classList.remove('hidden'); this.style.display='none';" class="w-full py-2 border border-dashed border-red-900/40 bg-[#f4f1ea] hover:bg-white transition-colors flex flex-col items-center justify-center gap-0.5 cursor-pointer rounded-xs">
+                                <span class="text-[8.5px] sm:text-[9px] font-bold uppercase tracking-widest text-red-950 font-mono">▶ Buka & Putar Sinyal Video</span>
                             </button>
                         </div>
                     </div>
 
-                    <div class="mt-3 p-2 bg-amber-50/80 border border-amber-200 text-justify relative">
-                        <p class="text-[9px] leading-relaxed text-gray-800 font-serif italic">
-                            "Subjek menunjukkan ketangguhan luar biasa, senyum yang menerangi hari, dan dedikasi mengagumkan sepanjang perjalanan tahun ini."
+                    <!-- Personal Note & Stamps -->
+                    <div class="mt-2 p-1.5 bg-amber-50/90 border border-amber-200/80 text-justify relative rounded-xs">
+                        <p class="text-[8.5px] sm:text-[9px] leading-relaxed text-gray-800 font-serif italic m-0">
+                            "Subjek menunjukkan ketangguhan luar biasa, senyum manis yang menerangi duniaku, dan kehangatan yang tak ternilai sepanjang tahun ini."
                         </p>
                     </div>
                     
-                    <div class="stamp-container-v2 mt-3">
-                        <div class="round-stamp opacity-80 rotate-[-8deg] font-mono text-[8px]">
+                    <div class="stamp-container-v2 mt-2 pt-1 border-t border-dashed border-black/20 flex justify-between items-center">
+                        <div class="round-stamp opacity-80 rotate-[-5deg] font-mono text-[7px] leading-tight">
                             VERIFIED<br>BY N.<br>2026 RETRO
                         </div>
-                        <img src="https://img.icons8.com/ios/100/000000/fingerprint.png" class="fingerprint-zone opacity-30" alt="Fingerprint">
-                        <div class="barcode-strip opacity-30"></div>
+                        <img src="https://img.icons8.com/ios/100/000000/fingerprint.png" class="fingerprint-zone opacity-25 h-6 w-auto" alt="Fingerprint">
+                        <div class="barcode-strip opacity-25"></div>
                     </div>
                 </div>
             </section>
@@ -640,24 +649,28 @@
                         </div>
                     </div>
                     
-                    <!-- Quick Milestone Navigator Ribbon (Tab 3 Tanggal Utama) -->
+                    <!-- Quick Milestone Navigator Ribbon (Tab 4 Tanggal Utama) -->
                     <div class="mb-2">
                         <div class="text-[7.5px] uppercase font-mono tracking-wider text-red-900 font-bold mb-1 flex items-center justify-between">
                             <span class="flex items-center gap-1">📍 PIN KOORDINAT MOMEN SPESIAL:</span>
                             <span class="text-gray-500 font-normal">Ketuk untuk buka</span>
                         </div>
-                        <div class="grid grid-cols-3 gap-1.5 font-mono text-[8px]">
-                            <button id="chip-milestone-mar" onclick="DossierSystem.selectMilestone('08-03')" class="p-1.5 bg-white/90 hover:bg-white border border-red-900/30 hover:border-red-900 rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95">
-                                <span class="text-red-950 font-black flex items-center gap-1">🌸 08 MAR</span>
-                                <span class="text-[7px] text-gray-700 truncate group-hover:text-red-900 font-sans">Awal Chat Kita</span>
+                        <div class="grid grid-cols-4 gap-1 font-mono text-[7.5px] sm:text-[8px]">
+                            <button id="chip-milestone-mar" onclick="DossierSystem.selectMilestone('08-03')" class="p-1 bg-white/90 hover:bg-white border border-red-900/30 hover:border-red-900 rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95">
+                                <span class="text-red-950 font-black flex items-center gap-0.5">🌸 08 MAR</span>
+                                <span class="text-[6.5px] sm:text-[7px] text-gray-700 truncate group-hover:text-red-900 font-sans">Awal Chat</span>
                             </button>
-                            <button id="chip-milestone-apr" onclick="DossierSystem.selectMilestone('24-04')" class="p-1.5 bg-white/90 hover:bg-white border border-red-900/30 hover:border-red-900 rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95">
-                                <span class="text-red-950 font-black flex items-center gap-1">🎂 24 APR</span>
-                                <span class="text-[7px] text-gray-700 truncate group-hover:text-red-900 font-sans">Ultah Tersayang</span>
+                            <button id="chip-milestone-apr" onclick="DossierSystem.selectMilestone('24-04')" class="p-1 bg-white/90 hover:bg-white border border-red-900/30 hover:border-red-900 rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95">
+                                <span class="text-red-950 font-black flex items-center gap-0.5">🎂 24 APR</span>
+                                <span class="text-[6.5px] sm:text-[7px] text-gray-700 truncate group-hover:text-red-900 font-sans">Ultah Jeva</span>
                             </button>
-                            <button id="chip-milestone-des" onclick="DossierSystem.selectMilestone('13-12')" class="p-1.5 bg-white/90 hover:bg-white border border-red-900/30 hover:border-red-900 rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95">
-                                <span class="text-red-950 font-black flex items-center gap-1">🎁 13 DES</span>
-                                <span class="text-[7px] text-gray-700 truncate group-hover:text-red-900 font-sans">Ultah Naufal</span>
+                            <button id="chip-milestone-des" onclick="DossierSystem.selectMilestone('13-12')" class="p-1 bg-white/90 hover:bg-white border border-red-900/30 hover:border-red-900 rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95">
+                                <span class="text-red-950 font-black flex items-center gap-0.5">🎁 13 DES</span>
+                                <span class="text-[6.5px] sm:text-[7px] text-gray-700 truncate group-hover:text-red-900 font-sans">Ultah Naufal</span>
+                            </button>
+                            <button id="chip-milestone-nye" onclick="DossierSystem.selectMilestone('31-12')" class="p-1 bg-white/90 hover:bg-white border border-red-900/30 hover:border-red-900 rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95">
+                                <span class="text-red-950 font-black flex items-center gap-0.5">🎆 31 DES</span>
+                                <span class="text-[6.5px] sm:text-[7px] text-gray-700 truncate group-hover:text-red-900 font-sans">Tahun Baru</span>
                             </button>
                         </div>
                     </div>
@@ -688,7 +701,7 @@
                         <span>Status: Sinkron</span>
                     </div>
                     <p id="calendar-hint-text" class="text-[7.5px] opacity-80 mt-1 text-justify font-serif italic text-gray-800">
-                        "Petunjuk: Ketuk tanggal bertanda khusus (08 Mar, 24 Apr, 13 Des, atau tanggal 30) untuk membuka lembar memori rahasia."
+                        "Petunjuk: Ketuk tanggal bertanda khusus (08 Mar, 24 Apr, 13 Des, atau 31 Des) untuk membuka lembar memori rahasia."
                     </p>
                 </div>
             </section>

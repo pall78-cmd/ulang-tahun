@@ -26,20 +26,29 @@ const INITIAL_MESSAGES: TransmissionMessage[] = [
     }
 ];
 
+function escapeHtml(str: string): string {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 function getStoredMessages(): TransmissionMessage[] {
     try {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if (!stored) {
+        if (stored === null) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_MESSAGES));
-            return INITIAL_MESSAGES;
+            return [...INITIAL_MESSAGES];
         }
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed;
+        if (Array.isArray(parsed)) {
+            return parsed.filter(m => m && typeof m.content === 'string' && typeof m.sender === 'string');
         }
-        return INITIAL_MESSAGES;
+        return [...INITIAL_MESSAGES];
     } catch {
-        return INITIAL_MESSAGES;
+        return [...INITIAL_MESSAGES];
     }
 }
 
@@ -146,23 +155,23 @@ export const MILESTONES: Record<string, MilestoneDateItem> = {
         ],
         quote: '"Kado terindah dalam setiap pertambahan usiaku adalah mengetahui bahwa hatiku berjalan berdampingan bersamamu."'
     },
-    '30-03': {
-        key: '30-03',
-        day: 30,
-        month: 2,
-        monthName: 'Maret',
-        label: 'Milestone Monumental',
-        badge: 'MONUMENTAL MILESTONE',
-        icon: '✨',
-        title: 'Catatan Momen Monumental 2026',
-        subtitle: 'LOGBOOK OPERASIONAL // KOORDINAT TANGGAL 30',
-        ref: '2026-JM-LOG30',
+    '31-12': {
+        key: '31-12',
+        day: 31,
+        month: 11, // Desember
+        monthName: 'Desember',
+        label: 'Pergantian Tahun',
+        badge: 'NEW YEAR RETROSPECTIVE // PERGANTIAN TAHUN',
+        icon: '🎆',
+        title: 'Malam Pergantian Menuju Tahun Baru',
+        subtitle: 'KOORDINAT 31 DESEMBER 2026 // PERGANTIAN TAHUN',
+        ref: '2026-JM-LOG31',
         body: [
-            '<b>Target Operasional: Jeva Muafida.</b>',
-            'Tanggal 30 adalah penanda khusus jejak monumental yang kita lalui bersama. Menjadi saksi dari setiap tawa lepas, perjuangan hebat, dan langkah penuh keberanian yang kamu tapaki.',
-            'Semua tawa dan kenangan yang tercipta menjadi bukti betapa berartinya kebersamaan ini.'
+            '<b>Subjek: Jeva Muafida & Naufal — Refleksi Akhir Tahun & Babak Baru.</b>',
+            '31 Desember adalah puncak penghujung tahun, menandai genapnya 365 hari perjalanan yang telah kita arungi bersama dengan penuh perjuangan, tawa, dan kehangatan.',
+            'Di malam pergantian tahun ini, kita bersiap menyambut fajar baru dengan harapan, doa-doa terbaik, dan komitmen untuk terus melangkah bersama menyongsong masa depan yang lebih indah.'
         ],
-        quote: '"Terima kasih telah menjadikan perjalanan satu tahun ini begitu indah dan tak tergantikan. Kamu adalah anugerah terbaik."'
+        quote: '"Menutup lembaran tahun ini dengan penuh rasa syukur memilikimu, dan membuka tahun baru dengan cinta yang kian teguh dan abadi."'
     }
 };
 
@@ -481,18 +490,18 @@ const systemImplementation: DossierSystemType = {
             if (this.calendarMonth === 2) {
                 snippetText.innerText = 'Maret 2026: Koordinat 08 Maret menandai obrolan pertama penuh cerita.';
             } else if (this.calendarMonth === 3) {
-                snippetText.innerText = 'April 2026: Koordinat 24 April merayakan hari lahir sosok paling kusayang.';
+                snippetText.innerText = 'April 2026: Koordinat 24 April merayakan hari lahir sosok paling kusayang (Jeva).';
             } else if (this.calendarMonth === 11) {
-                snippetText.innerText = 'Desember 2026: Koordinat 13 Desember adalah hari kelahiranku (Naufal).';
+                snippetText.innerText = 'Desember 2026: Dua momen penting — 13 Des (Ultah Naufal) & 31 Des (Pergantian Tahun Baru).';
             } else {
-                snippetText.innerText = 'Koordinat penting: 08 Mar (Awal Chat), 24 Apr (Ultah Tersayang), 13 Des (Ultah Naufal).';
+                snippetText.innerText = 'Koordinat penting: 08 Mar (Awal Chat), 24 Apr (Ultah Jeva), 13 Des (Ultah Naufal), 31 Des (Tahun Baru).';
             }
         }
 
         if (polaroidCaption) {
             if (this.calendarMonth === 2) polaroidCaption.innerText = '08 Mar: Awal Chat';
-            else if (this.calendarMonth === 3) polaroidCaption.innerText = '24 Apr: Ultah Tersayang';
-            else if (this.calendarMonth === 11) polaroidCaption.innerText = '13 Des: Ultah Naufal';
+            else if (this.calendarMonth === 3) polaroidCaption.innerText = '24 Apr: Ultah Jeva';
+            else if (this.calendarMonth === 11) polaroidCaption.innerText = 'Desember: 13 & 31 Des';
             else polaroidCaption.innerText = 'Milestone 2026';
         }
 
@@ -524,7 +533,7 @@ const systemImplementation: DossierSystemType = {
         for (let d = 1; d <= totalDays; d++) {
             const div = document.createElement('div');
             const dayKey = `${String(d).padStart(2, '0')}-${String(this.calendarMonth + 1).padStart(2, '0')}`;
-            const milestone = MILESTONES[dayKey] || (d === 30 ? MILESTONES['30-03'] : null);
+            const milestone = MILESTONES[dayKey];
 
             if (milestone) {
                 div.className = 'p-1.5 date-highlight cursor-pointer relative group bg-red-800 text-white font-bold rounded-sm shadow-sm transition-transform hover:scale-110 active:scale-95 flex flex-col items-center justify-center';
@@ -554,9 +563,11 @@ const systemImplementation: DossierSystemType = {
         const marChip = document.getElementById('chip-milestone-mar');
         const aprChip = document.getElementById('chip-milestone-apr');
         const desChip = document.getElementById('chip-milestone-des');
-        if (marChip) marChip.className = `p-1.5 border rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95 ${this.calendarMonth === 2 ? 'bg-amber-100 border-red-800 ring-2 ring-red-800' : 'bg-white/90 hover:bg-white border-red-900/30'}`;
-        if (aprChip) aprChip.className = `p-1.5 border rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95 ${this.calendarMonth === 3 ? 'bg-amber-100 border-red-800 ring-2 ring-red-800' : 'bg-white/90 hover:bg-white border-red-900/30'}`;
-        if (desChip) desChip.className = `p-1.5 border rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95 ${this.calendarMonth === 11 ? 'bg-amber-100 border-red-800 ring-2 ring-red-800' : 'bg-white/90 hover:bg-white border-red-900/30'}`;
+        const nyeChip = document.getElementById('chip-milestone-nye');
+        if (marChip) marChip.className = `p-1 border rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95 ${this.calendarMonth === 2 ? 'bg-amber-100 border-red-800 ring-2 ring-red-800' : 'bg-white/90 hover:bg-white border-red-900/30'}`;
+        if (aprChip) aprChip.className = `p-1 border rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95 ${this.calendarMonth === 3 ? 'bg-amber-100 border-red-800 ring-2 ring-red-800' : 'bg-white/90 hover:bg-white border-red-900/30'}`;
+        if (desChip) desChip.className = `p-1 border rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95 ${this.calendarMonth === 11 && this.currentDateKey === '13-12' ? 'bg-amber-100 border-red-800 ring-2 ring-red-800' : this.calendarMonth === 11 ? 'bg-amber-50 border-red-700' : 'bg-white/90 hover:bg-white border-red-900/30'}`;
+        if (nyeChip) nyeChip.className = `p-1 border rounded text-left shadow-xs transition-all flex flex-col group cursor-pointer active:scale-95 ${this.calendarMonth === 11 && this.currentDateKey === '31-12' ? 'bg-amber-100 border-red-800 ring-2 ring-red-800' : this.calendarMonth === 11 ? 'bg-amber-50 border-red-700' : 'bg-white/90 hover:bg-white border-red-900/30'}`;
     },
 
     changeCalendarMonth(delta: number) {
@@ -841,16 +852,21 @@ const systemImplementation: DossierSystemType = {
     },
 
     initBookGestures() {
-        const peelR = document.getElementById('corner-peel-r');
-        const peelL = document.getElementById('corner-peel-l');
         const navR = document.getElementById('nav-r');
         const navL = document.getElementById('nav-l');
+        const viewport = document.getElementById('module-viewport');
 
         let isPulling = false;
         let pullDirection: 'next' | 'prev' | null = null;
         let startX = 0;
+        let startY = 0;
         let currentX = 0;
         let activeModule: HTMLElement | null = null;
+
+        const isInteractive = (target: EventTarget | null): boolean => {
+            if (!target || !(target instanceof HTMLElement)) return false;
+            return !!target.closest('button, a, input, textarea, video, .date-highlight, [onclick], .page-chip, #decrypt-btn');
+        };
 
         const onPullStart = (e: MouseEvent | TouchEvent, direction: 'next' | 'prev') => {
             if (this.isFlipping) return;
@@ -859,12 +875,11 @@ const systemImplementation: DossierSystemType = {
 
             const point = 'touches' in e ? e.touches[0] : (e as MouseEvent);
             startX = point.clientX;
+            startY = point.clientY;
             currentX = startX;
             isPulling = true;
             pullDirection = direction;
             activeModule = document.querySelector<HTMLElement>('.page-module.active');
-
-            if (e.cancelable) e.preventDefault();
         };
 
         const onPullMove = (e: MouseEvent | TouchEvent) => {
@@ -873,9 +888,15 @@ const systemImplementation: DossierSystemType = {
             const point = 'touches' in e ? e.touches[0] : (e as MouseEvent);
             currentX = point.clientX;
             const deltaX = currentX - startX;
+            const deltaY = point.clientY - startY;
+
+            // If mostly scrolling vertically, do not hijack
+            if (Math.abs(deltaY) > Math.abs(deltaX) * 1.5 && Math.abs(deltaX) < 15) {
+                return;
+            }
 
             if (pullDirection === 'next' && activeModule && this.index < 6) {
-                // Pulling right corner inward to the left
+                // Pulling right side inward to the left (physical 3D page curl)
                 const pullProgress = Math.min(Math.max(-deltaX, 0) / 160, 1);
                 const nextMod = document.getElementById(`mod-${this.index + 1}`);
                 if (nextMod) nextMod.classList.add('page-underneath');
@@ -886,9 +907,9 @@ const systemImplementation: DossierSystemType = {
                 activeModule.style.boxShadow = `${-pullProgress * 22}px 0 ${pullProgress * 30}px rgba(0,0,0,${pullProgress * 0.4})`;
                 activeModule.style.transition = 'none';
 
-                if (e.cancelable) e.preventDefault();
+                if (e.cancelable && Math.abs(deltaX) > 10) e.preventDefault();
             } else if (pullDirection === 'prev' && this.index > 0) {
-                // Pulling left corner inward to the right
+                // Pulling left side inward to the right (physical 3D page curl)
                 const prevMod = document.getElementById(`mod-${this.index - 1}`);
                 if (prevMod) {
                     prevMod.classList.add('page-flipping-in-prev');
@@ -900,7 +921,7 @@ const systemImplementation: DossierSystemType = {
                     prevMod.style.transition = 'none';
                 }
 
-                if (e.cancelable) e.preventDefault();
+                if (e.cancelable && Math.abs(deltaX) > 10) e.preventDefault();
             }
         };
 
@@ -915,16 +936,16 @@ const systemImplementation: DossierSystemType = {
             const prevMod = document.getElementById(`mod-${this.index - 1}`);
 
             if (dir === 'next') {
-                if (deltaX < -24 || Math.abs(deltaX) < 4) {
-                    // Trigger forward flip
+                if (deltaX < -35 && this.index < 6) {
+                    // Deliberate inward pull: trigger forward page flip
                     if (activeModule) {
                         activeModule.style.transform = '';
                         activeModule.style.boxShadow = '';
                         activeModule.style.transition = '';
                     }
-                    if (this.index < 6) this.next();
+                    this.turnPage(this.index + 1, 'next');
                 } else {
-                    // Reset smoothly
+                    // Below threshold: snap back smoothly
                     if (activeModule) {
                         activeModule.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.25s ease';
                         activeModule.style.transform = '';
@@ -933,16 +954,16 @@ const systemImplementation: DossierSystemType = {
                     if (nextMod) nextMod.classList.remove('page-underneath');
                 }
             } else if (dir === 'prev') {
-                if (deltaX > 24 || Math.abs(deltaX) < 4) {
-                    // Trigger backward flip
+                if (deltaX > 35 && this.index > 0) {
+                    // Deliberate inward pull: trigger backward page flip
                     if (prevMod) {
                         prevMod.style.transform = '';
                         prevMod.style.boxShadow = '';
                         prevMod.style.transition = '';
                     }
-                    if (this.index > 0) this.prev();
+                    this.turnPage(this.index - 1, 'prev');
                 } else {
-                    // Reset smoothly
+                    // Below threshold: snap back smoothly
                     if (prevMod) {
                         prevMod.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.25s ease';
                         prevMod.style.transform = '';
@@ -953,24 +974,37 @@ const systemImplementation: DossierSystemType = {
             }
         };
 
-        // Right corner peel & right edge listeners
-        [peelR, navR].forEach(el => {
-            if (!el) return;
-            el.addEventListener('mousedown', (e) => onPullStart(e as MouseEvent, 'next'));
-            el.addEventListener('touchstart', (e) => onPullStart(e as TouchEvent, 'next'), { passive: false });
-        });
+        // Invisible Edge gesture listeners (navR for right edge pull, navL for left edge pull)
+        if (navR) {
+            navR.addEventListener('mousedown', (e) => onPullStart(e as MouseEvent, 'next'));
+            navR.addEventListener('touchstart', (e) => onPullStart(e as TouchEvent, 'next'), { passive: true });
+        }
+        if (navL) {
+            navL.addEventListener('mousedown', (e) => onPullStart(e as MouseEvent, 'prev'));
+            navL.addEventListener('touchstart', (e) => onPullStart(e as TouchEvent, 'prev'), { passive: true });
+        }
 
-        // Left corner peel & left edge listeners
-        [peelL, navL].forEach(el => {
-            if (!el) return;
-            el.addEventListener('mousedown', (e) => onPullStart(e as MouseEvent, 'prev'));
-            el.addEventListener('touchstart', (e) => onPullStart(e as TouchEvent, 'prev'), { passive: false });
-        });
+        // Viewport-wide drag gesture for natural tactile book flipping
+        if (viewport) {
+            viewport.addEventListener('mousedown', (e) => {
+                if (isInteractive(e.target)) return;
+                const rect = viewport.getBoundingClientRect();
+                const dir: 'next' | 'prev' = (e.clientX > rect.left + rect.width * 0.45) ? 'next' : 'prev';
+                onPullStart(e, dir);
+            });
+            viewport.addEventListener('touchstart', (e) => {
+                if (isInteractive(e.target)) return;
+                const rect = viewport.getBoundingClientRect();
+                const touch = e.touches[0];
+                const dir: 'next' | 'prev' = (touch.clientX > rect.left + rect.width * 0.45) ? 'next' : 'prev';
+                onPullStart(e, dir);
+            }, { passive: true });
+        }
 
-        // Window listeners for smooth pull tracking while holding corner
+        // Global move, end, and cancel listeners
         window.addEventListener('mousemove', onPullMove);
-        window.addEventListener('mouseup', onPullEnd);
         window.addEventListener('touchmove', onPullMove, { passive: false });
+        window.addEventListener('mouseup', onPullEnd);
         window.addEventListener('touchend', onPullEnd);
         window.addEventListener('touchcancel', onPullEnd);
 
@@ -1062,27 +1096,27 @@ const systemImplementation: DossierSystemType = {
         const tutorialGuides = [
             {
                 title: "HALAMAN 1: THE LEDGER (KOVER KILAS BALIK)",
-                text: "Ini adalah kover dossier kilas balik perjalanan satu tahun penuh <strong>Jeva Muafida</strong>.<br><br>👉 <strong>MEMBUKA BUKU:</strong> Tarik sudut kanan bawah layar atau geser layar ke kiri seperti membuka lembaran buku sungguhan!<br><br>👉 <strong>KAPSUL WAKTU:</strong> Tekan ikon jam pasir [⏳] di sudut kanan atas untuk membuka hitung mundur WIB real-time."
+                text: "Ini adalah kover dossier kilas balik perjalanan satu tahun penuh <strong>Jeva Muafida</strong>.<br><br>👉 <strong>NAVIGASI BUKU:</strong> Tarik atau geser lembaran ke kiri untuk membuka halaman berikutnya!<br><br>👉 <strong>KAPSUL WAKTU:</strong> Tekan ikon jam pasir [⏳] di sudut kanan atas untuk membuka hitung mundur WIB real-time."
             },
             {
-                title: "HALAMAN 2: EVIDENCE (LINIMASA ARSIP)",
-                text: "Dossier rekapitulasi babak-babak penting sepanjang tahun ini.<br><br>👉 <strong>INTERAKSI:</strong> Ketuk tombol <strong>'Tap to Decrypt Signal'</strong> di tengah berkas untuk membuka arsip rekaman visual pendek.<br><br>👉 <strong>NAVIGASI BUKU:</strong> Tarik lipatan sudut buku atau geser tepi layar untuk membalik lembaran secara alami."
+                title: "HALAMAN 2: DOSSIER BIOGRAFI & EVIDENCE",
+                text: "Dossier rekapitulasi data profil dan babak penting sepanjang tahun ini.<br><br>👉 <strong>INTERAKSI:</strong> Ketuk tombol <strong>'Buka & Putar Sinyal Video'</strong> untuk memutar rekaman pendek.<br><br>👉 <strong>NAVIGASI:</strong> Tarik lembaran ke kiri untuk membuka Halaman 3."
             },
             {
                 title: "HALAMAN 3: DIGITAL CLIPPING // 3 PERANGKO & REEL",
-                text: "Koleksi 3 perangko pos vintage asli (Kyoto, Paris, New York) dan kliping reels kenangan.<br><br>👉 <strong>ESTETIKA SCRAPBOOK:</strong> Perangko pos autentik dan foto kenangan tertata rapi dalam tata letak scrapbook vintage.<br><br>👉 <strong>NAVIGASI BUKU:</strong> Tarik lipatan sudut lembar buku ke kiri untuk menuju Logbook Kalender Momen."
+                text: "Koleksi 3 perangko pos vintage asli (Kyoto, Paris, New York) dan kliping reels kenangan.<br><br>👉 <strong>ESTETIKA SCRAPBOOK:</strong> Perangko pos autentik dan foto kenangan tertata rapi dalam tata letak scrapbook vintage.<br><br>👉 <strong>NAVIGASI:</strong> Tarik lembaran ke kiri untuk membuka Logbook Kalender Momen."
             },
             {
                 title: "HALAMAN 4: LOGBOOK OPERASIONAL // MULTI-MOMEN SPESIAL",
-                text: "Logbook monumental linimasa perjalanan 2026.<br><br>👉 <strong class='text-yellow-300 underline uppercase'>TIGA KOORDINAT UTAMA:</strong><br>• <strong>🌸 08 MAR:</strong> Awal Chat Kita<br>• <strong>🎂 24 APR:</strong> Ulang Tahun Orang Paling Kusayang (Jeva Muafida)<br>• <strong>🎁 13 DES:</strong> Ulang Tahun Naufal (Aku)<br><br>👉 <strong>INTERAKSI:</strong> Ketuk tombol pin koordinat di atas kalender atau navigasikan bulan [◀ / ▶] untuk membuka lembar memori rahasia dan menyimpan catatan kenanganmu!"
+                text: "Logbook monumental linimasa perjalanan 2026.<br><br>👉 <strong class='text-yellow-300 underline uppercase'>EMPAT KOORDINAT UTAMA:</strong><br>• <strong>🌸 08 MAR:</strong> Awal Chat Kita<br>• <strong>🎂 24 APR:</strong> Ulang Tahun Jeva Muafida<br>• <strong>🎁 13 DES:</strong> Ulang Tahun Naufal (Aku)<br>• <strong>🎆 31 DES:</strong> Malam Pergantian Menuju Tahun Baru<br><br>👉 <strong>INTERAKSI:</strong> Ketuk tombol pin koordinat di atas kalender atau navigasikan bulan [◀ / ▶] untuk membuka lembar memori rahasia!"
             },
             {
                 title: "HALAMAN 5: LENTERA REFLEKSI & SURAT TAHUN BARU",
-                text: "Ruang kontemplasi dan doa akhir tahun menyongsong babak baru.<br><br>👉 <strong>PETUNJUK INTERAKSI:</strong> <strong>KETUK NYALA LILIN / LENTERA</strong> di layar untuk memulai mesin tik mengetik surat refleksi tahunan secara otomatis.<br><br>👉 <strong>NAVIGASI BUKU:</strong> Tarik sudut lembar buku ke kiri untuk lanjut ke Halaman 6."
+                text: "Ruang kontemplasi dan doa akhir tahun menyongsong babak baru.<br><br>👉 <strong>PETUNJUK INTERAKSI:</strong> <strong>KETUK NYALA LILIN / LENTERA</strong> di layar untuk memulai mesin tik mengetik surat refleksi tahunan secara otomatis.<br><br>👉 <strong>NAVIGASI:</strong> Tarik lembaran ke kiri untuk lanjut ke Halaman 6."
             },
             {
                 title: "HALAMAN 6: CARTE POSTALE (KARTU POS & VIDEO)",
-                text: "Kartu pos kenangan manis perjalanan satu tahun penuh.<br><br>👉 <strong class='text-yellow-300 underline uppercase'>PETUNJUK INTERAKSI UTAMA:</strong> <strong>KETUK FOTO JEVA</strong> di sebelah kiri kartu pos untuk memutar video montase kenangan (Hindia - Everything U Are)!<br><br>👉 <strong>NAVIGASI BUKU:</strong> Tarik lembar buku ke kiri untuk menuju Terminal Transmisi."
+                text: "Kartu pos kenangan manis perjalanan satu tahun penuh.<br><br>👉 <strong class='text-yellow-300 underline uppercase'>PETUNJUK INTERAKSI UTAMA:</strong> <strong>KETUK FOTO JEVA</strong> di sebelah kiri kartu pos untuk memutar video montase kenangan (Hindia - Everything U Are)!<br><br>👉 <strong>NAVIGASI:</strong> Tarik lembar buku ke kiri untuk menuju Terminal Transmisi."
             },
             {
                 title: "HALAMAN 7: TERMINAL TRANSMISI (PESAN REFLEKSI)",
@@ -1097,16 +1131,11 @@ const systemImplementation: DossierSystemType = {
         if (guideTitle) guideTitle.innerHTML = currentGuide.title;
         if (tutText) tutText.innerHTML = currentGuide.text;
 
-        // Manage edge hit zones and corner peel visibility
+        // Manage edge hit zones visibility
         const navL = document.getElementById('nav-l');
         const navR = document.getElementById('nav-r');
         if (navL) navL.style.display = this.index > 0 ? 'flex' : 'none';
         if (navR) navR.style.display = this.index < 6 ? 'flex' : 'none';
-
-        const peelL = document.getElementById('corner-peel-l');
-        const peelR = document.getElementById('corner-peel-r');
-        if (peelL) peelL.style.display = this.index > 0 ? 'block' : 'none';
-        if (peelR) peelR.style.display = this.index < 6 ? 'block' : 'none';
 
         if (this.index === 6) {
             this.loadMsgs();
@@ -1313,8 +1342,8 @@ const systemImplementation: DossierSystemType = {
         if (!box) return;
         box.innerHTML = (data && data.length > 0) ? data.map(m => `
             <div class="message-bubble ${(m.sender === 'N' || m.sender === 'OPR_N') ? 'msg-n' : 'msg-jeva'}">
-                <span class="block text-[6px] font-bold opacity-60 mb-0.5 uppercase">${m.sender}</span>
-                <div class="leading-relaxed">${m.content}</div>
+                <span class="block text-[6px] font-bold opacity-60 mb-0.5 uppercase">${escapeHtml(m.sender)}</span>
+                <div class="leading-relaxed">${escapeHtml(m.content)}</div>
             </div>
         `).join('') : '<p class="text-center opacity-30 py-8 italic text-[9px] font-mono">Belum ada catatan transmisi. Tuliskan pesan pertama.</p>';
         box.scrollTop = box.scrollHeight;
@@ -1474,11 +1503,11 @@ const systemImplementation: DossierSystemType = {
         if (!tbody) return;
         tbody.innerHTML = data.length > 0 ? data.map(m => `
             <tr class="border-b border-green-900/30 hover:bg-green-900/10">
-                <td class="p-1">${m.id}</td>
-                <td class="p-1">${m.sender}</td>
-                <td class="p-1 truncate max-w-[150px]">${m.content}</td>
+                <td class="p-1">${escapeHtml(String(m.id))}</td>
+                <td class="p-1">${escapeHtml(String(m.sender))}</td>
+                <td class="p-1 truncate max-w-[150px]">${escapeHtml(String(m.content))}</td>
                 <td class="p-1 text-right">
-                    <button onclick="DossierSystem.deleteRecord(${m.id})" class="text-red-400 hover:text-red-300 uppercase text-[8px] border border-red-900/50 px-1 rounded">Del</button>
+                    <button onclick="DossierSystem.deleteRecord(${Number(m.id)})" class="text-red-400 hover:text-red-300 uppercase text-[8px] border border-red-900/50 px-1 rounded cursor-pointer">Del</button>
                 </td>
             </tr>
         `).join('') : '<tr><td colspan="4" class="text-center p-3 opacity-50">Belum ada transmisi tersimpan.</td></tr>';
