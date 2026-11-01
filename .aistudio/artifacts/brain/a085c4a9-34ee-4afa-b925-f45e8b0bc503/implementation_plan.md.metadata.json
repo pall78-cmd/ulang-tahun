@@ -1,6 +1,0 @@
-{
-  "summary": "Rencana implementasi refaktor UI/UX total: menonaktifkan konsep bebas menarik dekorasi (menjadi dekorasi tetap yang rapi), membatasi pembalik halaman murni pada lipatan sudut buku tanpa label teks/tombol, menghapus Easter egg washi tape, serta pembersihan menyeluruh (debugging total) pada basecode.",
-  "updatedAt": "2026-10-19T08:26:20.932028714Z",
-  "requestFeedback": true,
-  "userFacing": true
-}
